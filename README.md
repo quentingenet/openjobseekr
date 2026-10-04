@@ -16,6 +16,27 @@ settings and a shared rate-limit store.
 
 > Status: work in progress, usable day to day.
 
+## Built with Claude Code
+
+I co-built OpenJobSeekR with [Claude Code](https://claude.com/claude-code), which I carefully
+configured my own way to work efficiently and safely on this codebase. The goal stays simple:
+a free tool that helps people looking for a job stay organized and focused.
+
+I set the direction, the architecture and the rules, and decide what goes in; Claude writes
+much of the code within that frame. The configuration is part of the repository:
+
+- [`CLAUDE.md`](CLAUDE.md) and [`.claude/rules/`](.claude/rules): the stack, the conventions
+  and the definition of done (tests first for business logic, no skipped checks, every
+  user-facing text translated).
+- [`.claude/hooks/`](.claude/hooks): a hook that blocks destructive shell commands, itself
+  tested by `npm run test:hooks`, and a formatter run after every edit.
+- [`.claude/agents/`](.claude/agents): read-only reviewers for code and security.
+- [`.claude/skills/`](.claude/skills): a step-by-step checklist to add an API endpoint.
+
+Generated code goes through the same safeguards as hand-written code: type-aware lint, unit
+and end-to-end tests, and tests that keep the database, the API contract, the shared rules
+and the web app in sync.
+
 ## Features
 
 - **Applications**: company, job title, location, channel, status, contact, work mode,
