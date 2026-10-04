@@ -10,7 +10,7 @@ import {
 import type { CreateApplicationDto, UpdateApplicationDto } from './dto/application-input.dto.js';
 import type { ApplicationDetailDto, ApplicationListDto } from './dto/application-response.dto.js';
 import type { ListApplicationsQueryDto } from './dto/list-applications-query.dto.js';
-import { FollowUpContextProvider } from './follow-up-context.provider.js';
+import { FollowUpContextProvider } from '../follow-up/follow-up-context.provider.js';
 
 /**
  * Every query is scoped by `userId`. A missing record, or one of another user, is reported as

@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { type Application, Prisma } from '../generated/prisma/client.js';
 import type { PrismaService } from '../prisma/prisma.service.js';
 import { ApplicationsService } from './applications.service.js';
-import type { FollowUpContextProvider } from './follow-up-context.provider.js';
+import type { FollowUpContextProvider } from '../follow-up/follow-up-context.provider.js';
 
 const ID = '6c3f4d2e-0000-4000-8000-000000000001';
 

@@ -2,9 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Clock } from '../common/clock.js';
 import type { Env } from '../config/env.schema.js';
-import type { FollowUpContext } from './application.mapper.js';
 
 /** Inputs of the follow-up rule: today's date and the configured delay. */
+export interface FollowUpContext {
+  today: string;
+  delayDays: number;
+}
+
+/** Builds the follow-up context from the clock and the validated configuration. */
 @Injectable()
 export class FollowUpContextProvider {
   constructor(

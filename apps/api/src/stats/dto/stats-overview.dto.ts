@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import type { Overview } from '../../applications/domain/overview.js';
+import type { Overview } from '../domain/overview.js';
 
 export class StatsOverviewDto implements Overview {
   @ApiProperty()

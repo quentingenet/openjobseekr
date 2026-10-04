@@ -122,9 +122,10 @@ apps/
 ├── api/                    NestJS API
 │   ├── prisma/             schema and migrations
 │   ├── src/
-│   │   ├── applications/   CRUD, filters, overview figures (pure functions in domain/)
+│   │   ├── applications/   CRUD, filters, sort and pagination
 │   │   ├── skills/         skills and their frequency in job postings
-│   │   ├── stats/          statistics by status and channel
+│   │   ├── stats/          statistics by status and channel (pure functions in domain/)
+│   │   ├── follow-up/      today's date and follow-up delay, shared by two modules
 │   │   ├── auth/           registration, login, JWT guard, rate limiting
 │   │   ├── settings/       settings the web app needs (follow-up delay)
 │   │   ├── health/         health check (database included)

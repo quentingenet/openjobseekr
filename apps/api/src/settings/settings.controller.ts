@@ -1,6 +1,6 @@
 import { Controller, Get, HttpStatus } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { FollowUpContextProvider } from '../applications/follow-up-context.provider.js';
+import { FollowUpContextProvider } from '../follow-up/follow-up-context.provider.js';
 import { ApiProblem } from '../common/decorators/api-problem.decorator.js';
 import { ErrorCode } from '../common/error-codes.js';
 import { SettingsDto } from './dto/settings.dto.js';

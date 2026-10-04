@@ -33,8 +33,10 @@ openjobseekr/
     │   │   ├── config/       (environment validation)
     │   │   ├── common/       (exception filter, decorators, error codes, clock)
     │   │   ├── prisma/       (module and service)
-    │   │   ├── auth/, health/, stats/, settings/
-    │   │   ├── applications/ (domain/, dto/, mapper, controller, service, module)
+    │   │   ├── auth/, health/, settings/
+    │   │   ├── follow-up/    (FollowUpModule: follow-up context for applications and settings)
+    │   │   ├── applications/ (dto/, mapper, controller, service, module)
+    │   │   ├── stats/        (domain/, dto/, controller, service, module)
     │   │   ├── skills/       (domain/, dto/, controller, service, module)
     │   │   ├── generated/    (Prisma client, generated, not versioned)
     │   │   └── export-openapi.ts (writes the OpenAPI document used by the web app)
@@ -53,7 +55,7 @@ openjobseekr/
 ```
 
 - One folder per feature, on both the API and the web side.
-- Pure business logic lives in `<feature>/domain/` (applications, skills): no NestJS or
+- Pure business logic lives in `<feature>/domain/` (stats, skills): no NestJS or
   Prisma imports there. Rules the web app also needs (calendar dates, follow-up date,
   enums, limits) live in `packages/domain` (`@openjobseekr/domain`), pure TypeScript without
   dependencies: never duplicate them in an app.

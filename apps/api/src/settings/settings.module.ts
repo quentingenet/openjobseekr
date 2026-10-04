@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { ApplicationsModule } from '../applications/applications.module.js';
+import { FollowUpModule } from '../follow-up/follow-up.module.js';
 import { SettingsController } from './settings.controller.js';
 
 @Module({
-  imports: [ApplicationsModule],
+  imports: [FollowUpModule],
   controllers: [SettingsController],
 })
 export class SettingsModule {}

@@ -4,6 +4,7 @@ import {
   isFollowUpOverdue,
   overdueSentBefore,
 } from '@openjobseekr/domain';
+import type { FollowUpContext } from '../follow-up/follow-up-context.provider.js';
 import type { Application, Prisma } from '../generated/prisma/client.js';
 import type {
   ApplicationDetailDto,
@@ -11,11 +12,6 @@ import type {
 } from './dto/application-response.dto.js';
 import type { CreateApplicationDto, UpdateApplicationDto } from './dto/application-input.dto.js';
 import type { ListApplicationsQueryDto } from './dto/list-applications-query.dto.js';
-
-export interface FollowUpContext {
-  today: string;
-  delayDays: number;
-}
 
 /** `@db.Date` columns: `YYYY-MM-DD` <-> UTC midnight, so the date never shifts. */
 export function toDbDate(date: string): Date {

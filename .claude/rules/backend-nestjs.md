@@ -7,7 +7,7 @@ paths:
 
 - One module per feature under `apps/api/src/<feature>/`: `<feature>.module.ts`,
   `<feature>.controller.ts`, and `<feature>.service.ts` and `dto/` when it has logic or inputs.
-  Pure business logic goes in `<feature>/domain/` (`applications/domain/`, `skills/domain/`)
+  Pure business logic goes in `<feature>/domain/` (`stats/domain/`, `skills/domain/`)
   with no NestJS or Prisma imports; rules the web app also needs go in `packages/domain`
   (`@openjobseekr/domain`).
 - Every request body and query is a DTO validated with `class-validator`

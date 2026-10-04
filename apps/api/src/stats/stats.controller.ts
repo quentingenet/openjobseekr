@@ -1,6 +1,6 @@
 import { Controller, Get, HttpStatus } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import type { Overview } from '../applications/domain/overview.js';
+import type { Overview } from './domain/overview.js';
 import { ApiProblem } from '../common/decorators/api-problem.decorator.js';
 import { ErrorCode } from '../common/error-codes.js';
 import {
