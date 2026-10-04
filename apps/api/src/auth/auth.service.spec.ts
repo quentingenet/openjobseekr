@@ -11,7 +11,8 @@ const createdAt = new Date('2026-10-04T08:00:00.000Z');
 function setup() {
   const prisma = {
     user: {
-      create: vi.fn(),
+      create:
+        vi.fn<(args: { data: { email: string; passwordHash: string } }) => Promise<unknown>>(),
       findUnique: vi.fn(),
     },
   };
@@ -40,10 +41,10 @@ describe('AuthService', () => {
         password: 'correct horse',
       });
 
-      const data = ctx.prisma.user.create.mock.calls[0]?.[0].data;
-      expect(data.email).toBe('jane@example.com');
-      expect(data.passwordHash).not.toBe('correct horse');
-      expect(await bcrypt.compare('correct horse', data.passwordHash)).toBe(true);
+      const data = ctx.prisma.user.create.mock.lastCall?.[0].data;
+      expect(data?.email).toBe('jane@example.com');
+      expect(data?.passwordHash).not.toBe('correct horse');
+      expect(await bcrypt.compare('correct horse', data?.passwordHash ?? '')).toBe(true);
       expect(ctx.jwt.signAsync).toHaveBeenCalledWith({ sub: 'user-1', email: 'jane@example.com' });
       expect(result).toEqual({
         accessToken: 'signed-token',

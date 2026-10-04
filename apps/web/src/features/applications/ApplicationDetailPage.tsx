@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink, useLocation, useNavigate, useParams } from 'react-router';
 import { useApplication, useDeleteApplication } from '../../api/queries/applications';
-import type { Application, ApplicationStatus } from '../../api/types';
+import type { Application } from '../../api/types';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { ErrorState, LoadingState } from '../../components/PageStates';
 import { formatDate, formatDateTime } from '../../lib/format';
@@ -90,7 +90,7 @@ export function ApplicationDetailPage() {
             {data.jobTitle}
           </Typography>
           <Stack direction="row" spacing={1} sx={{ mt: 1, alignItems: 'center', flexWrap: 'wrap' }}>
-            <StatusChip status={data.status as ApplicationStatus} />
+            <StatusChip status={data.status} />
             {data.followUpDate && (
               <Chip
                 size="small"

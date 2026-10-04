@@ -1,7 +1,7 @@
 import { Box, ListItem, ListItemButton, Stack, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router';
-import type { ApplicationChannel, ApplicationStatus, ApplicationSummary } from '../../../api/types';
+import type { ApplicationSummary } from '../../../api/types';
 import { formatDate } from '../../../lib/format';
 import { channelLabel } from '../channel-label';
 import { StatusChip } from '../StatusChip';
@@ -10,11 +10,7 @@ import { FollowUpCell } from './FollowUpCell';
 /** One application on a phone: the whole card is a link to its detail page. */
 export function ApplicationCard({ application }: { application: ApplicationSummary }) {
   const { t, i18n } = useTranslation();
-  const channel = channelLabel(
-    t,
-    application.channel as ApplicationChannel | null,
-    application.channelDetail,
-  );
+  const channel = channelLabel(t, application.channel, application.channelDetail);
 
   return (
     <ListItem disablePadding divider>
@@ -32,7 +28,7 @@ export function ApplicationCard({ application }: { application: ApplicationSumma
               {application.jobTitle}
             </Typography>
           </Box>
-          <StatusChip status={application.status as ApplicationStatus} />
+          <StatusChip status={application.status} />
         </Stack>
         <Stack
           direction="row"

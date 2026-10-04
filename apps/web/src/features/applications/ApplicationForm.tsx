@@ -162,7 +162,7 @@ export function ApplicationForm({
   });
 
   return (
-    <Box component="form" noValidate onSubmit={submit}>
+    <Box component="form" noValidate onSubmit={(event) => void submit(event)}>
       <Stack spacing={3}>
         <FormErrorAlert error={errors.root?.server} />
 

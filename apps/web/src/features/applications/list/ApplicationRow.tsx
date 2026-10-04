@@ -1,7 +1,7 @@
 import { Link, TableCell, TableRow } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink, useNavigate } from 'react-router';
-import type { ApplicationChannel, ApplicationStatus, ApplicationSummary } from '../../../api/types';
+import type { ApplicationSummary } from '../../../api/types';
 import { TruncatedText } from '../../../components/TruncatedText';
 import { formatDate } from '../../../lib/format';
 import { channelLabel } from '../channel-label';
@@ -41,14 +41,10 @@ export function ApplicationRow({ application }: { application: ApplicationSummar
         <TruncatedText sx={{ maxWidth: JOB_TITLE_MAX_WIDTH }}>{application.jobTitle}</TruncatedText>
       </TableCell>
       <TableCell>
-        {channelLabel(
-          t,
-          application.channel as ApplicationChannel | null,
-          application.channelDetail,
-        ) ?? '—'}
+        {channelLabel(t, application.channel, application.channelDetail) ?? '—'}
       </TableCell>
       <TableCell>
-        <StatusChip status={application.status as ApplicationStatus} />
+        <StatusChip status={application.status} />
       </TableCell>
       <TableCell sx={{ whiteSpace: 'nowrap' }}>
         <FollowUpCell date={application.followUpDate} overdue={application.followUpOverdue} />

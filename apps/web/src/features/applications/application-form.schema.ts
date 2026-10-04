@@ -103,11 +103,7 @@ export function toCreateInput(values: ParsedForm): CreateApplicationInput {
   };
 }
 
-function copyField<Input, Field extends keyof Input>(
-  to: Partial<Input>,
-  from: Input,
-  field: Field,
-): void {
+function copyField<Input>(to: Partial<Input>, from: Input, field: keyof Input): void {
   to[field] = from[field];
 }
 

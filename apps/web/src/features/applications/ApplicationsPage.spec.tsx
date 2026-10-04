@@ -1,8 +1,8 @@
 import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import type { ApplicationList } from '../../api/types';
-import { requestedUrls } from '../../test/api-mock';
+import { type FetchStub, requestedUrls } from '../../test/api-mock';
 import { jsonResponse, renderWithProviders } from '../../test/render';
 import { mockMobileViewport } from '../../test/viewport';
 import { ApplicationsPage } from './ApplicationsPage';
@@ -40,10 +40,10 @@ const list: ApplicationList = {
 };
 
 describe('ApplicationsPage', () => {
-  let fetchMock: ReturnType<typeof vi.fn>;
+  let fetchMock: Mock<FetchStub>;
 
   beforeEach(() => {
-    fetchMock = vi.fn().mockImplementation(() => Promise.resolve(jsonResponse(list)));
+    fetchMock = vi.fn<FetchStub>().mockImplementation(() => Promise.resolve(jsonResponse(list)));
     vi.stubGlobal('fetch', fetchMock);
   });
 

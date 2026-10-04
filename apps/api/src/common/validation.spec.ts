@@ -41,7 +41,7 @@ describe('createValidationPipe', () => {
   const metadata = { type: 'body', metatype: SampleDto } as const;
 
   it('throws a VALIDATION_FAILED AppException with field details', async () => {
-    const error = await pipe
+    const error: unknown = await pipe
       .transform({ email: 'not-an-email' }, metadata)
       .catch((e: unknown) => e);
 
@@ -54,7 +54,7 @@ describe('createValidationPipe', () => {
   });
 
   it('rejects properties that are not declared in the DTO', async () => {
-    const error = await pipe
+    const error: unknown = await pipe
       .transform({ email: 'jane@example.com', isAdmin: true }, metadata)
       .catch((e: unknown) => e);
 

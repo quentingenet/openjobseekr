@@ -9,7 +9,7 @@ export const credentialsSchema = z.object({
     .toLowerCase()
     .min(1, 'validation.required')
     .max(CREDENTIAL_LIMITS.emailMaxLength, 'validation.tooLong')
-    .email('validation.email'),
+    .pipe(z.email('validation.email')),
   password: z
     .string()
     .min(CREDENTIAL_LIMITS.passwordMinLength, 'validation.passwordTooShort')

@@ -23,7 +23,10 @@ function databaseLimits(table: 'Application' | 'Skill'): Record<string, number> 
     'g',
   );
   return Object.fromEntries(
-    [...sql.matchAll(pattern)].map((match) => [match[1], Number(match[2] ?? match[3])]),
+    [...sql.matchAll(pattern)].map((match): [string, number] => [
+      match[1] ?? '',
+      Number(match[2] ?? match[3]),
+    ]),
   );
 }
 

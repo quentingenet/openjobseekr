@@ -1,13 +1,8 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { type FetchStub, lastRequest } from '../test/api-mock';
 import { jsonResponse } from '../test/render';
 import { api, ApiError, unwrap } from './client';
 import { tokenStorage } from './token-storage';
-
-/** The Request openapi-fetch passed to the stubbed fetch. */
-function sentRequest(fetchMock: ReturnType<typeof vi.fn>): Request {
-  const [request] = fetchMock.mock.lastCall as [Request];
-  return request;
-}
 
 describe('API client', () => {
   afterEach(() => {
@@ -16,7 +11,7 @@ describe('API client', () => {
   });
 
   it('calls the API through /api with the token, a JSON body and the query string', async () => {
-    const fetchMock = vi.fn().mockResolvedValue(jsonResponse({ id: '1' }, 201));
+    const fetchMock = vi.fn<FetchStub>().mockResolvedValue(jsonResponse({ id: '1' }, 201));
     vi.stubGlobal('fetch', fetchMock);
     tokenStorage.set('token-1');
 
@@ -27,7 +22,7 @@ describe('API client', () => {
     );
 
     expect(result).toEqual({ id: '1' });
-    const request = sentRequest(fetchMock);
+    const request = lastRequest(fetchMock);
     expect(request.method).toBe('POST');
     expect(new URL(request.url).pathname).toBe('/api/applications');
     expect(request.headers.get('Authorization')).toBe('Bearer token-1');
@@ -41,7 +36,7 @@ describe('API client', () => {
   });
 
   it('sends no Authorization header without a token, and skips undefined query values', async () => {
-    const fetchMock = vi.fn().mockResolvedValue(jsonResponse({ items: [] }));
+    const fetchMock = vi.fn<FetchStub>().mockResolvedValue(jsonResponse({ items: [] }));
     vi.stubGlobal('fetch', fetchMock);
 
     await unwrap(
@@ -50,7 +45,7 @@ describe('API client', () => {
       }),
     );
 
-    const request = sentRequest(fetchMock);
+    const request = lastRequest(fetchMock);
     expect(request.headers.has('Authorization')).toBe(false);
     expect(new URL(request.url).search).toBe('?status=SENT&limit=20&offset=0&order=desc');
   });

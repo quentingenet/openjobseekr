@@ -95,6 +95,8 @@ openjobseekr/
   addition is `channelDetail`, the channel name when `channel` is `OTHER` (cleared otherwise).
 - The follow-up date is not stored: it is computed (sent date + delay) while the status is `SENT`.
 - `jobPostingText` is excluded from list responses and only returned in the detail response.
+- ESLint runs typescript-eslint `strictTypeChecked` (type-aware). The few relaxed rules are
+  in `eslint.config.js`, each with its reason; fix the code rather than adding exceptions.
 - Inputs are validated by DTOs (`class-validator`); no business logic in controllers.
 - Tests: explicit expected values, no snapshots for business logic.
   In e2e tests, use the default import: `import request from 'supertest'`.

@@ -63,7 +63,7 @@ export function AuthPage({ mode }: { mode: 'login' | 'register' }) {
           <Typography variant="h5" component="h1" gutterBottom>
             {title}
           </Typography>
-          <Box component="form" noValidate onSubmit={onSubmit}>
+          <Box component="form" noValidate onSubmit={(event) => void onSubmit(event)}>
             <Stack spacing={2}>
               {mutation.isError && (
                 <Alert severity="error">{errorMessage(mutation.error, t)}</Alert>

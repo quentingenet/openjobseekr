@@ -21,7 +21,7 @@ describe('constraintMessage', () => {
 });
 
 describe('applyServerErrors', () => {
-  const t = i18n.getFixedT('en') as TFunction;
+  const t: TFunction = i18n.getFixedT('en');
 
   it('puts known invalid fields under their input and the error in the banner', () => {
     const setError = vi.fn();

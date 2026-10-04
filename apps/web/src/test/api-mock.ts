@@ -1,4 +1,4 @@
-import { vi } from 'vitest';
+import { type Mock, vi } from 'vitest';
 import type { FieldError, ProblemDetails } from '../api/client';
 import { jsonResponse } from './render';
 
@@ -16,9 +16,19 @@ export function requestUrl(request: Request): string {
   return url.pathname + url.search;
 }
 
+/** The global `fetch` as the API client calls it: always with a `Request`. */
+export type FetchStub = (request: Request) => Promise<Response>;
+
 /** URLs of every request a stubbed `fetch` received, in order. */
-export function requestedUrls(fetchMock: ReturnType<typeof vi.fn>): string[] {
-  return fetchMock.mock.calls.map(([request]) => requestUrl(request as Request));
+export function requestedUrls(fetchMock: Mock<FetchStub>): string[] {
+  return fetchMock.mock.calls.map(([request]) => requestUrl(request));
+}
+
+/** The last request a stubbed `fetch` received. */
+export function lastRequest(fetchMock: Mock<FetchStub>): Request {
+  const call = fetchMock.mock.lastCall;
+  if (!call) throw new Error('fetch was not called');
+  return call[0];
 }
 
 /**
@@ -27,7 +37,7 @@ export function requestedUrls(fetchMock: ReturnType<typeof vi.fn>): string[] {
  */
 export function mockApi(handlers: Record<string, Handler>) {
   const requests: RecordedRequest[] = [];
-  const fetchMock = vi.fn(async (sent: Request) => {
+  const fetchMock = vi.fn<FetchStub>(async (sent) => {
     const url = requestUrl(sent);
     const text = await sent.text();
     const request: RecordedRequest = {

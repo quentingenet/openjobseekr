@@ -1,5 +1,10 @@
-import { Tooltip, Typography, type TypographyProps } from '@mui/material';
+import { type SxProps, type Theme, Tooltip, Typography, type TypographyProps } from '@mui/material';
 import { useState } from 'react';
+
+/** `Array.isArray` would narrow `sx` to `any[]`. */
+function isSxArray(sx: SxProps<Theme>): sx is Extract<SxProps<Theme>, readonly unknown[]> {
+  return Array.isArray(sx);
+}
 
 /** Give it a bounded width through `sx` (e.g. `maxWidth`), otherwise nothing is cut. */
 type TruncatedTextProps = Omit<TypographyProps, 'children' | 'noWrap'> & {
@@ -23,7 +28,7 @@ export function TruncatedText({ children, sx, ...props }: TruncatedTextProps) {
         noWrap
         onMouseEnter={(event) => measure(event.currentTarget)}
         onFocus={(event) => measure(event.currentTarget)}
-        sx={[{ display: 'block' }, ...(Array.isArray(sx) ? sx : [sx])]}
+        sx={[{ display: 'block' }, ...(sx === undefined ? [] : isSxArray(sx) ? sx : [sx])]}
         {...props}
       >
         {children}

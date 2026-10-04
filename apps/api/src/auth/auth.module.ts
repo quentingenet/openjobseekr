@@ -8,8 +8,6 @@ import { AuthController } from './auth.controller.js';
 import { AuthService } from './auth.service.js';
 import { JwtAuthGuard } from './jwt-auth.guard.js';
 
-type JwtExpiresIn = `${number}${'s' | 'm' | 'h' | 'd'}`;
-
 @Module({
   imports: [
     JwtModule.registerAsync({
@@ -18,8 +16,7 @@ type JwtExpiresIn = `${number}${'s' | 'm' | 'h' | 'd'}`;
         secret: config.get('JWT_SECRET', { infer: true }),
         signOptions: {
           algorithm: 'HS256',
-          // Format checked by the env schema (e.g. "1d").
-          expiresIn: config.get('JWT_EXPIRES_IN', { infer: true }) as JwtExpiresIn,
+          expiresIn: config.get('JWT_EXPIRES_IN', { infer: true }),
         },
         verifyOptions: { algorithms: ['HS256'] },
       }),

@@ -43,7 +43,7 @@ settings and a shared rate-limit store.
   OpenAPI documentation
 - **Tests**: Vitest everywhere, Testing Library for the web app, Supertest for the API
   end-to-end tests
-- **Tooling**: npm workspaces, ESLint, Prettier, Husky
+- **Tooling**: npm workspaces, ESLint (typescript-eslint `strictTypeChecked`), Prettier, Husky
 
 ## Getting started
 

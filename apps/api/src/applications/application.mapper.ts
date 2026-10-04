@@ -58,10 +58,9 @@ export function toApplicationDetail(
   application: Application,
   context: FollowUpContext,
 ): ApplicationDetailDto {
-  return {
-    ...toApplicationSummary(application, context),
+  return Object.assign(toApplicationSummary(application, context), {
     jobPostingText: application.jobPostingText,
-  };
+  });
 }
 
 /** Prisma data for a new application owned by `userId` (set last: the body cannot override it). */

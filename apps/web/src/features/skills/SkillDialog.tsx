@@ -70,7 +70,7 @@ export function SkillDialog({ skill, onClose, onSubmit }: SkillDialogProps) {
 
   return (
     <Dialog open onClose={onClose} fullWidth maxWidth="sm" fullScreen={isMobile}>
-      <form noValidate onSubmit={submit}>
+      <form noValidate onSubmit={(event) => void submit(event)}>
         <DialogTitle>{skill ? t('skills.form.editTitle') : t('skills.form.newTitle')}</DialogTitle>
         <DialogContent>
           <Stack spacing={2} sx={{ pt: 1 }}>
