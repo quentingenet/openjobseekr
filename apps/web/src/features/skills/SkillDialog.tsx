@@ -14,6 +14,7 @@ import { useTranslation } from 'react-i18next';
 import type { Skill } from '../../api/types';
 import { FormErrorAlert } from '../../components/FormErrorAlert';
 import { translateFieldError } from '../../lib/field-error';
+import { useIsMobile } from '../../lib/useIsMobile';
 import { applyServerErrors } from '../../lib/server-errors';
 import {
   SKILL_LIMITS,
@@ -41,6 +42,7 @@ interface SkillDialogProps {
 
 export function SkillDialog({ skill, onClose, onSubmit }: SkillDialogProps) {
   const { t } = useTranslation();
+  const isMobile = useIsMobile();
   const {
     control,
     register,
@@ -62,7 +64,7 @@ export function SkillDialog({ skill, onClose, onSubmit }: SkillDialogProps) {
   });
 
   return (
-    <Dialog open onClose={onClose} fullWidth maxWidth="sm">
+    <Dialog open onClose={onClose} fullWidth maxWidth="sm" fullScreen={isMobile}>
       <form noValidate onSubmit={submit}>
         <DialogTitle>{skill ? t('skills.form.editTitle') : t('skills.form.newTitle')}</DialogTitle>
         <DialogContent>

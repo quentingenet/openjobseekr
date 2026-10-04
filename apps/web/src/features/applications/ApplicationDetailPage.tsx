@@ -104,7 +104,11 @@ export function ApplicationDetailPage() {
             )}
           </Stack>
         </Box>
-        <Stack direction="row" spacing={1} sx={{ alignItems: 'flex-start' }}>
+        <Stack
+          direction="row"
+          spacing={1}
+          sx={{ alignItems: 'flex-start', '& > *': { flex: { xs: 1, md: 'none' } } }}
+        >
           <Button
             component={RouterLink}
             to={`/applications/${id}/edit`}

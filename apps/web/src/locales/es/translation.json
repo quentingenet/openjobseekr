@@ -7,7 +7,8 @@
     "stats": "Estadísticas",
     "logout": "Cerrar sesión",
     "mainNavigation": "Navegación principal",
-    "skills": "Competencias"
+    "skills": "Competencias",
+    "openMenu": "Abrir el menú"
   },
   "language": {
     "label": "Idioma",
@@ -50,7 +51,9 @@
       "workMode": "Modalidad"
     },
     "sortedNewestFirst": "ordenadas de la más reciente a la más antigua",
-    "sortedOldestFirst": "ordenadas de la más antigua a la más reciente"
+    "sortedOldestFirst": "ordenadas de la más antigua a la más reciente",
+    "sortNewestFirst": "Más recientes primero",
+    "sortOldestFirst": "Más antiguas primero"
   },
   "form": {
     "newTitle": "Nueva candidatura",
@@ -214,6 +217,8 @@
     "deleteMessage": "Se eliminará la competencia «{{name}}».",
     "confirmDelete": "Eliminar",
     "subtitle_one": "Frecuencia de cada competencia en tu anuncio guardado.",
-    "subtitle_other": "Frecuencia de cada competencia en tus {{count}} anuncios guardados."
+    "subtitle_other": "Frecuencia de cada competencia en tus {{count}} anuncios guardados.",
+    "postingCountShort_one": "{{formatted}} anuncio",
+    "postingCountShort_other": "{{formatted}} anuncios"
   }
 }

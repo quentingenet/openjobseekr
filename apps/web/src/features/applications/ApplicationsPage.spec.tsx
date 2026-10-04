@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { ApplicationList } from '../../api/types';
 import { jsonResponse, renderWithProviders } from '../../test/render';
+import { mockMobileViewport } from '../../test/viewport';
 import { ApplicationsPage } from './ApplicationsPage';
 
 const list: ApplicationList = {
@@ -222,5 +223,40 @@ describe('ApplicationsPage', () => {
     await renderWithProviders(<ApplicationsPage />, { path: '/applications', language: 'fr' });
 
     expect(await screen.findByText('Autre (Indeed)')).toBeInTheDocument();
+  });
+
+  describe('on a phone', () => {
+    beforeEach(() => {
+      mockMobileViewport();
+    });
+
+    it('shows each application as a card linking to its detail', async () => {
+      await renderWithProviders(<ApplicationsPage />, { path: '/applications', language: 'fr' });
+
+      const card = (await screen.findByText('Acme')).closest('a');
+      expect(card).toHaveAttribute('href', '/applications/6c3f4d2e-0000-4000-8000-000000000001');
+      const content = within(card as HTMLElement);
+      expect(content.getByText('Backend developer')).toBeInTheDocument();
+      expect(content.getByText('Envoyée')).toBeInTheDocument();
+      expect(content.getByText('Envoyée le 1 oct. 2026')).toBeInTheDocument();
+      expect(content.getByText('LinkedIn')).toBeInTheDocument();
+      expect(content.getByText('8 oct. 2026')).toBeInTheDocument();
+      expect(screen.queryByRole('table')).not.toBeInTheDocument();
+      expect(screen.getByRole('list', { name: 'Liste des candidatures' })).toBeInTheDocument();
+    });
+
+    it('sorts by sent date with a button above the cards', async () => {
+      const { router } = await renderWithProviders(<ApplicationsPage />, {
+        path: '/applications',
+        language: 'en',
+      });
+      await screen.findByText('Acme');
+
+      await userEvent.click(screen.getByRole('button', { name: 'Newest first' }));
+
+      await waitFor(() => expect(router.state.location.search).toBe('?order=asc'));
+      await userEvent.click(screen.getByRole('button', { name: 'Oldest first' }));
+      await waitFor(() => expect(router.state.location.search).toBe(''));
+    });
   });
 });

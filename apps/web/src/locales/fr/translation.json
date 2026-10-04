@@ -7,7 +7,8 @@
     "stats": "Statistiques",
     "logout": "Se déconnecter",
     "mainNavigation": "Navigation principale",
-    "skills": "Compétences"
+    "skills": "Compétences",
+    "openMenu": "Ouvrir le menu"
   },
   "language": {
     "label": "Langue",
@@ -50,7 +51,9 @@
       "workMode": "Mode de travail"
     },
     "sortedNewestFirst": "triées de la plus récente à la plus ancienne",
-    "sortedOldestFirst": "triées de la plus ancienne à la plus récente"
+    "sortedOldestFirst": "triées de la plus ancienne à la plus récente",
+    "sortNewestFirst": "Plus récentes d'abord",
+    "sortOldestFirst": "Plus anciennes d'abord"
   },
   "form": {
     "newTitle": "Nouvelle candidature",
@@ -214,6 +217,8 @@
     "deleteMessage": "La compétence « {{name}} » sera supprimée.",
     "confirmDelete": "Supprimer",
     "subtitle_one": "Fréquence de chaque compétence dans votre annonce enregistrée.",
-    "subtitle_other": "Fréquence de chaque compétence dans vos {{count}} annonces enregistrées."
+    "subtitle_other": "Fréquence de chaque compétence dans vos {{count}} annonces enregistrées.",
+    "postingCountShort_one": "{{formatted}} annonce",
+    "postingCountShort_other": "{{formatted}} annonces"
   }
 }

@@ -7,7 +7,8 @@
     "stats": "Statistics",
     "logout": "Log out",
     "mainNavigation": "Main navigation",
-    "skills": "Skills"
+    "skills": "Skills",
+    "openMenu": "Open the menu"
   },
   "language": {
     "label": "Language",
@@ -50,7 +51,9 @@
       "workMode": "Work mode"
     },
     "sortedNewestFirst": "sorted newest first",
-    "sortedOldestFirst": "sorted oldest first"
+    "sortedOldestFirst": "sorted oldest first",
+    "sortNewestFirst": "Newest first",
+    "sortOldestFirst": "Oldest first"
   },
   "form": {
     "newTitle": "New application",
@@ -214,6 +217,8 @@
     "deleteMessage": "The skill “{{name}}” will be deleted.",
     "confirmDelete": "Delete",
     "subtitle_one": "How often each skill appears in your saved job posting.",
-    "subtitle_other": "How often each skill appears in your {{count}} saved job postings."
+    "subtitle_other": "How often each skill appears in your {{count}} saved job postings.",
+    "postingCountShort_one": "{{formatted}} posting",
+    "postingCountShort_other": "{{formatted}} postings"
   }
 }

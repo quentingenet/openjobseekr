@@ -4,6 +4,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { SkillStats } from '../../api/types';
 import { mockApi, problem } from '../../test/api-mock';
 import { renderWithProviders } from '../../test/render';
+import { mockMobileViewport } from '../../test/viewport';
 import { SkillsPage } from './SkillsPage';
 
 const stats: SkillStats = {
@@ -123,5 +124,27 @@ describe('SkillsPage', () => {
       pattern: '\\bTypeScript\\b',
       level: 5,
     });
+  });
+
+  it('shows the skills as cards on a phone, edited in a full-screen dialog', async () => {
+    mockMobileViewport();
+    mockApi({ 'GET /api/skills/stats': { body: stats } });
+    await renderWithProviders(<SkillsPage />, { path: '/skills', language: 'en' });
+
+    const list = await screen.findByRole('list', { name: 'Skills sorted by frequency' });
+    const cards = within(list).getAllByRole('listitem');
+    expect(cards).toHaveLength(2);
+    const first = within(cards[0] as HTMLElement);
+    expect(first.getByText('TypeScript')).toBeInTheDocument();
+    expect(first.getByText('\\bTypeScript\\b')).toBeInTheDocument();
+    expect(first.getByText('6 postings')).toBeInTheDocument();
+    expect(first.getByText('100%')).toBeInTheDocument();
+    expect(within(cards[1] as HTMLElement).getByText('0 postings')).toBeInTheDocument();
+    expect(screen.queryByRole('table')).not.toBeInTheDocument();
+
+    await userEvent.click(first.getByRole('button', { name: 'Edit TypeScript' }));
+
+    const dialog = screen.getByRole('dialog', { name: 'Edit skill' });
+    expect(dialog).toHaveClass('MuiDialog-paperFullScreen');
   });
 });

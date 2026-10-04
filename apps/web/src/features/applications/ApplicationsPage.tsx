@@ -26,7 +26,11 @@ export function ApplicationsPage() {
 
   return (
     <Stack spacing={3}>
-      <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
+      <Stack
+        direction={{ xs: 'column', sm: 'row' }}
+        spacing={2}
+        sx={{ justifyContent: 'space-between', alignItems: { xs: 'stretch', sm: 'center' } }}
+      >
         <PageTitle>{t('applications.title')}</PageTitle>
         <Button
           component={RouterLink}
