@@ -1,5 +1,5 @@
 import type { INestApplication } from '@nestjs/common';
-import { TEXT_LIMITS } from '@openjobseekr/domain';
+import { CREDENTIAL_LIMITS, SKILL_LEVEL, SKILL_LIMITS, TEXT_LIMITS } from '@openjobseekr/domain';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import type { PrismaService } from '../src/prisma/prisma.service.js';
 import { createTestApp, resetDatabase } from './helpers/create-app.js';
@@ -51,11 +51,44 @@ describe('Database constraints (e2e)', () => {
     );
   });
 
-  it('rejects an email longer than 254 characters', async () => {
+  it('rejects an email longer than the shared limit', async () => {
+    const domain = '@x.io';
+    const local = 'a'.repeat(CREDENTIAL_LIMITS.emailMaxLength - domain.length + 1);
     await expect(
-      prisma.user.create({
-        data: { email: `${'a'.repeat(250)}@x.io`, passwordHash: 'not-used' },
-      }),
+      prisma.user.create({ data: { email: `${local}${domain}`, passwordHash: 'not-used' } }),
     ).rejects.toThrow('User_email_length');
+  });
+
+  // Reads the constraints the database really has (a migration could drop or change one),
+  // and compares them with the shared limits.
+  it('has exactly the CHECK constraints of the shared limits', async () => {
+    const rows = await prisma.$queryRaw<{ name: string; definition: string }[]>`
+      SELECT conname AS name, pg_get_constraintdef(oid) AS definition
+      FROM pg_constraint
+      WHERE contype = 'c' AND connamespace = 'public'::regnamespace`;
+    // PostgreSQL rewrites `BETWEEN a AND b` as `>= a AND <= b`.
+    const bounds = Object.fromEntries(
+      rows.map(({ name, definition }) => [
+        name,
+        {
+          min: Number(/>= (\d+)/.exec(definition)?.[1] ?? 0),
+          max: Number(/<= (\d+)/.exec(definition)?.[1]),
+        },
+      ]),
+    );
+    const text = (max: number, min = 0) => ({ min, max });
+
+    expect(bounds).toEqual({
+      ...Object.fromEntries(
+        Object.entries(TEXT_LIMITS).map(([field, max]) => [
+          `Application_${field}_length`,
+          text(max, field === 'company' || field === 'jobTitle' ? 1 : 0),
+        ]),
+      ),
+      Skill_name_length: text(SKILL_LIMITS.name, 1),
+      Skill_pattern_length: text(SKILL_LIMITS.pattern, 1),
+      Skill_level_range: text(SKILL_LEVEL.max, SKILL_LEVEL.min),
+      User_email_length: text(CREDENTIAL_LIMITS.emailMaxLength, 3),
+    });
   });
 });
