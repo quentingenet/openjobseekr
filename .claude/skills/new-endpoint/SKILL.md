@@ -15,10 +15,10 @@ Follow these steps in order. Read `.claude/rules/backend-nestjs.md` and
    see them fail.
 3. **DTO** in `<feature>/dto/`: `class-validator` decorators on every field, `@ApiProperty`
    for Swagger, dates as `YYYY-MM-DD` strings, enums as English codes.
-4. **Error codes**: add any new code to the shared error codes in `common/`, and the matching
-   `errors.<CODE>` key in both web locale files when the web app shows it.
-5. **Service**: Prisma access scoped by `userId`, throws errors with stable codes, no HTTP
-   concerns.
+4. **Error codes**: add any new code to `ErrorCode` and `ERROR_CATALOG` in
+   `common/error-codes.ts`, and the matching `errors.<CODE>` key in every web locale file.
+5. **Service**: Prisma access scoped by `userId`, throws `AppException` with stable codes, no
+   try/catch for Prisma errors (translated globally), no HTTP concerns.
 6. **Controller**: route, guard (`JwtAuthGuard` unless public), current-user decorator, DTO
    validation, calls the service only. Swagger decorators: `@ApiTags`, `@ApiBearerAuth`,
    `@ApiOperation`, `@ApiOkResponse`/`@ApiCreatedResponse` and the error responses.

@@ -13,9 +13,9 @@ files, and you only run read-only commands (`git diff`, `git status`, `git log`,
 3. Check each change against the rules, in particular:
    - every changed behavior has a test with explicit expected values;
    - no `.skip`, `.only`, snapshot for business logic, or unexplained `eslint-disable`;
-   - no hardcoded user-facing text in the web app; `en` and `fr` keys in sync;
+   - no hardcoded user-facing text in the web app; `en`, `fr` and `es` keys in sync;
    - no business logic in controllers, Prisma only in services, queries scoped by user;
-   - error format `{ code, message, details? }`, `jobPostingText` absent from lists;
+   - RFC 9457 problem details with a stable `code`, `jobPostingText` absent from lists;
    - code, comments and identifiers in English.
 4. Run `npm run lint` and report whether it passes.
 

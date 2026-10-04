@@ -127,7 +127,8 @@ apps/
 ```
 
 - The API is language-neutral: it returns codes (`SENT`, `APPLICATION_NOT_FOUND`) and the web
-  app translates them. Errors always have the shape `{ code, message, details? }`.
+  app translates them. Errors are RFC 9457 problem details (`application/problem+json`) with a
+  stable `code`.
 - The follow-up date is computed, never stored.
 - Skill patterns use RE2, the regular expression engine of Google Sheets: matching runs in
   linear time, so no pattern can freeze the API.

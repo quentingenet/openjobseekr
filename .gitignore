@@ -28,6 +28,11 @@ node_modules/
 dist/
 coverage/
 
+# VS Code: only the shared project settings are tracked
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
 # Claude Code local files
 CLAUDE.local.md
 .claude/settings.local.json

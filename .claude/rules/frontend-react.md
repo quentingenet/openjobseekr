@@ -6,9 +6,10 @@ paths:
 # Frontend (React)
 
 - No hardcoded user-facing text: every label, message, title, placeholder and `aria-label`
-  goes through `t('...')`, with the key added to both `locales/en` and `locales/fr`.
+  goes through `t('...')`, with the key added to every locale (`locales/en`, `locales/fr`,
+  `locales/es`).
 - Enums and API error codes are translated by key (`status.SENT`, `errors.<CODE>`).
-- Server state lives in TanStack Query (queries and mutations in `api/` hooks); no
+- Server state lives in TanStack Query (queries and mutations in `api/queries/<domain>.ts`); no
   `useEffect` + `fetch` and no copy of server data in local state.
 - Use Material UI components and the theme (`theme.ts`) instead of custom CSS or raw HTML
   controls.

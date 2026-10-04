@@ -68,8 +68,8 @@ openjobseekr/
 - All code, identifiers, comments, commit messages, documentation and logs are in English.
 - The UI is translated with i18next (English, French, Spanish). Never hardcode user-facing
   text: use translation keys, with `en`, `fr` and `es` files kept in sync.
-- The API is language-neutral: enums are English codes, errors carry a stable `code`
-  (e.g. `APPLICATION_NOT_FOUND`) plus an English developer message. The web app translates codes.
+- The API is language-neutral: enums are English codes, errors are RFC 9457 problem details
+  with a stable `code` (e.g. `APPLICATION_NOT_FOUND`). The web app translates codes.
 
 ## Conventions
 
