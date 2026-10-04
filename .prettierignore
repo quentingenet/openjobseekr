@@ -4,3 +4,4 @@ build
 coverage
 package-lock.json
 LICENSE
+apps/api/src/generated

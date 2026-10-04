@@ -1,10 +1,19 @@
 // Data models and enums for OpenJobSeekR.
-// The `generator` and `datasource` blocks are not included: generate them with
-// `npx prisma init` so they match the Prisma version you install.
-//
 // Every Application field maps to a column of the original spreadsheet
 // (sheet "Feuille1"). The French column name is kept in a comment for reference.
 // Enum values are language-neutral English codes; the UI translates them with i18n.
+
+generator client {
+  provider               = "prisma-client"
+  output                 = "../src/generated/prisma"
+  moduleFormat           = "esm"
+  importFileExtension    = "js"
+}
+
+// The connection URL is set in prisma.config.ts (Prisma 7).
+datasource db {
+  provider = "postgresql"
+}
 
 enum Channel {
   CAREER_SITE

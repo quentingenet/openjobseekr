@@ -35,6 +35,7 @@ CLAUDE.local.md
 
 # Sensitive files: secrets, personal data, database dumps
 .env.*
+.env
 !.env.example
 *.pem
 *.key
@@ -47,3 +48,6 @@ CLAUDE.local.md
 !**/fixtures/**/*.csv
 *.dump
 *.backup
+
+# Generated Prisma client
+apps/api/src/generated/
