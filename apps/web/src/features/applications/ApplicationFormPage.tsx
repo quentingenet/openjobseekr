@@ -6,7 +6,7 @@ import {
   useCreateApplication,
   useUpdateApplication,
 } from '../../api/queries/applications';
-import { useSettings } from '../../api/queries/stats';
+import { useSettings } from '../../api/queries/settings';
 import { PageTitle } from '../../components/PageTitle';
 import { ErrorState, LoadingState } from '../../components/PageStates';
 import {
