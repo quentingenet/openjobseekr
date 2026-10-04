@@ -1,0 +1,93 @@
+// Data models and enums for OpenJobSeekR.
+// The `generator` and `datasource` blocks are not included: generate them with
+// `npx prisma init` so they match the Prisma version you install.
+//
+// Every Application field maps to a column of the original spreadsheet
+// (sheet "Feuille1"). The French column name is kept in a comment for reference.
+// Enum values are language-neutral English codes; the UI translates them with i18n.
+
+enum Channel {
+  CAREER_SITE
+  LINKEDIN
+  WELCOME_TO_THE_JUNGLE
+  HELLOWORK
+  APEC
+  RECRUITMENT_AGENCY
+  UNSOLICITED
+  REFERRAL
+  OTHER
+}
+
+enum Status {
+  SENT
+  RESPONSE_RECEIVED
+  HR_INTERVIEW
+  TECHNICAL_INTERVIEW
+  OFFER
+  REJECTED
+  NO_RESPONSE
+}
+
+enum WorkMode {
+  ONSITE
+  HYBRID
+  FULL_REMOTE
+  UNSPECIFIED
+}
+
+// Only addition compared to the spreadsheet: users, needed for JWT authentication.
+model User {
+  id           String        @id @default(uuid())
+  email        String        @unique
+  passwordHash String
+  createdAt    DateTime      @default(now())
+  applications Application[]
+  skills       Skill[]
+}
+
+// Spreadsheet tab "Feuille1"
+model Application {
+  id                 String    @id @default(uuid())
+  userId             String
+  user               User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  sentAt             DateTime  @db.Date // "DATE ENVOI CANDIDATURE"
+  company            String             // "ENTREPRISE"
+  jobTitle           String             // "INTITULÉ OFFRE"
+  location           String?            // "LOCALISATION"
+  response           String?            // "RÉPONSE" (free text or link)
+  resources          String?            // "RESSOURCES" (free text or link)
+  channel            Channel?           // "CANAL"
+  status             Status    @default(SENT) // "STATUT"
+  contact            String?            // "CONTACT (NOM / EMAIL)"
+  // "DATE DE RELANCE" is not stored. It is computed as sentAt + follow-up delay
+  // (7 days by default) while the status is SENT, exactly like in the spreadsheet.
+  workMode           WorkMode?          // "REMOTE / HYBRIDE"
+  remoteRhythm       String?            // "RYTHME TÉLÉTRAVAIL"
+  salaryRange        String?            // "FOURCHETTE SALAIRE"
+  cvVersion          String?            // "VERSION CV / LETTRE"
+  stack              String?            // "STACK / MOTS-CLÉS"
+  recruitmentProcess String?   @db.Text // "PROCESS DE RECRUTEMENT"
+  notes              String?   @db.Text // "NOTES"
+  jobPostingText     String?   @db.Text // "TEXTE DE L'ANNONCE" (excluded from lists, returned in detail)
+
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  @@index([userId, status])
+  @@index([userId, channel])
+  @@index([userId, sentAt])
+}
+
+// Spreadsheet tab "Compétences" (v2): the pattern is a case-insensitive regular
+// expression, matched against jobPostingText.
+model Skill {
+  id      String @id @default(uuid())
+  userId  String
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name    String // "COMPÉTENCE"
+  pattern String // "TERME RECHERCHÉ"
+  level   Int?   // "NIVEAU ACTUEL" (0-5), optional
+
+  @@unique([userId, name])
+}

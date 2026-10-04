@@ -22,3 +22,28 @@ lerna-debug.log*
 # temp directory
 .temp
 .tmp
+
+# Dependencies and build output in workspaces
+node_modules/
+dist/
+coverage/
+
+# Claude Code local files
+CLAUDE.local.md
+.claude/settings.local.json
+.claude/worktrees/
+
+# Sensitive files: secrets, personal data, database dumps
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+# Spreadsheet exports contain real application data (test fixtures stay tracked)
+*.xlsx
+*.xls
+*.ods
+*.csv
+!**/fixtures/**/*.csv
+*.dump
+*.backup
