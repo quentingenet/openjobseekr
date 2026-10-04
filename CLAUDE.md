@@ -69,8 +69,10 @@ openjobseekr/
 - `npm run dev:api` / `npm run dev:web`: run the API (port 3000, `/docs`) and the web app
   (port 5173, proxies `/api` to the API)
 - `npm run test`: unit tests; `npm run test:e2e`: API tests against `DATABASE_URL_TEST`
-- `npm run check`: lint + typecheck + tests; run it before committing (the pre-commit hook only
-  runs lint-staged, the pre-push hook runs `check`)
+- `npm run test:hooks`: tests the Bash hook that blocks destructive commands
+  (`.claude/hooks/validate-bash.sh`, a denylist: never complete, commits and pushes also ask)
+- `npm run check`: lint + typecheck + tests + hook tests; run it before committing (the
+  pre-commit hook only runs lint-staged, the pre-push hook runs `check`)
 - `npm run db:migrate --workspace apps/api`: create/apply migrations; then
   `npx prisma generate` in `apps/api` (Prisma 7 no longer generates after migrating)
 - `npm run api:types`: regenerate the web API types after any API DTO change (unit tests

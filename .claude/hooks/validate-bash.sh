@@ -17,8 +17,8 @@ fi
 # commands, then split into simple commands on shell separators.
 normalized=$(tr -d "'\"\\\\" <<<"$command")
 
-if grep -Eiq 'drop[[:space:]]+database' <<<"$normalized"; then
-  block "DROP DATABASE"
+if grep -Eiq '(drop[[:space:]]+(database|schema|table)|truncate[[:space:]])' <<<"$normalized"; then
+  block "SQL that drops or empties data (DROP DATABASE/SCHEMA/TABLE, TRUNCATE)"
 fi
 
 while IFS= read -r segment; do
@@ -57,9 +57,37 @@ while IFS= read -r segment; do
   if has git && has push; then
     for word in "${words[@]}"; do
       case "$word" in
-        --force | --force-with-lease | --force-with-lease=* | -f | -*f) block "force push (git push --force)" ;;
+        --force | --force-with-lease | --force-with-lease=* | -f | -*f | +*)
+          block "force push (git push --force or a +refspec)"
+          ;;
+        --mirror) block "git push --mirror" ;;
       esac
     done
+  fi
+
+  if has git && has reset && has --hard; then
+    block "git reset --hard"
+  fi
+
+  # git clean only deletes with a force flag; -x also deletes ignored files such as .env.
+  if has git && has clean; then
+    for word in "${words[@]}"; do
+      if [[ "$word" == --force || ("$word" == -[!-]* && "$word" == *f*) ]]; then
+        block "git clean with --force"
+      fi
+    done
+  fi
+
+  if has prisma && { { has migrate && has reset; } || has --force-reset || has --accept-data-loss; }; then
+    block "Prisma command that resets the database"
+  fi
+
+  if has find && has -delete; then
+    block "find -delete"
+  fi
+
+  if has docker && has prune && has --volumes; then
+    block "Docker prune with volumes"
   fi
 
   if { has docker || has docker-compose; } && has volume && { has rm || has remove || has prune; }; then
