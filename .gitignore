@@ -45,7 +45,7 @@ CLAUDE.local.md
 *.pem
 *.key
 *.p12
-# Spreadsheet exports contain real application data (test fixtures stay tracked)
+# Spreadsheet exports may contain personal data (test fixtures stay tracked)
 *.xlsx
 *.xls
 *.ods

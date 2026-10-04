@@ -1,7 +1,7 @@
 # OpenJobSeekR
 
-Local-first job application tracker (technical name: `openjobseekr`). It mirrors the columns of the
-author's Google Sheet; the data model lives in `apps/api/prisma/schema.prisma`.
+Local-first job application tracker (technical name: `openjobseekr`). It mirrors the columns of a
+job search spreadsheet (Google Sheets); the data model lives in `apps/api/prisma/schema.prisma`.
 
 ## Stack
 

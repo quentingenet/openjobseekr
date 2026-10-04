@@ -1,29 +1,43 @@
 # OpenJobSeekR
 
+![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
+![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
+![Vite](https://img.shields.io/badge/vite-%23646CFF.svg?style=for-the-badge&logo=vite&logoColor=white)
+![MUI](https://img.shields.io/badge/MUI-%23007FFF.svg?style=for-the-badge&logo=mui&logoColor=white)
+![Node.js 24](https://img.shields.io/badge/node.js_24-%23339933.svg?style=for-the-badge&logo=nodedotjs&logoColor=white)
+![NestJS](https://img.shields.io/badge/nestjs-%23E0234E.svg?style=for-the-badge&logo=nestjs&logoColor=white)
+![Prisma](https://img.shields.io/badge/Prisma-2D3748?style=for-the-badge&logo=prisma&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
+![Vitest](https://img.shields.io/badge/vitest-%236E9F18.svg?style=for-the-badge&logo=vitest&logoColor=white)
+![Built with Claude Code](https://img.shields.io/badge/built_with-Claude_Code-%23D97757.svg?style=for-the-badge&logo=claude&logoColor=white)
+![License: GPL-3.0](https://img.shields.io/badge/license-GPL--3.0-blue.svg?style=for-the-badge)
+
 **An open, community-driven app for anyone who wants to keep track of their job search.**
 
 Looking for a job means juggling dozens of applications, follow-ups, interviews and job
 postings. OpenJobSeekR keeps all of it in one place, reminds you when to follow up, and shows
 which skills employers ask for most often, so you know what to learn next.
 
-It is free software (GPL-3.0), runs entirely on your own machine, and your data never leaves
-it. It was born from a real job search spreadsheet and is meant to grow with the people who
-use it: ideas, translations, bug reports and pull requests are all welcome.
+> Status: actively developed and usable day to day.
 
-**Local-first**: it runs on `127.0.0.1`. Accounts, a standard error format and rate-limited
-login prepare a future hosted version, which would still need configurable hosts, proxy
-settings and a shared rate-limit store.
+## Why I built it
 
-> Status: work in progress, usable day to day.
+Many people track their job search in a spreadsheet. OpenJobSeekR started from one, and turned
+its recurring pain points into features: a computed follow-up date, filters to see what needs
+attention, response statistics, and an analysis of saved job postings showing which skills
+companies ask for most often.
+
+It is local-first on purpose: a job search holds personal data (contacts, salaries, notes), so
+both servers listen on `127.0.0.1` and the data never leaves your machine. Accounts, standard
+errors and rate-limited login prepare a hosted version, which would still need configurable
+hosts, proxy settings and a shared rate-limit store. Free software (GPL-3.0), open to ideas.
 
 ## Built with Claude Code
 
-I co-built OpenJobSeekR with [Claude Code](https://claude.com/claude-code), which I carefully
-configured my own way to work efficiently and safely on this codebase. The goal stays simple:
-a free tool that helps people looking for a job stay organized and focused.
-
-I set the direction, the architecture and the rules, and decide what goes in; Claude writes
-much of the code within that frame. The configuration is part of the repository:
+I co-built OpenJobSeekR with [Claude Code](https://claude.com/claude-code), configured my own
+way to work efficiently and safely on this codebase. Claude Code implements a significant part
+of the code within these constraints; I remain responsible for the architecture, the product
+decisions, the review and what gets merged. The configuration is part of the repository:
 
 - [`CLAUDE.md`](CLAUDE.md) and [`.claude/rules/`](.claude/rules): the stack, the conventions
   and the definition of done (tests first for business logic, no skipped checks, every
@@ -32,10 +46,6 @@ much of the code within that frame. The configuration is part of the repository:
   tested by `npm run test:hooks`, and a formatter run after every edit.
 - [`.claude/agents/`](.claude/agents): read-only reviewers for code and security.
 - [`.claude/skills/`](.claude/skills): a step-by-step checklist to add an API endpoint.
-
-Generated code goes through the same safeguards as hand-written code: type-aware lint, unit
-and end-to-end tests, and tests that keep the database, the API contract, the shared rules
-and the web app in sync.
 
 ## Features
 
@@ -161,15 +171,18 @@ apps/
         └── locales/        en, fr, es
 ```
 
-- The API is language-neutral: it returns codes (`SENT`, `APPLICATION_NOT_FOUND`) and the web
-  app translates them. Errors are RFC 9457 problem details (`application/problem+json`) with a
-  stable `code`.
-- The follow-up date is computed, never stored.
-- Skill patterns use RE2, the regular expression engine of Google Sheets: matching runs in
-  linear time, so no pattern can freeze the API.
-- Text lengths are validated by the web app, the API and database constraints, with the
-  limits defined once in `packages/domain`. Tests fail if the database or the web app's API
-  types drift from them.
+### Engineering decisions
+
+- **API contract generated from the code**: the NestJS DTOs produce the OpenAPI document, the
+  web app's API types are generated from it, and tests fail when a copy is stale.
+- **Shared domain rules**: the follow-up date, the channel precision, enums and limits are
+  defined once in `packages/domain` and used by both the API and the web app.
+- **Defense in depth**: lengths are checked by the forms, the API and database constraints;
+  tests compare the API documentation and the real constraints with the shared limits.
+- **Language-neutral API**: stable codes (`SENT`, `APPLICATION_NOT_FOUND`) and RFC 9457
+  errors, translated by the web app. The follow-up date is computed, never stored.
+- **Safe patterns**: skill patterns use RE2 (linear time, as in Google Sheets): none can hang.
+- **AI-assisted, test-guarded**: generated code passes the same lint and tests as my own code.
 
 ## Contributing
 
