@@ -23,6 +23,7 @@ const record: Application = {
   response: null,
   resources: null,
   channel: 'LINKEDIN',
+  channelDetail: null,
   status: 'SENT',
   contact: null,
   workMode: 'HYBRID',
@@ -57,6 +58,7 @@ describe('toApplicationSummary', () => {
       response: null,
       resources: null,
       channel: 'LINKEDIN',
+      channelDetail: null,
       status: 'SENT',
       contact: null,
       followUpDate: '2026-10-08',
@@ -101,8 +103,19 @@ describe('toApplicationCreateData', () => {
       sentAt: new Date('2026-10-01T00:00:00.000Z'),
       company: 'Acme',
       jobTitle: 'Dev',
+      channelDetail: null,
       userId: 'user-1',
     });
+  });
+
+  it('keeps the channel precision only for the OTHER channel', () => {
+    const base = { sentAt: '2026-10-01', company: 'Acme', jobTitle: 'Dev' };
+
+    expect(
+      toApplicationCreateData({ ...base, channel: 'OTHER', channelDetail: 'Indeed' }, 'u')
+        .channelDetail,
+    ).toBe('Indeed');
+    expect(toApplicationCreateData({ ...base, channel: 'APEC' }, 'u').channelDetail).toBeNull();
   });
 });
 
@@ -113,6 +126,18 @@ describe('toApplicationData', () => {
       notes: null,
     });
     expect(toApplicationData({ status: 'REJECTED' })).toEqual({ status: 'REJECTED' });
+  });
+
+  it('clears the channel precision when the channel changes to anything but OTHER', () => {
+    expect(toApplicationData({ channel: 'LINKEDIN' })).toEqual({
+      channel: 'LINKEDIN',
+      channelDetail: null,
+    });
+    expect(toApplicationData({ channel: null })).toEqual({ channel: null, channelDetail: null });
+    expect(toApplicationData({ channel: 'OTHER', channelDetail: 'Malt' })).toEqual({
+      channel: 'OTHER',
+      channelDetail: 'Malt',
+    });
   });
 });
 

@@ -45,7 +45,8 @@
     "@prisma/engines@7.10.0": true,
     "@swc/core@1.16.13": true,
     "bcrypt@6.0.0": true,
-    "@scarf/scarf": false
+    "@scarf/scarf": false,
+    "re2@1.27.0": true
   },
   "overrides": {
     "openapi-typescript": {

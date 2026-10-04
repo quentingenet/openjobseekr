@@ -32,6 +32,7 @@ export const applicationFormSchema = z.object({
   response: optionalText(TEXT_LIMITS.response),
   resources: optionalText(TEXT_LIMITS.resources),
   channel: z.union([z.enum(APPLICATION_CHANNELS), z.literal('')]),
+  channelDetail: optionalText(TEXT_LIMITS.channelDetail),
   status: z.enum(APPLICATION_STATUSES),
   contact: optionalText(TEXT_LIMITS.contact),
   workMode: z.union([z.enum(WORK_MODES), z.literal('')]),
@@ -53,6 +54,7 @@ const OPTIONAL_FIELDS = [
   'response',
   'resources',
   'channel',
+  'channelDetail',
   'contact',
   'workMode',
   'remoteRhythm',
@@ -73,6 +75,7 @@ export function emptyApplicationForm(today: string): ApplicationFormValues {
     response: '',
     resources: '',
     channel: '',
+    channelDetail: '',
     status: 'SENT',
     contact: '',
     workMode: '',
@@ -104,6 +107,8 @@ export function toCreateInput(values: ParsedForm): CreateApplicationInput {
   for (const field of OPTIONAL_FIELDS) {
     if (input[field] === '') input[field] = null;
   }
+  // The precision only belongs to the OTHER channel (the API rejects it otherwise).
+  if (input.channel !== 'OTHER') input.channelDetail = null;
   return input as unknown as CreateApplicationInput;
 }
 
@@ -116,6 +121,8 @@ export function toUpdateInput(
   const changed = Object.keys(dirtyFields).filter(
     (field) => dirtyFields[field as ApplicationFormField],
   );
+  // The API needs the channel alongside its precision.
+  if (changed.includes('channelDetail') && !changed.includes('channel')) changed.push('channel');
   return Object.fromEntries(changed.map((field) => [field, full[field]])) as UpdateApplicationInput;
 }
 

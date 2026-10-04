@@ -26,6 +26,11 @@ describe('LanguageSwitcher', () => {
     expect(document.documentElement.lang).toBe('fr');
     expect(localStorage.getItem('openjobseekr.language')).toBe('fr');
 
+    await userEvent.click(screen.getByRole('button', { name: 'Español' }));
+
+    expect(screen.getByRole('heading')).toHaveTextContent('Candidaturas');
+    expect(document.documentElement.lang).toBe('es');
+
     await userEvent.click(screen.getByRole('button', { name: 'English' }));
 
     expect(screen.getByRole('heading')).toHaveTextContent('Applications');

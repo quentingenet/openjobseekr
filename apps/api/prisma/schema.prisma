@@ -67,6 +67,7 @@ model Application {
   response           String?            // "RÉPONSE" (free text or link)
   resources          String?            // "RESSOURCES" (free text or link)
   channel            Channel?           // "CANAL"
+  channelDetail      String?            // Not in the spreadsheet: precision when channel is OTHER (e.g. "Indeed")
   status             Status    @default(SENT) // "STATUT"
   contact            String?            // "CONTACT (NOM / EMAIL)"
   // "DATE DE RELANCE" is not stored. It is computed as sentAt + follow-up delay

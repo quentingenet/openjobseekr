@@ -16,6 +16,7 @@ import { useStatsOverview } from '../../api/hooks';
 import { APPLICATION_CHANNELS, APPLICATION_STATUSES } from '../../api/types';
 import { ErrorState, LoadingState } from '../../components/PageStates';
 import { formatNumber, formatPercent } from '../../lib/format';
+import { PageTitle } from '../../components/PageTitle';
 
 function KeyFigure({ label, value }: { label: string; value: string }) {
   return (
@@ -104,9 +105,7 @@ export function StatsPage() {
 
   return (
     <Stack spacing={3}>
-      <Typography variant="h4" component="h1">
-        {t('stats.title')}
-      </Typography>
+      <PageTitle>{t('stats.title')}</PageTitle>
       {data.total === 0 && <Typography color="text.secondary">{t('stats.empty')}</Typography>}
       <Grid container spacing={3}>
         <Grid size={{ xs: 12, sm: 6 }}>

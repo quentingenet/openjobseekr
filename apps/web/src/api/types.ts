@@ -11,6 +11,11 @@ export type AuthResponse = Schemas['AuthResponseDto'];
 export type Credentials = Schemas['RegisterDto'];
 export type StatsOverview = Schemas['StatsOverviewDto'];
 export type Settings = Schemas['SettingsDto'];
+export type Skill = Schemas['SkillDto'];
+export type SkillStats = Schemas['SkillStatsDto'];
+export type SkillStat = Schemas['SkillStatDto'];
+export type CreateSkillInput = Schemas['CreateSkillDto'];
+export type UpdateSkillInput = Schemas['UpdateSkillDto'];
 
 export type ApplicationStatus = Application['status'];
 export type ApplicationChannel = NonNullable<Application['channel']>;
@@ -51,6 +56,8 @@ export interface ListApplicationsQuery {
   channel?: ApplicationChannel;
   overdue?: boolean;
   q?: string;
+  /** By sent date; the API default is 'desc' (newest first). */
+  order: 'asc' | 'desc';
   limit: number;
   offset: number;
 }

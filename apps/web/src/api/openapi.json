@@ -392,6 +392,17 @@
             }
           },
           {
+            "name": "order",
+            "required": false,
+            "in": "query",
+            "description": "Order by sent date (desc: newest first)",
+            "schema": {
+              "default": "desc",
+              "type": "string",
+              "enum": ["asc", "desc"]
+            }
+          },
+          {
             "name": "limit",
             "required": false,
             "in": "query",
@@ -618,6 +629,194 @@
         "summary": "Settings used by the web app",
         "tags": ["settings"]
       }
+    },
+    "/skills": {
+      "get": {
+        "operationId": "SkillsController_list",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SkillDto"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UNAUTHORIZED"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List skills, by name",
+        "tags": ["skills"]
+      },
+      "post": {
+        "operationId": "SkillsController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSkillDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SkillDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "VALIDATION_FAILED"
+          },
+          "401": {
+            "description": "UNAUTHORIZED"
+          },
+          "409": {
+            "description": "SKILL_NAME_ALREADY_USED"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a skill",
+        "tags": ["skills"]
+      }
+    },
+    "/skills/stats": {
+      "get": {
+        "operationId": "SkillsController_stats",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SkillStatsDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UNAUTHORIZED"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "How often each skill appears in the saved job postings",
+        "tags": ["skills"]
+      }
+    },
+    "/skills/{id}": {
+      "patch": {
+        "operationId": "SkillsController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateSkillDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SkillDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "VALIDATION_FAILED"
+          },
+          "401": {
+            "description": "UNAUTHORIZED"
+          },
+          "404": {
+            "description": "SKILL_NOT_FOUND"
+          },
+          "409": {
+            "description": "SKILL_NAME_ALREADY_USED"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update a skill",
+        "tags": ["skills"]
+      },
+      "delete": {
+        "operationId": "SkillsController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          },
+          "401": {
+            "description": "UNAUTHORIZED"
+          },
+          "404": {
+            "description": "SKILL_NOT_FOUND"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Delete a skill",
+        "tags": ["skills"]
+      }
     }
   },
   "info": {
@@ -742,6 +941,12 @@
             ],
             "nullable": true
           },
+          "channelDetail": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 200,
+            "description": "Channel name when channel is OTHER (e.g. \"Indeed\"); requires channel OTHER"
+          },
           "status": {
             "type": "string",
             "enum": [
@@ -847,6 +1052,11 @@
             ],
             "nullable": true
           },
+          "channelDetail": {
+            "type": "string",
+            "nullable": true,
+            "description": "Precision for the OTHER channel"
+          },
           "status": {
             "type": "string",
             "enum": [
@@ -925,6 +1135,7 @@
           "response",
           "resources",
           "channel",
+          "channelDetail",
           "status",
           "contact",
           "followUpDate",
@@ -984,6 +1195,11 @@
               "OTHER"
             ],
             "nullable": true
+          },
+          "channelDetail": {
+            "type": "string",
+            "nullable": true,
+            "description": "Precision for the OTHER channel"
           },
           "status": {
             "type": "string",
@@ -1058,6 +1274,7 @@
           "response",
           "resources",
           "channel",
+          "channelDetail",
           "status",
           "contact",
           "followUpDate",
@@ -1127,6 +1344,12 @@
               "OTHER"
             ],
             "nullable": true
+          },
+          "channelDetail": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 200,
+            "description": "Channel name when channel is OTHER (e.g. \"Indeed\"); requires channel OTHER"
           },
           "contact": {
             "type": "string",
@@ -1248,6 +1471,122 @@
           }
         },
         "required": ["followUpDelayDays"]
+      },
+      "SkillDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "example": "TypeScript"
+          },
+          "pattern": {
+            "type": "string",
+            "example": "\\bTypeScript\\b"
+          },
+          "level": {
+            "type": "number",
+            "nullable": true,
+            "minimum": 0,
+            "maximum": 5
+          }
+        },
+        "required": ["id", "name", "pattern", "level"]
+      },
+      "SkillStatDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "example": "TypeScript"
+          },
+          "pattern": {
+            "type": "string",
+            "example": "\\bTypeScript\\b"
+          },
+          "level": {
+            "type": "number",
+            "nullable": true,
+            "minimum": 0,
+            "maximum": 5
+          },
+          "postingCount": {
+            "type": "number",
+            "description": "Number of job postings whose text matches the pattern"
+          },
+          "frequency": {
+            "type": "number",
+            "nullable": true,
+            "description": "postingCount / postingsAnalyzed; null when no posting text was saved"
+          }
+        },
+        "required": ["id", "name", "pattern", "level", "postingCount", "frequency"]
+      },
+      "SkillStatsDto": {
+        "type": "object",
+        "properties": {
+          "postingsAnalyzed": {
+            "type": "number",
+            "description": "Applications with a job posting text"
+          },
+          "skills": {
+            "description": "Most frequent first, then by name",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SkillStatDto"
+            }
+          }
+        },
+        "required": ["postingsAnalyzed", "skills"]
+      },
+      "CreateSkillDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "TypeScript",
+            "maxLength": 100
+          },
+          "pattern": {
+            "type": "string",
+            "example": "\\bTypeScript\\b",
+            "maxLength": 200,
+            "description": "Regular expression matched case-insensitively against job posting texts"
+          },
+          "level": {
+            "type": "number",
+            "nullable": true,
+            "minimum": 0,
+            "maximum": 5
+          }
+        },
+        "required": ["name", "pattern"]
+      },
+      "UpdateSkillDto": {
+        "type": "object",
+        "properties": {
+          "level": {
+            "type": "number",
+            "nullable": true,
+            "minimum": 0,
+            "maximum": 5
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "pattern": {
+            "type": "string",
+            "maxLength": 200
+          }
+        }
       }
     }
   }

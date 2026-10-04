@@ -20,7 +20,6 @@ import { translateFieldError } from '../../lib/field-error';
 import { type CredentialsForm, credentialsSchema } from './auth.schema';
 import { useAuth } from './AuthContext';
 
-/** Login and registration share the same form; only the endpoint and texts change. */
 export function AuthPage({ mode }: { mode: 'login' | 'register' }) {
   const { t } = useTranslation();
   const { signIn } = useAuth();

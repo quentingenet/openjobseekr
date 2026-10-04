@@ -3,6 +3,7 @@ import { Transform, Type } from 'class-transformer';
 import {
   IsBoolean,
   IsEnum,
+  IsIn,
   IsInt,
   IsOptional,
   IsString,
@@ -15,9 +16,11 @@ import { Channel, Status } from '../../generated/prisma/enums.js';
 
 export const DEFAULT_PAGE_SIZE = 20;
 export const MAX_PAGE_SIZE = 100;
-// Largest value PostgreSQL accepts comfortably for OFFSET in practice (32-bit int).
+// Far beyond any real list; rejects absurd values with a 400 instead of a database error.
 export const MAX_OFFSET = 2_147_483_647;
 export const SEARCH_MAX_LENGTH = 100;
+export const SORT_ORDERS = ['asc', 'desc'] as const;
+export type SortOrder = (typeof SORT_ORDERS)[number];
 
 export class ListApplicationsQueryDto {
   @ApiPropertyOptional({ enum: Status })
@@ -47,6 +50,15 @@ export class ListApplicationsQueryDto {
   @IsString()
   @MaxLength(SEARCH_MAX_LENGTH)
   q?: string;
+
+  @ApiPropertyOptional({
+    enum: SORT_ORDERS,
+    default: 'desc',
+    description: 'Order by sent date (desc: newest first)',
+  })
+  @IsOptional()
+  @IsIn(SORT_ORDERS)
+  order: SortOrder = 'desc';
 
   @ApiPropertyOptional({ default: DEFAULT_PAGE_SIZE, minimum: 1, maximum: MAX_PAGE_SIZE })
   @Type(() => Number)

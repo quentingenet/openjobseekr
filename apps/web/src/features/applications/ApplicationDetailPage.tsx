@@ -1,4 +1,3 @@
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutlined';
 import EditIcon from '@mui/icons-material/Edit';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
@@ -26,11 +25,14 @@ import type { Application, ApplicationStatus } from '../../api/types';
 import { ErrorState, LoadingState } from '../../components/PageStates';
 import { errorMessage } from '../../lib/errors';
 import { formatDate, formatDateTime } from '../../lib/format';
+import { channelLabel } from './channel-label';
 import { StatusChip } from './StatusChip';
+import { PageTitle } from '../../components/PageTitle';
 
 type DetailField = Exclude<
   keyof Application,
   | 'id'
+  | 'channelDetail'
   | 'company'
   | 'jobTitle'
   | 'status'
@@ -85,28 +87,20 @@ export function ApplicationDetailPage() {
     const value = data[field];
     if (value === null || value === '') return '—';
     if (field === 'sentAt') return formatDate(value, language);
-    if (field === 'channel') return t(`channel.${data.channel ?? 'UNSPECIFIED'}`);
+    if (field === 'channel') return channelLabel(t, data.channel, data.channelDetail) ?? '—';
     if (field === 'workMode') return t(`workMode.${data.workMode ?? 'UNSPECIFIED'}`);
     return value;
   };
 
   return (
     <Stack spacing={3}>
-      <Box>
-        <Button component={RouterLink} to="/applications" startIcon={<ArrowBackIcon />}>
-          {t('detail.back')}
-        </Button>
-      </Box>
-
       <Stack
         direction={{ xs: 'column', md: 'row' }}
         spacing={2}
         sx={{ justifyContent: 'space-between' }}
       >
         <Box>
-          <Typography variant="h4" component="h1">
-            {data.company}
-          </Typography>
+          <PageTitle fallback="/applications">{data.company}</PageTitle>
           <Typography variant="h6" component="p" color="text.secondary">
             {data.jobTitle}
           </Typography>
@@ -167,7 +161,6 @@ export function ApplicationDetailPage() {
         <Typography variant="h6" component="h2" gutterBottom>
           {t('form.fields.jobPostingText')}
         </Typography>
-        {/* Rendered as plain text: React escapes it, no HTML is ever injected. */}
         <Typography sx={{ whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' }}>
           {data.jobPostingText || t('detail.noPostingText')}
         </Typography>

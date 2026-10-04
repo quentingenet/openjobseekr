@@ -1,14 +1,18 @@
 import { createTheme, type Theme } from '@mui/material/styles';
-import { enUS as coreEnUS, frFR as coreFrFR } from '@mui/material/locale';
-import { enUS as pickersEnUS, frFR as pickersFrFR } from '@mui/x-date-pickers/locales';
+import { enUS as coreEnUS, esES as coreEsES, frFR as coreFrFR } from '@mui/material/locale';
+import {
+  enUS as pickersEnUS,
+  esES as pickersEsES,
+  frFR as pickersFrFR,
+} from '@mui/x-date-pickers/locales';
 import type { Language } from './i18n';
 
 const localesByLanguage = {
   en: [coreEnUS, pickersEnUS],
   fr: [coreFrFR, pickersFrFR],
+  es: [coreEsES, pickersEsES],
 } as const;
 
-/** Application theme with the MUI and date picker translations of the active language. */
 export function createAppTheme(language: Language): Theme {
   return createTheme(
     {

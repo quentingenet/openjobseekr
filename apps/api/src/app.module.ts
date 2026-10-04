@@ -6,6 +6,7 @@ import { ConfigModule } from './config/config.module.js';
 import { HealthModule } from './health/health.module.js';
 import { PrismaModule } from './prisma/prisma.module.js';
 import { SettingsModule } from './settings/settings.module.js';
+import { SkillsModule } from './skills/skills.module.js';
 import { StatsModule } from './stats/stats.module.js';
 
 @Module({
@@ -18,6 +19,7 @@ import { StatsModule } from './stats/stats.module.js';
     ApplicationsModule,
     StatsModule,
     SettingsModule,
+    SkillsModule,
   ],
 })
 export class AppModule {}

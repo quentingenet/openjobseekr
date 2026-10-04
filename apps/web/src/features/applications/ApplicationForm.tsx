@@ -139,7 +139,7 @@ export function ApplicationForm({
   );
 
   // Live preview of the follow-up date, like the spreadsheet column.
-  const [sentAt, status] = useWatch({ control, name: ['sentAt', 'status'] });
+  const [sentAt, status, channel] = useWatch({ control, name: ['sentAt', 'status', 'channel'] });
   const followUpPreview =
     followUpDelayDays === undefined || !isCalendarDate(sentAt)
       ? null
@@ -229,6 +229,9 @@ export function ApplicationForm({
           <Grid size={{ xs: 12, md: 4 }}>
             {selectField('channel', APPLICATION_CHANNELS, 'channel')}
           </Grid>
+          {channel === 'OTHER' && (
+            <Grid size={{ xs: 12, md: 4 }}>{textField('channelDetail')}</Grid>
+          )}
           <Grid size={{ xs: 12, md: 4 }}>{textField('contact')}</Grid>
           {followUpPreview && (
             <Grid size={12}>

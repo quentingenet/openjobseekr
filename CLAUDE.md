@@ -5,11 +5,14 @@ of the author's Google Sheet; the data model lives in `apps/api/prisma/schema.pr
 
 ## Stack
 
-- Web (`apps/web`): React, TypeScript, Vite, Material UI, TanStack Query, react-i18next
-- API (`apps/api`): NestJS, strict TypeScript, Prisma, PostgreSQL
+- Web (`apps/web`): React, TypeScript, Vite, Material UI (+ MUI X DatePicker with dayjs),
+  TanStack Query, React Router (data router), React Hook Form + Zod, react-i18next
+- API (`apps/api`): NestJS 12 (ESM), strict TypeScript, Prisma 7 (`@prisma/adapter-pg`),
+  PostgreSQL, RE2 (`re2`) for skill patterns
 - Tests: Vitest everywhere (NestJS needs `unplugin-swc`), Supertest for e2e API tests
-- Database: Docker Compose (`db` for development, `db-test` for e2e tests)
-- No GitHub CI, no deployment: everything runs locally
+- Database: the local PostgreSQL service on port 5432 (`openjobseekr` for development,
+  `openjobseekr_test` for e2e tests). `docker-compose.yml` remains an alternative (test on 5433).
+- Node 24 (`.nvmrc`). No GitHub CI, no deployment: everything runs locally on `127.0.0.1`
 
 ## Repository structure
 
@@ -19,7 +22,6 @@ openjobseekr/
 ├── package.json              (npm workspaces + scripts), tsconfig.base.json, eslint.config.js
 ├── .vscode/                  (extensions.json, settings.json)
 ├── .claude/                  (settings.json, rules/, hooks/, agents/, skills/)
-├── docs/decisions.md
 └── apps/
     ├── api/
     │   ├── prisma/           (schema.prisma, migrations/)
@@ -28,52 +30,62 @@ openjobseekr/
     │   │   ├── config/       (environment validation)
     │   │   ├── common/       (exception filter, decorators, error codes)
     │   │   ├── prisma/       (module and service)
-    │   │   ├── auth/, health/, stats/
-    │   │   ├── applications/ (domain/, dto/, controller, service, module)
-    │   │   └── skills/, sheet-import/   (v2)
+    │   │   ├── auth/, health/, stats/, settings/
+    │   │   ├── applications/ (domain/, dto/, mapper, controller, service, module)
+    │   │   ├── skills/       (domain/, dto/, controller, service, module)
+    │   │   ├── generated/    (Prisma client, generated, not versioned)
+    │   │   └── export-openapi.ts (writes the OpenAPI document used by the web app)
     │   ├── test/             (e2e tests and helpers)
     │   └── vitest.config.ts, vitest.config.e2e.ts
     └── web/
         └── src/
             ├── main.tsx, i18n.ts, theme.ts
-            ├── api/          (typed client, generated types, hooks)
+            ├── api/          (typed client, hooks, openapi.json + schema.d.ts generated)
             ├── components/   (shared components)
             ├── features/     (auth/, applications/, stats/, skills/)
-            ├── locales/      (en/translation.json, fr/translation.json)
+            ├── locales/      (en/, fr/, es/ translation.json)
             └── test/
 ```
 
 - One folder per feature, on both the API and the web side.
-- Pure business logic lives in `applications/domain/`: no NestJS or Prisma imports there.
+- Pure business logic lives in `<feature>/domain/` (applications, skills): no NestJS or
+  Prisma imports there.
 - Unit tests sit next to the code (`*.spec.ts`); e2e tests live in `apps/api/test/`.
 - Create folders only when a feature needs them.
 
-## Commands (adjust once the scripts exist)
+## Commands
 
-- `docker compose up -d db db-test`: start PostgreSQL
-- `npm run dev:api` / `npm run dev:web`: run the API and the web app
-- `npm run test`: unit tests; `npm run test:e2e`: API tests against `db-test`
+- `npm run dev:api` / `npm run dev:web`: run the API (port 3000, `/docs`) and the web app
+  (port 5173, proxies `/api` to the API)
+- `npm run test`: unit tests; `npm run test:e2e`: API tests against `DATABASE_URL_TEST`
 - `npm run check`: lint + typecheck + tests, run before every commit
+- `npm run db:migrate --workspace apps/api`: create/apply migrations; then
+  `npx prisma generate` in `apps/api` (Prisma 7 no longer generates after migrating)
+- `npm run api:types`: regenerate the web API types after any API DTO change
 
 ## Language and i18n
 
 - All code, identifiers, comments, commit messages, documentation and logs are in English.
-- The UI is translated with i18next (English and French). Never hardcode user-facing text:
-  use translation keys, with `en` and `fr` files kept in sync.
+- The UI is translated with i18next (English, French, Spanish). Never hardcode user-facing
+  text: use translation keys, with `en`, `fr` and `es` files kept in sync.
 - The API is language-neutral: enums are English codes, errors carry a stable `code`
   (e.g. `APPLICATION_NOT_FOUND`) plus an English developer message. The web app translates codes.
-- Mapping from the spreadsheet's French labels to the English enums lives in one place,
-  the spreadsheet import module.
 
 ## Conventions
 
-- `Application` fields follow the spreadsheet columns: do not rename or reorder them.
+- `Application` fields follow the spreadsheet columns: do not rename or reorder them. The only
+  addition is `channelDetail`, the channel name when `channel` is `OTHER` (cleared otherwise).
 - The follow-up date is not stored: it is computed (sent date + delay) while the status is `SENT`.
 - `jobPostingText` is excluded from list responses and only returned in the detail response.
 - Inputs are validated by DTOs (`class-validator`); no business logic in controllers.
 - Tests: explicit expected values, no snapshots for business logic.
   In e2e tests, use the default import: `import request from 'supertest'`.
-- A Vitest test checks that every translation key exists in both `en` and `fr`.
+- A Vitest test checks that every translation key exists in `en`, `fr` and `es`.
+- Text length limits exist in three places kept in sync by tests: API DTOs (`TEXT_LIMITS`,
+  `SKILL_LIMITS`), database CHECK constraints (migrations) and the web forms.
+- Skill patterns are matched with RE2 (the engine of Google Sheets): linear time, no
+  lookarounds or backreferences.
+- Do not create or commit new Markdown files (docs, notes); existing ones are edited on request.
 
 ## Definition of done
 

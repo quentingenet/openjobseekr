@@ -6,12 +6,14 @@
     "applications": "Candidatures",
     "stats": "Statistiques",
     "logout": "Se déconnecter",
-    "mainNavigation": "Navigation principale"
+    "mainNavigation": "Navigation principale",
+    "skills": "Compétences"
   },
   "language": {
     "label": "Langue",
     "en": "English",
-    "fr": "Français"
+    "fr": "Français",
+    "es": "Español"
   },
   "auth": {
     "loginTitle": "Connexion",
@@ -46,7 +48,9 @@
       "status": "Statut",
       "followUp": "Relance",
       "workMode": "Mode de travail"
-    }
+    },
+    "sortedNewestFirst": "triées de la plus récente à la plus ancienne",
+    "sortedOldestFirst": "triées de la plus ancienne à la plus récente"
   },
   "form": {
     "newTitle": "Nouvelle candidature",
@@ -66,6 +70,7 @@
       "response": "Réponse",
       "resources": "Ressources",
       "channel": "Canal",
+      "channelDetail": "Quel canal ?",
       "status": "Statut",
       "contact": "Contact (nom / email)",
       "workMode": "Mode de travail",
@@ -86,10 +91,10 @@
     "unsavedTitle": "Quitter sans enregistrer ?",
     "unsavedMessage": "Vos modifications seront perdues.",
     "stay": "Rester",
-    "leave": "Quitter"
+    "leave": "Quitter",
+    "channelOther": "Autre ({{detail}})"
   },
   "detail": {
-    "back": "Retour à la liste",
     "edit": "Modifier",
     "delete": "Supprimer",
     "deleteTitle": "Supprimer cette candidature ?",
@@ -148,7 +153,9 @@
     "passwordTooShort": "8 caractères minimum",
     "passwordTooLong": "Ce mot de passe est trop long",
     "date": "Saisissez une date valide",
-    "invalid": "Valeur invalide"
+    "invalid": "Valeur invalide",
+    "regex": "Ce n'est pas une expression régulière valide",
+    "level": "Choisissez un niveau entre 0 et 5"
   },
   "errors": {
     "VALIDATION_FAILED": "Certains champs sont invalides.",
@@ -164,12 +171,49 @@
     "SERVICE_UNAVAILABLE": "Le service est momentanément indisponible.",
     "INTERNAL_ERROR": "Une erreur est survenue sur le serveur.",
     "NETWORK_ERROR": "Le serveur est injoignable. L'API est-elle lancée ?",
-    "UNKNOWN": "Une erreur inattendue est survenue."
+    "UNKNOWN": "Une erreur inattendue est survenue.",
+    "SKILL_NOT_FOUND": "Cette compétence n'existe pas ou a été supprimée.",
+    "SKILL_NAME_ALREADY_USED": "Une compétence porte déjà ce nom."
   },
   "common": {
     "loading": "Chargement…",
     "retry": "Réessayer",
     "pageNotFound": "Page introuvable",
-    "goHome": "Aller à mes candidatures"
+    "goHome": "Aller à mes candidatures",
+    "back": "Retour"
+  },
+  "skills": {
+    "title": "Compétences",
+    "subtitleNone": "Enregistrez le texte des annonces dans vos candidatures pour voir la fréquence de chaque compétence.",
+    "add": "Ajouter une compétence",
+    "empty": "Aucune compétence pour l'instant. Ajoutez les technologies à suivre.",
+    "tableLabel": "Compétences triées par fréquence",
+    "columns": {
+      "name": "Compétence",
+      "pattern": "Terme recherché",
+      "postingCount": "Annonces",
+      "frequency": "Fréquence",
+      "level": "Niveau actuel",
+      "actions": "Actions"
+    },
+    "form": {
+      "newTitle": "Nouvelle compétence",
+      "editTitle": "Modifier la compétence",
+      "name": "Compétence",
+      "pattern": "Terme recherché (expression régulière)",
+      "patternHelp": "Sans tenir compte de la casse. Utilisez \\b pour un mot entier : \\bJava\\b ne trouve pas JavaScript.",
+      "level": "Niveau actuel (0–5)",
+      "noLevel": "Non évalué",
+      "save": "Enregistrer",
+      "cancel": "Annuler"
+    },
+    "edit": "Modifier {{name}}",
+    "delete": "Supprimer {{name}}",
+    "deleteTitle": "Supprimer cette compétence ?",
+    "deleteMessage": "La compétence « {{name}} » sera supprimée.",
+    "confirmDelete": "Supprimer",
+    "cancel": "Annuler",
+    "subtitle_one": "Fréquence de chaque compétence dans votre annonce enregistrée.",
+    "subtitle_other": "Fréquence de chaque compétence dans vos {{count}} annonces enregistrées."
   }
 }

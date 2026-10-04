@@ -19,6 +19,7 @@ const application: Application = {
   response: null,
   resources: null,
   channel: 'LINKEDIN',
+  channelDetail: null,
   status: 'SENT',
   contact: 'Marie',
   followUpDate: '2026-10-08',
@@ -91,6 +92,7 @@ describe('toCreateInput', () => {
       response: null,
       resources: null,
       channel: 'APEC',
+      channelDetail: null,
       status: 'SENT',
       contact: null,
       workMode: null,
@@ -101,6 +103,43 @@ describe('toCreateInput', () => {
       recruitmentProcess: null,
       notes: null,
       jobPostingText: null,
+    });
+  });
+});
+
+describe('channel precision', () => {
+  const base = { ...emptyApplicationForm('2026-10-01'), company: 'Acme', jobTitle: 'Dev' };
+
+  it('is sent with the OTHER channel', () => {
+    const values = applicationFormSchema.parse({
+      ...base,
+      channel: 'OTHER',
+      channelDetail: ' Indeed ',
+    });
+
+    expect(toCreateInput(values)).toMatchObject({ channel: 'OTHER', channelDetail: 'Indeed' });
+  });
+
+  it('is dropped with any other channel, even if it was typed before', () => {
+    const values = applicationFormSchema.parse({
+      ...base,
+      channel: 'APEC',
+      channelDetail: 'Indeed',
+    });
+
+    expect(toCreateInput(values)).toMatchObject({ channel: 'APEC', channelDetail: null });
+  });
+
+  it('on edit, is sent with its channel even when only the precision changed', () => {
+    const values = applicationFormSchema.parse({
+      ...base,
+      channel: 'OTHER',
+      channelDetail: 'Malt',
+    });
+
+    expect(toUpdateInput(values, { channelDetail: true })).toEqual({
+      channelDetail: 'Malt',
+      channel: 'OTHER',
     });
   });
 });

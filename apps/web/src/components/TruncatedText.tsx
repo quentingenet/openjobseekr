@@ -7,9 +7,8 @@ type TruncatedTextProps = Omit<TypographyProps, 'children' | 'noWrap'> & {
 };
 
 /**
- * Single-line text cut with an ellipsis by CSS where its container ends (no character count,
- * so it adapts to the column width). The full text stays in the DOM for screen readers and is
- * shown in a tooltip on hover or focus, only when it is actually cut.
+ * Cut with "…" by CSS at the edge of its container; the full text stays in the DOM for screen
+ * readers and is shown in a tooltip only when it is actually cut.
  */
 export function TruncatedText({ children, sx, ...props }: TruncatedTextProps) {
   const [isTruncated, setIsTruncated] = useState(false);

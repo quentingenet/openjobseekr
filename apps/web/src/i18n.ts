@@ -2,14 +2,16 @@ import i18n from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import { initReactI18next } from 'react-i18next';
 import en from './locales/en/translation.json';
+import es from './locales/es/translation.json';
 import fr from './locales/fr/translation.json';
 
-export const SUPPORTED_LANGUAGES = ['en', 'fr'] as const;
+export const SUPPORTED_LANGUAGES = ['en', 'fr', 'es'] as const;
 export type Language = (typeof SUPPORTED_LANGUAGES)[number];
 
 export const resources = {
   en: { translation: en },
   fr: { translation: fr },
+  es: { translation: es },
 } as const;
 
 /** Keeps `<html lang>` in sync for screen readers and the browser's date pickers. */
@@ -38,8 +40,11 @@ void i18n
     returnNull: false,
   });
 
-export function currentLanguage(): Language {
-  return i18n.resolvedLanguage === 'fr' ? 'fr' : 'en';
+/** The active language, or English for anything unsupported. */
+export function toLanguage(language: string | undefined): Language {
+  return (SUPPORTED_LANGUAGES as readonly string[]).includes(language ?? '')
+    ? (language as Language)
+    : 'en';
 }
 
 export default i18n;

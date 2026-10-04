@@ -1,5 +1,6 @@
-// The access token is kept in localStorage: acceptable for a local-only app (see
-// docs/decisions.md). Storage can be unavailable (private mode), so every access is guarded.
+// localStorage is readable by any script on the page: acceptable here because the app is
+// local-only and loads no third-party scripts. Switch to an HttpOnly cookie if it is ever
+// deployed. Storage can be unavailable (private mode), so every access is guarded.
 const TOKEN_KEY = 'openjobseekr.accessToken';
 
 export const tokenStorage = {
@@ -21,7 +22,7 @@ export const tokenStorage = {
     try {
       localStorage.removeItem(TOKEN_KEY);
     } catch {
-      // Ignored.
+      // Nothing to remove when storage is unavailable.
     }
   },
 };

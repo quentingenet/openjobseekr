@@ -8,6 +8,7 @@ export const TEXT_LIMITS = {
   location: 200,
   response: 1_000,
   resources: 1_000,
+  channelDetail: 200,
   contact: 200,
   remoteRhythm: 200,
   salaryRange: 200,

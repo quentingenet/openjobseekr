@@ -26,6 +26,9 @@ export class ApplicationDetailDto {
   @ApiProperty({ enum: Channel, nullable: true })
   channel: Channel | null;
 
+  @ApiProperty({ type: String, nullable: true, description: 'Precision for the OTHER channel' })
+  channelDetail: string | null;
+
   @ApiProperty({ enum: Status })
   status: Status;
 

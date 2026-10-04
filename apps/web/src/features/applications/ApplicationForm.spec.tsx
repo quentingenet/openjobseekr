@@ -96,4 +96,14 @@ describe('ApplicationForm', () => {
 
     expect(screen.getByRole('status')).toHaveTextContent('Follow-up planned on Oct 8, 2026');
   });
+
+  it('asks which channel only when "Other" is chosen', async () => {
+    await renderForm('fr');
+    expect(screen.queryByRole('textbox', { name: 'Quel canal ?' })).toBeNull();
+
+    await userEvent.click(screen.getByRole('combobox', { name: /Canal/ }));
+    await userEvent.click(screen.getByRole('option', { name: 'Autre' }));
+
+    expect(screen.getByRole('textbox', { name: 'Quel canal ?' })).toBeInTheDocument();
+  });
 });

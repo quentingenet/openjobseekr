@@ -8,7 +8,6 @@ import i18n, { type Language } from '../i18n';
 interface RenderOptions {
   /** Route pattern the element is mounted on (e.g. '/applications/:id'). */
   path?: string;
-  /** Current URL. */
   url?: string;
   language?: Language;
 }
@@ -35,7 +34,6 @@ export async function renderWithProviders(element: ReactElement, options: Render
   return { ...result, router, queryClient };
 }
 
-/** Minimal JSON `fetch` response. */
 export function jsonResponse(body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), {
     status,

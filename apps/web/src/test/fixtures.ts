@@ -11,6 +11,7 @@ export const application: Application = {
   response: null,
   resources: null,
   channel: 'LINKEDIN',
+  channelDetail: null,
   status: 'SENT',
   contact: 'Marie Martin',
   followUpDate: '2026-10-08',

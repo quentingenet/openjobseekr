@@ -21,7 +21,6 @@ const navLinkSx = {
   '&.active': { bgcolor: 'rgba(255,255,255,0.18)' },
 } as const;
 
-/** Layout of the authenticated pages: app bar with navigation, language and logout. */
 export function AppLayout() {
   const { t } = useTranslation();
   const { signOut } = useAuth();
@@ -47,6 +46,9 @@ export function AppLayout() {
             <Button component={NavLink} to="/stats" sx={navLinkSx}>
               {t('nav.stats')}
             </Button>
+            <Button component={NavLink} to="/skills" sx={navLinkSx}>
+              {t('nav.skills')}
+            </Button>
           </Stack>
           <LanguageSwitcher />
           <Tooltip title={t('nav.logout')}>
@@ -56,7 +58,6 @@ export function AppLayout() {
           </Tooltip>
         </Toolbar>
       </AppBar>
-      {/* 80% of the window on desktop, full width (with gutters) on small screens. */}
       <Container component="main" maxWidth={false} sx={{ py: 4, width: { xs: '100%', md: '80%' } }}>
         <Outlet />
       </Container>

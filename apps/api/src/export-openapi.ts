@@ -7,6 +7,7 @@ import { createOpenApiDocument } from './app.setup.js';
 /**
  * Writes the OpenAPI document to the file given as argument, without starting the server or
  * connecting to the database. The web app generates its API types from this file.
+ * Needs the same environment variables as the API, which validates them at startup.
  */
 async function exportOpenApi(outputPath: string): Promise<void> {
   const app = await NestFactory.create(AppModule, { logger: ['error'] });

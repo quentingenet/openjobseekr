@@ -7,7 +7,6 @@ import type {
 import type { CreateApplicationDto, UpdateApplicationDto } from './dto/application-input.dto.js';
 import type { ListApplicationsQueryDto } from './dto/list-applications-query.dto.js';
 
-/** Inputs needed to compute the follow-up fields. */
 export interface FollowUpContext {
   today: string;
   delayDays: number;
@@ -37,6 +36,7 @@ export function toApplicationSummary(
     response: application.response,
     resources: application.resources,
     channel: application.channel,
+    channelDetail: application.channelDetail,
     status: application.status,
     contact: application.contact,
     followUpDate,
@@ -69,7 +69,12 @@ export function toApplicationCreateData(
   userId: string,
 ): Prisma.ApplicationUncheckedCreateInput {
   const { sentAt, ...rest } = dto;
-  return { ...rest, sentAt: toDbDate(sentAt), userId };
+  return {
+    ...rest,
+    sentAt: toDbDate(sentAt),
+    channelDetail: dto.channel === 'OTHER' ? (dto.channelDetail ?? null) : null,
+    userId,
+  };
 }
 
 /** Converts validated input to Prisma data. Only the fields present in the input are kept. */
@@ -77,7 +82,12 @@ export function toApplicationData(
   dto: UpdateApplicationDto,
 ): Prisma.ApplicationUncheckedUpdateInput {
   const { sentAt, ...rest } = dto;
-  return { ...rest, ...(sentAt === undefined ? {} : { sentAt: toDbDate(sentAt) }) };
+  return {
+    ...rest,
+    ...(sentAt === undefined ? {} : { sentAt: toDbDate(sentAt) }),
+    // Leaving the OTHER channel drops its precision.
+    ...(dto.channel !== undefined && dto.channel !== 'OTHER' ? { channelDetail: null } : {}),
+  };
 }
 
 /** Filters of the list endpoint. Always scoped to the user. */

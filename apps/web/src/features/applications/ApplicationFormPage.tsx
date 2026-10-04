@@ -1,4 +1,4 @@
-import { Stack, Typography } from '@mui/material';
+import { Stack } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router';
 import {
@@ -7,6 +7,7 @@ import {
   useSettings,
   useUpdateApplication,
 } from '../../api/hooks';
+import { PageTitle } from '../../components/PageTitle';
 import { ErrorState, LoadingState } from '../../components/PageStates';
 import {
   applicationToForm,
@@ -25,9 +26,7 @@ export function NewApplicationPage() {
 
   return (
     <Stack spacing={3}>
-      <Typography variant="h4" component="h1">
-        {t('form.newTitle')}
-      </Typography>
+      <PageTitle fallback="/applications">{t('form.newTitle')}</PageTitle>
       <ApplicationForm
         defaultValues={emptyApplicationForm(todayLocal())}
         followUpDelayDays={settings.data?.followUpDelayDays}
@@ -54,9 +53,7 @@ export function EditApplicationPage() {
 
   return (
     <Stack spacing={3}>
-      <Typography variant="h4" component="h1">
-        {t('form.editTitle')}
-      </Typography>
+      <PageTitle fallback={`/applications/${id}`}>{t('form.editTitle')}</PageTitle>
       <ApplicationForm
         // Values are loaded once: a background refetch never overwrites what the user typed.
         key={id}

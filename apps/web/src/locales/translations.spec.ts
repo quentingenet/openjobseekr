@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import en from './en/translation.json';
+import es from './es/translation.json';
 import fr from './fr/translation.json';
 
 type Tree = { [key: string]: string | Tree };
@@ -14,32 +15,35 @@ function flatten(tree: Tree, prefix = ''): Record<string, string> {
 }
 
 const enKeys = flatten(en);
-const frKeys = flatten(fr);
+const others = { fr: flatten(fr), es: flatten(es) };
+const placeholders = (value: string) => (value.match(/\{\{\w+\}\}/g) ?? []).sort();
 
-describe('translations', () => {
-  it('has every English key in French', () => {
-    expect(Object.keys(enKeys).filter((key) => !(key in frKeys))).toEqual([]);
+describe.each(Object.entries(others))('translations: %s compared with en', (_language, keys) => {
+  it('has every English key', () => {
+    expect(Object.keys(enKeys).filter((key) => !(key in keys))).toEqual([]);
   });
 
-  it('has every French key in English', () => {
-    expect(Object.keys(frKeys).filter((key) => !(key in enKeys))).toEqual([]);
+  it('has no key missing in English', () => {
+    expect(Object.keys(keys).filter((key) => !(key in enKeys))).toEqual([]);
   });
 
   it('has no empty translation', () => {
-    const empty = [...Object.entries(enKeys), ...Object.entries(frKeys)]
-      .filter(([, value]) => value.trim() === '')
-      .map(([key]) => key);
-    expect(empty).toEqual([]);
+    expect(Object.keys(keys).filter((key) => keys[key]?.trim() === '')).toEqual([]);
   });
 
-  it('uses the same {{placeholders}} in both languages', () => {
-    const placeholders = (value: string) => (value.match(/\{\{\w+\}\}/g) ?? []).sort();
+  it('uses the same {{placeholders}}', () => {
     const mismatched = Object.keys(enKeys).filter(
       (key) =>
         JSON.stringify(placeholders(enKeys[key] ?? '')) !==
-        JSON.stringify(placeholders(frKeys[key] ?? '')),
+        JSON.stringify(placeholders(keys[key] ?? '')),
     );
     expect(mismatched).toEqual([]);
+  });
+});
+
+describe('translations: en', () => {
+  it('has no empty translation', () => {
+    expect(Object.keys(enKeys).filter((key) => enKeys[key]?.trim() === '')).toEqual([]);
   });
 
   it('translates every status, channel and work mode code', () => {

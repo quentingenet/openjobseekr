@@ -6,12 +6,14 @@
     "applications": "Applications",
     "stats": "Statistics",
     "logout": "Log out",
-    "mainNavigation": "Main navigation"
+    "mainNavigation": "Main navigation",
+    "skills": "Skills"
   },
   "language": {
     "label": "Language",
     "en": "English",
-    "fr": "Français"
+    "fr": "Français",
+    "es": "Español"
   },
   "auth": {
     "loginTitle": "Log in",
@@ -46,7 +48,9 @@
       "status": "Status",
       "followUp": "Follow-up",
       "workMode": "Work mode"
-    }
+    },
+    "sortedNewestFirst": "sorted newest first",
+    "sortedOldestFirst": "sorted oldest first"
   },
   "form": {
     "newTitle": "New application",
@@ -66,6 +70,7 @@
       "response": "Response",
       "resources": "Resources",
       "channel": "Channel",
+      "channelDetail": "Which channel?",
       "status": "Status",
       "contact": "Contact (name / email)",
       "workMode": "Work mode",
@@ -86,10 +91,10 @@
     "unsavedTitle": "Leave without saving?",
     "unsavedMessage": "Your changes will be lost.",
     "stay": "Stay",
-    "leave": "Leave"
+    "leave": "Leave",
+    "channelOther": "Other ({{detail}})"
   },
   "detail": {
-    "back": "Back to the list",
     "edit": "Edit",
     "delete": "Delete",
     "deleteTitle": "Delete this application?",
@@ -148,7 +153,9 @@
     "passwordTooShort": "8 characters minimum",
     "passwordTooLong": "This password is too long",
     "date": "Enter a valid date",
-    "invalid": "Invalid value"
+    "invalid": "Invalid value",
+    "regex": "This is not a valid regular expression",
+    "level": "Choose a level between 0 and 5"
   },
   "errors": {
     "VALIDATION_FAILED": "Some fields are invalid.",
@@ -164,12 +171,49 @@
     "SERVICE_UNAVAILABLE": "The service is temporarily unavailable.",
     "INTERNAL_ERROR": "Something went wrong on the server.",
     "NETWORK_ERROR": "The server cannot be reached. Is the API running?",
-    "UNKNOWN": "An unexpected error occurred."
+    "UNKNOWN": "An unexpected error occurred.",
+    "SKILL_NOT_FOUND": "This skill does not exist or was deleted.",
+    "SKILL_NAME_ALREADY_USED": "A skill with this name already exists."
   },
   "common": {
     "loading": "Loading…",
     "retry": "Retry",
     "pageNotFound": "Page not found",
-    "goHome": "Go to my applications"
+    "goHome": "Go to my applications",
+    "back": "Back"
+  },
+  "skills": {
+    "title": "Skills",
+    "subtitleNone": "Save job posting texts in your applications to see how often each skill is requested.",
+    "add": "Add a skill",
+    "empty": "No skills yet. Add the technologies you want to track.",
+    "tableLabel": "Skills sorted by frequency",
+    "columns": {
+      "name": "Skill",
+      "pattern": "Search pattern",
+      "postingCount": "Postings",
+      "frequency": "Frequency",
+      "level": "Current level",
+      "actions": "Actions"
+    },
+    "form": {
+      "newTitle": "New skill",
+      "editTitle": "Edit skill",
+      "name": "Skill",
+      "pattern": "Search pattern (regular expression)",
+      "patternHelp": "Case-insensitive. Use \\b for whole words: \\bJava\\b does not match JavaScript.",
+      "level": "Current level (0–5)",
+      "noLevel": "Not rated",
+      "save": "Save",
+      "cancel": "Cancel"
+    },
+    "edit": "Edit {{name}}",
+    "delete": "Delete {{name}}",
+    "deleteTitle": "Delete this skill?",
+    "deleteMessage": "The skill “{{name}}” will be deleted.",
+    "confirmDelete": "Delete",
+    "cancel": "Cancel",
+    "subtitle_one": "How often each skill appears in your saved job posting.",
+    "subtitle_other": "How often each skill appears in your {{count}} saved job postings."
   }
 }

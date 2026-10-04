@@ -63,6 +63,7 @@ describe('Applications (e2e)', () => {
         response: null,
         resources: null,
         channel: 'LINKEDIN',
+        channelDetail: null,
         status: 'SENT',
         contact: null,
         followUpDate: '2026-10-08',
@@ -158,6 +159,46 @@ describe('Applications (e2e)', () => {
         message: 'Request validation failed',
         details: [{ field: 'id', constraints: ['isUuid'] }],
       });
+    });
+  });
+
+  describe('channel precision for OTHER', () => {
+    it('stores a precision with the OTHER channel and clears it when the channel changes', async () => {
+      const { id } = await create({
+        sentAt: '2026-10-01',
+        company: 'Acme',
+        jobTitle: 'Dev',
+        channel: 'OTHER',
+        channelDetail: '  Indeed ',
+      });
+      const detail = await api().get(`/applications/${id}`).set(auth()).expect(200);
+      expect(detail.body).toMatchObject({ channel: 'OTHER', channelDetail: 'Indeed' });
+
+      const updated = await api()
+        .patch(`/applications/${id}`)
+        .set(auth())
+        .send({ channel: 'LINKEDIN' })
+        .expect(200);
+
+      expect(updated.body).toMatchObject({ channel: 'LINKEDIN', channelDetail: null });
+    });
+
+    it('rejects a precision without the OTHER channel', async () => {
+      const response = await api()
+        .post('/applications')
+        .set(auth())
+        .send({
+          sentAt: '2026-10-01',
+          company: 'Acme',
+          jobTitle: 'Dev',
+          channel: 'APEC',
+          channelDetail: 'Indeed',
+        })
+        .expect(400);
+
+      expect(response.body.details).toEqual([
+        { field: 'channelDetail', constraints: ['requiresOtherChannel'] },
+      ]);
     });
   });
 
@@ -294,6 +335,12 @@ describe('Applications (e2e)', () => {
       }
     });
 
+    it('sorts by sent date, oldest first with order=asc', async () => {
+      const response = await api().get('/applications?order=asc').set(auth()).expect(200);
+
+      expect(companies(response.body)).toEqual(['Umbrella', 'Acme', 'Globex', 'Initech']);
+    });
+
     it('filters by status and by channel', async () => {
       const byStatus = await api().get('/applications?status=REJECTED').set(auth()).expect(200);
       const byChannel = await api().get('/applications?channel=LINKEDIN').set(auth()).expect(200);
@@ -330,13 +377,14 @@ describe('Applications (e2e)', () => {
 
     it('rejects invalid query parameters', async () => {
       const response = await api()
-        .get('/applications?limit=500&overdue=yes&status=WAITING')
+        .get('/applications?limit=500&overdue=yes&status=WAITING&order=up')
         .set(auth())
         .expect(400);
 
       expect(response.body.details).toEqual([
         { field: 'status', constraints: ['isEnum'] },
         { field: 'overdue', constraints: ['isBoolean'] },
+        { field: 'order', constraints: ['isIn'] },
         { field: 'limit', constraints: ['max'] },
       ]);
     });

@@ -52,7 +52,7 @@ export class ApplicationsService {
       this.prisma.application.findMany({
         where,
         omit: { jobPostingText: true },
-        orderBy: [{ sentAt: 'desc' }, { createdAt: 'desc' }],
+        orderBy: [{ sentAt: query.order }, { createdAt: query.order }],
         skip: query.offset,
         take: query.limit,
       }),

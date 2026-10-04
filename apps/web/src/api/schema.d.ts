@@ -143,6 +143,59 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/skills': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** List skills, by name */
+    get: operations['SkillsController_list'];
+    put?: never;
+    /** Create a skill */
+    post: operations['SkillsController_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/skills/stats': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** How often each skill appears in the saved job postings */
+    get: operations['SkillsController_stats'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/skills/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /** Delete a skill */
+    delete: operations['SkillsController_remove'];
+    options?: never;
+    head?: never;
+    /** Update a skill */
+    patch: operations['SkillsController_update'];
+    trace?: never;
+  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -194,6 +247,8 @@ export interface components {
         | 'REFERRAL'
         | 'OTHER'
         | null;
+      /** @description Channel name when channel is OTHER (e.g. "Indeed"); requires channel OTHER */
+      channelDetail?: string | null;
       /**
        * @default SENT
        * @enum {string}
@@ -239,6 +294,8 @@ export interface components {
         | 'REFERRAL'
         | 'OTHER'
         | null;
+      /** @description Precision for the OTHER channel */
+      channelDetail: string | null;
       /** @enum {string} */
       status:
         | 'SENT'
@@ -293,6 +350,8 @@ export interface components {
         | 'REFERRAL'
         | 'OTHER'
         | null;
+      /** @description Precision for the OTHER channel */
+      channelDetail: string | null;
       /** @enum {string} */
       status:
         | 'SENT'
@@ -346,6 +405,8 @@ export interface components {
         | 'REFERRAL'
         | 'OTHER'
         | null;
+      /** @description Channel name when channel is OTHER (e.g. "Indeed"); requires channel OTHER */
+      channelDetail?: string | null;
       contact?: string | null;
       /** @enum {string|null} */
       workMode?: 'ONSITE' | 'HYBRID' | 'FULL_REMOTE' | 'UNSPECIFIED' | null;
@@ -406,6 +467,49 @@ export interface components {
        * @example 7
        */
       followUpDelayDays: number;
+    };
+    SkillDto: {
+      /** Format: uuid */
+      id: string;
+      /** @example TypeScript */
+      name: string;
+      /** @example \bTypeScript\b */
+      pattern: string;
+      level: number | null;
+    };
+    SkillStatDto: {
+      /** Format: uuid */
+      id: string;
+      /** @example TypeScript */
+      name: string;
+      /** @example \bTypeScript\b */
+      pattern: string;
+      level: number | null;
+      /** @description Number of job postings whose text matches the pattern */
+      postingCount: number;
+      /** @description postingCount / postingsAnalyzed; null when no posting text was saved */
+      frequency: number | null;
+    };
+    SkillStatsDto: {
+      /** @description Applications with a job posting text */
+      postingsAnalyzed: number;
+      /** @description Most frequent first, then by name */
+      skills: components['schemas']['SkillStatDto'][];
+    };
+    CreateSkillDto: {
+      /** @example TypeScript */
+      name: string;
+      /**
+       * @description Regular expression matched case-insensitively against job posting texts
+       * @example \bTypeScript\b
+       */
+      pattern: string;
+      level?: number | null;
+    };
+    UpdateSkillDto: {
+      level?: number | null;
+      name?: string;
+      pattern?: string;
     };
   };
   responses: never;
@@ -689,6 +793,8 @@ export interface operations {
         overdue?: boolean;
         /** @description Case-insensitive search on company and job title */
         q?: string;
+        /** @description Order by sent date (desc: newest first) */
+        order?: 'asc' | 'desc';
         limit?: number;
         offset?: number;
       };
@@ -918,6 +1024,188 @@ export interface operations {
       };
       /** @description UNAUTHORIZED */
       401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  SkillsController_list: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['SkillDto'][];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  SkillsController_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateSkillDto'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['SkillDto'];
+        };
+      };
+      /** @description VALIDATION_FAILED */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description SKILL_NAME_ALREADY_USED */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  SkillsController_stats: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['SkillStatsDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  SkillsController_remove: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description SKILL_NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  SkillsController_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateSkillDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['SkillDto'];
+        };
+      };
+      /** @description VALIDATION_FAILED */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description SKILL_NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description SKILL_NAME_ALREADY_USED */
+      409: {
         headers: {
           [name: string]: unknown;
         };

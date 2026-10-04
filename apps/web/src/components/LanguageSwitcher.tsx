@@ -1,10 +1,10 @@
 import { ToggleButton, ToggleButtonGroup } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { SUPPORTED_LANGUAGES, type Language } from '../i18n';
+import { SUPPORTED_LANGUAGES, type Language, toLanguage } from '../i18n';
 
 export function LanguageSwitcher() {
   const { t, i18n } = useTranslation();
-  const value: Language = i18n.resolvedLanguage === 'fr' ? 'fr' : 'en';
+  const value = toLanguage(i18n.resolvedLanguage);
 
   return (
     <ToggleButtonGroup

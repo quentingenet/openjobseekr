@@ -19,6 +19,7 @@ import {
   TableHead,
   TablePagination,
   TableRow,
+  TableSortLabel,
   TextField,
   Tooltip,
   Typography,
@@ -37,11 +38,22 @@ import {
 import { ErrorState } from '../../components/PageStates';
 import { TruncatedText } from '../../components/TruncatedText';
 import { formatDate } from '../../lib/format';
+import { channelLabel } from './channel-label';
 import { StatusChip } from './StatusChip';
+import { PageTitle } from '../../components/PageTitle';
 
 const PAGE_SIZES = [10, 20, 50];
 const DEFAULT_PAGE_SIZE = 20;
 const SEARCH_DEBOUNCE_MS = 300;
+// Hidden on screen but read by screen readers (sort direction of the column).
+const visuallyHidden = {
+  position: 'absolute',
+  width: 1,
+  height: 1,
+  overflow: 'hidden',
+  clip: 'rect(0 0 0 0)',
+  whiteSpace: 'nowrap',
+} as const;
 // Long texts are cut with "…" (full text in a tooltip) beyond these widths.
 const COMPANY_MAX_WIDTH = { xs: 140, md: 220, xl: 300 };
 const JOB_TITLE_MAX_WIDTH = { xs: 180, md: 320, xl: 440 };
@@ -64,6 +76,7 @@ function useListQuery(): [ListApplicationsQuery, (changes: Record<string, string
     channel: isOneOf(APPLICATION_CHANNELS, channel) ? channel : undefined,
     overdue: params.get('overdue') === 'true' || undefined,
     q: params.get('q') ?? undefined,
+    order: params.get('order') === 'asc' ? 'asc' : 'desc',
     limit: pageSize,
     offset: Number.isInteger(page) && page > 0 ? page * pageSize : 0,
   };
@@ -130,9 +143,7 @@ export function ApplicationsPage() {
   return (
     <Stack spacing={3}>
       <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
-        <Typography variant="h4" component="h1">
-          {t('applications.title')}
-        </Typography>
+        <PageTitle>{t('applications.title')}</PageTitle>
         <Button
           component={RouterLink}
           to="/applications/new"
@@ -213,13 +224,28 @@ export function ApplicationsPage() {
         <ErrorState error={error} onRetry={() => void refetch()} />
       ) : (
         <Paper>
-          {/* Thin progress bar while a new page or filter is loading. */}
           <Box sx={{ height: 4 }}>{isFetching && <LinearProgress />}</Box>
           <TableContainer>
             <Table aria-label={t('applications.tableLabel')}>
               <TableHead>
                 <TableRow>
-                  <TableCell>{t('applications.columns.sentAt')}</TableCell>
+                  <TableCell sortDirection={query.order}>
+                    <TableSortLabel
+                      active
+                      direction={query.order}
+                      onClick={() =>
+                        // Newest first is the default, so it is not written in the URL.
+                        updateQuery({ order: query.order === 'desc' ? 'asc' : null })
+                      }
+                    >
+                      {t('applications.columns.sentAt')}
+                      <Box component="span" sx={visuallyHidden}>
+                        {query.order === 'desc'
+                          ? t('applications.sortedNewestFirst')
+                          : t('applications.sortedOldestFirst')}
+                      </Box>
+                    </TableSortLabel>
+                  </TableCell>
                   <TableCell>{t('applications.columns.company')}</TableCell>
                   <TableCell>{t('applications.columns.jobTitle')}</TableCell>
                   <TableCell>{t('applications.columns.channel')}</TableCell>
@@ -263,9 +289,11 @@ export function ApplicationsPage() {
                       </TruncatedText>
                     </TableCell>
                     <TableCell>
-                      {application.channel
-                        ? t(`channel.${application.channel as ApplicationChannel}`)
-                        : '—'}
+                      {channelLabel(
+                        t,
+                        application.channel as ApplicationChannel | null,
+                        application.channelDetail,
+                      ) ?? '—'}
                     </TableCell>
                     <TableCell>
                       <StatusChip status={application.status as ApplicationStatus} />

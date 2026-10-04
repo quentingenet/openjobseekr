@@ -1,0 +1,219 @@
+{
+  "app": {
+    "title": "OpenJobSeekR"
+  },
+  "nav": {
+    "applications": "Candidaturas",
+    "stats": "Estadísticas",
+    "logout": "Cerrar sesión",
+    "mainNavigation": "Navegación principal",
+    "skills": "Competencias"
+  },
+  "language": {
+    "label": "Idioma",
+    "en": "English",
+    "fr": "Français",
+    "es": "Español"
+  },
+  "auth": {
+    "loginTitle": "Iniciar sesión",
+    "registerTitle": "Crear una cuenta",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "passwordHelp": "Mínimo 8 caracteres",
+    "submitLogin": "Iniciar sesión",
+    "submitRegister": "Crear mi cuenta",
+    "noAccount": "¿Aún no tienes cuenta? Crea una",
+    "hasAccount": "¿Ya tienes cuenta? Inicia sesión"
+  },
+  "applications": {
+    "title": "Candidaturas",
+    "new": "Nueva candidatura",
+    "search": "Buscar una empresa o un puesto",
+    "allStatuses": "Todos los estados",
+    "allChannels": "Todos los canales",
+    "overdueOnly": "Seguimientos pendientes",
+    "empty": "Aún no hay candidaturas. ¡Añade la primera!",
+    "emptyFiltered": "Ninguna candidatura coincide con estos filtros.",
+    "clearFilters": "Borrar filtros",
+    "rowsPerPage": "Filas por página",
+    "displayedRows": "{{from}}–{{to}} de {{count}}",
+    "overdueSince": "Seguimiento pendiente desde el {{date}}",
+    "tableLabel": "Lista de candidaturas",
+    "columns": {
+      "sentAt": "Enviada el",
+      "company": "Empresa",
+      "jobTitle": "Puesto",
+      "channel": "Canal",
+      "status": "Estado",
+      "followUp": "Seguimiento",
+      "workMode": "Modalidad"
+    },
+    "sortedNewestFirst": "ordenadas de la más reciente a la más antigua",
+    "sortedOldestFirst": "ordenadas de la más antigua a la más reciente"
+  },
+  "form": {
+    "newTitle": "Nueva candidatura",
+    "editTitle": "Editar candidatura",
+    "sections": {
+      "offer": "Oferta",
+      "tracking": "Seguimiento",
+      "conditions": "Condiciones",
+      "posting": "Anuncio",
+      "notes": "Notas y proceso"
+    },
+    "fields": {
+      "sentAt": "Fecha de envío",
+      "company": "Empresa",
+      "jobTitle": "Puesto",
+      "location": "Ubicación",
+      "response": "Respuesta",
+      "resources": "Recursos",
+      "channel": "Canal",
+      "channelDetail": "¿Qué canal?",
+      "status": "Estado",
+      "contact": "Contacto (nombre / correo)",
+      "workMode": "Modalidad",
+      "remoteRhythm": "Ritmo de teletrabajo",
+      "salaryRange": "Rango salarial",
+      "cvVersion": "Versión del CV / carta",
+      "stack": "Stack / palabras clave",
+      "recruitmentProcess": "Proceso de selección",
+      "notes": "Notas",
+      "jobPostingText": "Texto del anuncio"
+    },
+    "notSpecified": "Sin indicar",
+    "followUpPreview": "Seguimiento previsto el {{date}}",
+    "noFollowUp": "Sin seguimiento: la candidatura ya ha recibido respuesta.",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "saved": "Candidatura guardada",
+    "unsavedTitle": "¿Salir sin guardar?",
+    "unsavedMessage": "Se perderán tus cambios.",
+    "stay": "Quedarse",
+    "leave": "Salir",
+    "channelOther": "Otro ({{detail}})"
+  },
+  "detail": {
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "deleteTitle": "¿Eliminar esta candidatura?",
+    "deleteMessage": "La candidatura a {{company}} se eliminará definitivamente.",
+    "confirmDelete": "Eliminar",
+    "cancel": "Cancelar",
+    "deleted": "Candidatura eliminada",
+    "noPostingText": "No se ha guardado el texto del anuncio.",
+    "createdAt": "Creada el {{date}}",
+    "updatedAt": "Modificada el {{date}}",
+    "followUpOn": "Seguimiento: {{date}}",
+    "followUpOverdue": "Seguimiento pendiente desde el {{date}}"
+  },
+  "stats": {
+    "title": "Estadísticas",
+    "total": "Candidaturas",
+    "responseRate": "Tasa de respuesta",
+    "noRate": "—",
+    "byStatus": "Por estado",
+    "byChannel": "Por canal",
+    "count": "Número",
+    "share": "Proporción",
+    "empty": "Añade candidaturas para ver las estadísticas."
+  },
+  "status": {
+    "SENT": "Enviada",
+    "RESPONSE_RECEIVED": "Respuesta recibida",
+    "HR_INTERVIEW": "Entrevista RR. HH.",
+    "TECHNICAL_INTERVIEW": "Entrevista técnica",
+    "OFFER": "Oferta",
+    "REJECTED": "Rechazada",
+    "NO_RESPONSE": "Sin respuesta"
+  },
+  "channel": {
+    "CAREER_SITE": "Web de empleo de la empresa",
+    "LINKEDIN": "LinkedIn",
+    "WELCOME_TO_THE_JUNGLE": "Welcome to the Jungle",
+    "HELLOWORK": "HelloWork",
+    "APEC": "APEC",
+    "RECRUITMENT_AGENCY": "Agencia de selección",
+    "UNSOLICITED": "Candidatura espontánea",
+    "REFERRAL": "Recomendación",
+    "OTHER": "Otro",
+    "UNSPECIFIED": "Sin indicar"
+  },
+  "workMode": {
+    "ONSITE": "Presencial",
+    "HYBRID": "Híbrido",
+    "FULL_REMOTE": "Teletrabajo completo",
+    "UNSPECIFIED": "Sin especificar"
+  },
+  "validation": {
+    "required": "Este campo es obligatorio",
+    "tooLong": "Máximo {{max}} caracteres",
+    "email": "Introduce un correo electrónico válido",
+    "passwordTooShort": "Mínimo 8 caracteres",
+    "passwordTooLong": "Esta contraseña es demasiado larga",
+    "date": "Introduce una fecha válida",
+    "invalid": "Valor no válido",
+    "regex": "No es una expresión regular válida",
+    "level": "Elige un nivel entre 0 y 5"
+  },
+  "errors": {
+    "VALIDATION_FAILED": "Algunos campos no son válidos.",
+    "UNAUTHORIZED": "Tu sesión ha caducado. Vuelve a iniciar sesión.",
+    "INVALID_CREDENTIALS": "Correo o contraseña incorrectos.",
+    "EMAIL_ALREADY_USED": "Ya existe una cuenta con este correo.",
+    "FORBIDDEN": "No tienes permiso para hacer esto.",
+    "NOT_FOUND": "Esta página no existe.",
+    "APPLICATION_NOT_FOUND": "Esta candidatura no existe o ha sido eliminada.",
+    "CONFLICT": "Esta acción entra en conflicto con datos existentes.",
+    "BAD_REQUEST": "La solicitud no es válida.",
+    "PAYLOAD_TOO_LARGE": "Los datos enviados son demasiado grandes.",
+    "SERVICE_UNAVAILABLE": "El servicio no está disponible temporalmente.",
+    "INTERNAL_ERROR": "Se ha producido un error en el servidor.",
+    "NETWORK_ERROR": "No se puede contactar con el servidor. ¿Está la API en marcha?",
+    "UNKNOWN": "Se ha producido un error inesperado.",
+    "SKILL_NOT_FOUND": "Esta competencia no existe o ha sido eliminada.",
+    "SKILL_NAME_ALREADY_USED": "Ya existe una competencia con este nombre."
+  },
+  "common": {
+    "loading": "Cargando…",
+    "retry": "Reintentar",
+    "pageNotFound": "Página no encontrada",
+    "goHome": "Ir a mis candidaturas",
+    "back": "Volver"
+  },
+  "skills": {
+    "title": "Competencias",
+    "subtitleNone": "Guarda el texto de los anuncios en tus candidaturas para ver con qué frecuencia se pide cada competencia.",
+    "add": "Añadir una competencia",
+    "empty": "Aún no hay competencias. Añade las tecnologías que quieras seguir.",
+    "tableLabel": "Competencias ordenadas por frecuencia",
+    "columns": {
+      "name": "Competencia",
+      "pattern": "Término buscado",
+      "postingCount": "Anuncios",
+      "frequency": "Frecuencia",
+      "level": "Nivel actual",
+      "actions": "Acciones"
+    },
+    "form": {
+      "newTitle": "Nueva competencia",
+      "editTitle": "Editar competencia",
+      "name": "Competencia",
+      "pattern": "Término buscado (expresión regular)",
+      "patternHelp": "Sin distinguir mayúsculas. Usa \\b para palabras completas: \\bJava\\b no encuentra JavaScript.",
+      "level": "Nivel actual (0–5)",
+      "noLevel": "Sin evaluar",
+      "save": "Guardar",
+      "cancel": "Cancelar"
+    },
+    "edit": "Editar {{name}}",
+    "delete": "Eliminar {{name}}",
+    "deleteTitle": "¿Eliminar esta competencia?",
+    "deleteMessage": "Se eliminará la competencia «{{name}}».",
+    "confirmDelete": "Eliminar",
+    "cancel": "Cancelar",
+    "subtitle_one": "Frecuencia de cada competencia en tu anuncio guardado.",
+    "subtitle_other": "Frecuencia de cada competencia en tus {{count}} anuncios guardados."
+  }
+}

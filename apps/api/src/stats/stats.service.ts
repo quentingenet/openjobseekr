@@ -6,7 +6,6 @@ import { PrismaService } from '../prisma/prisma.service.js';
 export class StatsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  /** Counts by status and channel plus the response rate, over all the user's applications. */
   async overview(userId: string): Promise<Overview> {
     const applications = await this.prisma.application.findMany({
       where: { userId },

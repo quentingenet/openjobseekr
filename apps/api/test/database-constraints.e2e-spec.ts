@@ -12,6 +12,7 @@ const limits = {
   location: TEXT_LIMITS.short,
   response: TEXT_LIMITS.medium,
   resources: TEXT_LIMITS.medium,
+  channelDetail: TEXT_LIMITS.short,
   contact: TEXT_LIMITS.short,
   remoteRhythm: TEXT_LIMITS.short,
   salaryRange: TEXT_LIMITS.short,

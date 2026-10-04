@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional, OmitType, PartialType } from '@nestjs/swagger';
-import { IsEnum, IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsOptional, IsString, MaxLength, ValidateBy } from 'class-validator';
 import {
   IsCalendarDate,
   IsOptionalNotNull,
@@ -14,6 +14,19 @@ export const TEXT_LIMITS = {
   long: 10_000,
   jobPostingText: 50_000,
 } as const;
+
+/** A precision is only allowed with the OTHER channel, sent in the same request. */
+const RequiresOtherChannel = (): PropertyDecorator =>
+  ValidateBy({
+    name: 'requiresOtherChannel',
+    validator: {
+      validate: (value: unknown, args) =>
+        value === null ||
+        value === undefined ||
+        (args?.object as { channel?: unknown }).channel === Channel.OTHER,
+      defaultMessage: () => '$property is only allowed when channel is OTHER',
+    },
+  });
 
 /** Fields in the spreadsheet column order. `null` clears an optional field. */
 export class CreateApplicationDto {
@@ -60,6 +73,19 @@ export class CreateApplicationDto {
   @IsOptional()
   @IsEnum(Channel)
   channel?: Channel | null;
+
+  @ApiPropertyOptional({
+    type: String,
+    nullable: true,
+    maxLength: TEXT_LIMITS.short,
+    description: 'Channel name when channel is OTHER (e.g. "Indeed"); requires channel OTHER',
+  })
+  @TrimToNull()
+  @IsOptional()
+  @IsString()
+  @MaxLength(TEXT_LIMITS.short)
+  @RequiresOtherChannel()
+  channelDetail?: string | null;
 
   @ApiPropertyOptional({ enum: Status, default: Status.SENT })
   @IsOptionalNotNull()

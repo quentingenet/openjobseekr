@@ -19,6 +19,7 @@ const record: Application = {
   response: null,
   resources: null,
   channel: null,
+  channelDetail: null,
   status: 'SENT',
   contact: null,
   workMode: null,
@@ -89,6 +90,7 @@ describe('ApplicationsService', () => {
         sentAt: new Date('2026-10-01T00:00:00.000Z'),
         company: 'Acme',
         jobTitle: 'Dev',
+        channelDetail: null,
       },
     });
   });
@@ -126,7 +128,7 @@ describe('ApplicationsService', () => {
     ctx.prisma.application.findMany.mockResolvedValue([]);
     ctx.prisma.application.count.mockResolvedValue(0);
 
-    const result = await ctx.service.list('user-1', { limit: 20, offset: 40 });
+    const result = await ctx.service.list('user-1', { limit: 20, offset: 40, order: 'desc' });
 
     expect(result).toEqual({ items: [], total: 0, limit: 20, offset: 40 });
     expect(ctx.prisma.application.findMany).toHaveBeenCalledWith({
@@ -136,6 +138,17 @@ describe('ApplicationsService', () => {
       skip: 40,
       take: 20,
     });
+  });
+
+  it('sorts oldest first when order is asc', async () => {
+    ctx.prisma.application.findMany.mockResolvedValue([]);
+    ctx.prisma.application.count.mockResolvedValue(0);
+
+    await ctx.service.list('user-1', { limit: 20, offset: 0, order: 'asc' });
+
+    expect(ctx.prisma.application.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({ orderBy: [{ sentAt: 'asc' }, { createdAt: 'asc' }] }),
+    );
   });
 
   it('looks up a single application by id and user', async () => {

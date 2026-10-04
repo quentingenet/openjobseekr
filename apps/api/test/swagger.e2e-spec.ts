@@ -32,6 +32,9 @@ describe('Swagger (e2e)', () => {
       '/auth/register',
       '/health',
       '/settings',
+      '/skills',
+      '/skills/stats',
+      '/skills/{id}',
       '/stats/overview',
     ]);
     expect(response.body.components.securitySchemes.bearer).toEqual({

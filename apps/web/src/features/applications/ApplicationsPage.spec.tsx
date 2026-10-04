@@ -16,6 +16,7 @@ const list: ApplicationList = {
       response: null,
       resources: null,
       channel: 'LINKEDIN',
+      channelDetail: null,
       status: 'SENT',
       contact: null,
       followUpDate: '2026-10-08',
@@ -58,7 +59,6 @@ describe('ApplicationsPage', () => {
     expect(cells.getByText('LinkedIn')).toBeInTheDocument();
     expect(cells.getByText('Envoyée')).toBeInTheDocument();
     expect(cells.getByText('Hybride')).toBeInTheDocument();
-    // Overdue follow-up date is highlighted.
     expect(cells.getByText('8 oct. 2026')).toBeInTheDocument();
     expect(screen.getByText('1–1 sur 1')).toBeInTheDocument();
   });
@@ -75,7 +75,7 @@ describe('ApplicationsPage', () => {
     await waitFor(() => expect(router.state.location.search).toBe('?overdue=true'));
     await waitFor(() =>
       expect(fetchMock).toHaveBeenLastCalledWith(
-        '/api/applications?overdue=true&limit=20&offset=0',
+        '/api/applications?overdue=true&order=desc&limit=20&offset=0',
         expect.anything(),
       ),
     );
@@ -90,7 +90,7 @@ describe('ApplicationsPage', () => {
 
     await waitFor(() =>
       expect(fetchMock).toHaveBeenCalledWith(
-        '/api/applications?status=REJECTED&q=acme&limit=10&offset=20',
+        '/api/applications?status=REJECTED&q=acme&order=desc&limit=10&offset=20',
         expect.anything(),
       ),
     );
@@ -134,7 +134,7 @@ describe('ApplicationsPage', () => {
     await waitFor(() => expect(router.state.location.search).toBe('?page=1'));
     await waitFor(() =>
       expect(fetchMock).toHaveBeenLastCalledWith(
-        '/api/applications?limit=20&offset=20',
+        '/api/applications?order=desc&limit=20&offset=20',
         expect.anything(),
       ),
     );
@@ -183,5 +183,44 @@ describe('ApplicationsPage', () => {
     await router.navigate('/applications');
 
     await waitFor(() => expect(searchBox).toHaveValue(''));
+  });
+
+  it('sorts by sent date when clicking the column header, newest first by default', async () => {
+    const { router } = await renderWithProviders(<ApplicationsPage />, {
+      path: '/applications',
+      url: '/applications?page=1',
+      language: 'fr',
+    });
+    const header = await screen.findByRole('columnheader', { name: /Envoyée le/ });
+    expect(header).toHaveAttribute('aria-sort', 'descending');
+
+    await userEvent.click(within(header).getByRole('button'));
+
+    await waitFor(() => expect(router.state.location.search).toBe('?order=asc'));
+    expect(header).toHaveAttribute('aria-sort', 'ascending');
+    expect(header).toHaveTextContent('triées de la plus ancienne à la plus récente');
+    await waitFor(() =>
+      expect(fetchMock).toHaveBeenLastCalledWith(
+        '/api/applications?order=asc&limit=20&offset=0',
+        expect.anything(),
+      ),
+    );
+
+    await userEvent.click(within(header).getByRole('button'));
+
+    await waitFor(() => expect(router.state.location.search).toBe(''));
+    expect(header).toHaveAttribute('aria-sort', 'descending');
+  });
+
+  it('shows the precision of the OTHER channel', async () => {
+    const [item] = list.items;
+    fetchMock.mockImplementation(() =>
+      Promise.resolve(
+        jsonResponse({ ...list, items: [{ ...item, channel: 'OTHER', channelDetail: 'Indeed' }] }),
+      ),
+    );
+    await renderWithProviders(<ApplicationsPage />, { path: '/applications', language: 'fr' });
+
+    expect(await screen.findByText('Autre (Indeed)')).toBeInTheDocument();
   });
 });
