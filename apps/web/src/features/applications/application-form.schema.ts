@@ -1,6 +1,7 @@
 import {
   APPLICATION_CHANNELS,
   APPLICATION_STATUSES,
+  channelDetailFor,
   isCalendarDate,
   TEXT_LIMITS,
   WORK_MODES,
@@ -89,7 +90,7 @@ export function toCreateInput(values: ParsedForm): CreateApplicationInput {
     resources: orNull(values.resources),
     channel: orNull(values.channel),
     // The precision only belongs to the OTHER channel (the API rejects it otherwise).
-    channelDetail: values.channel === 'OTHER' ? orNull(values.channelDetail) : null,
+    channelDetail: channelDetailFor(orNull(values.channel), values.channelDetail),
     status: values.status,
     contact: orNull(values.contact),
     workMode: orNull(values.workMode),

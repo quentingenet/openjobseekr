@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional, OmitType, PartialType } from '@nestjs/swagger';
-import { TEXT_LIMITS } from '@openjobseekr/domain';
+import { acceptsChannelDetail, type ApplicationChannel, TEXT_LIMITS } from '@openjobseekr/domain';
 import { IsEnum, IsNotEmpty, IsOptional, IsString, MaxLength, ValidateBy } from 'class-validator';
 import {
   IsCalendarDate,
@@ -16,7 +16,7 @@ const RequiresOtherChannel = (): PropertyDecorator =>
       validate: (value: unknown, args) =>
         value === null ||
         value === undefined ||
-        (args?.object as { channel?: unknown }).channel === Channel.OTHER,
+        acceptsChannelDetail((args?.object as { channel?: ApplicationChannel | null }).channel),
       defaultMessage: () => '$property is only allowed when channel is OTHER',
     },
   });

@@ -12,6 +12,7 @@ import {
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import {
+  acceptsChannelDetail,
   APPLICATION_CHANNELS,
   APPLICATION_STATUSES,
   type ApplicationTextField as LimitedField,
@@ -207,7 +208,7 @@ export function ApplicationForm({
           <Grid size={{ xs: 12, md: 4 }}>
             {selectField('channel', APPLICATION_CHANNELS, 'channel')}
           </Grid>
-          {channel === 'OTHER' && (
+          {acceptsChannelDetail(channel || null) && (
             <Grid size={{ xs: 12, md: 4 }}>{textField('channelDetail')}</Grid>
           )}
           <Grid size={{ xs: 12, md: 4 }}>{textField('contact')}</Grid>

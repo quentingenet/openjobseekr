@@ -15,3 +15,19 @@ export const APPLICATION_CHANNELS = [
 ] as const;
 
 export type ApplicationChannel = (typeof APPLICATION_CHANNELS)[number];
+
+/** The channel whose name the user types as a precision (`channelDetail`, e.g. "Indeed"). */
+export const OTHER_CHANNEL = 'OTHER' satisfies ApplicationChannel;
+
+/** Only the OTHER channel takes a precision. */
+export function acceptsChannelDetail(channel: ApplicationChannel | null | undefined): boolean {
+  return channel === OTHER_CHANNEL;
+}
+
+/** The precision to store for a channel: dropped for any other channel, `null` when empty. */
+export function channelDetailFor(
+  channel: ApplicationChannel | null | undefined,
+  channelDetail: string | null | undefined,
+): string | null {
+  return acceptsChannelDetail(channel) && channelDetail ? channelDetail : null;
+}

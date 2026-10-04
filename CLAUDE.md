@@ -92,7 +92,8 @@ openjobseekr/
 ## Conventions
 
 - `Application` fields follow the spreadsheet columns: do not rename or reorder them. The only
-  addition is `channelDetail`, the channel name when `channel` is `OTHER` (cleared otherwise).
+  addition is `channelDetail`, the channel name when `channel` is `OTHER` (cleared otherwise,
+  by `channelDetailFor` in `@openjobseekr/domain`).
 - The follow-up date is not stored: it is computed (sent date + delay) while the status is `SENT`.
 - `jobPostingText` is excluded from list responses and only returned in the detail response.
 - ESLint runs typescript-eslint `strictTypeChecked` (type-aware). The few relaxed rules are

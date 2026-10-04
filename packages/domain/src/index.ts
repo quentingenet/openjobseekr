@@ -1,5 +1,11 @@
 export { addDays, isCalendarDate, toCalendarDate } from './calendar-date.js';
-export { APPLICATION_CHANNELS, type ApplicationChannel } from './channel.js';
+export {
+  acceptsChannelDetail,
+  APPLICATION_CHANNELS,
+  type ApplicationChannel,
+  channelDetailFor,
+  OTHER_CHANNEL,
+} from './channel.js';
 export {
   computeFollowUpDate,
   FOLLOW_UP_STATUS,

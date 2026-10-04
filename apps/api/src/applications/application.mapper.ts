@@ -1,4 +1,6 @@
 import {
+  acceptsChannelDetail,
+  channelDetailFor,
   computeFollowUpDate,
   FOLLOW_UP_STATUS,
   isFollowUpOverdue,
@@ -72,7 +74,7 @@ export function toApplicationCreateData(
   return {
     ...rest,
     sentAt: toDbDate(sentAt),
-    channelDetail: dto.channel === 'OTHER' ? (dto.channelDetail ?? null) : null,
+    channelDetail: channelDetailFor(dto.channel, dto.channelDetail),
     userId,
   };
 }
@@ -86,7 +88,9 @@ export function toApplicationData(
     ...rest,
     ...(sentAt === undefined ? {} : { sentAt: toDbDate(sentAt) }),
     // Leaving the OTHER channel drops its precision.
-    ...(dto.channel !== undefined && dto.channel !== 'OTHER' ? { channelDetail: null } : {}),
+    ...(dto.channel !== undefined && !acceptsChannelDetail(dto.channel)
+      ? { channelDetail: null }
+      : {}),
   };
 }
 
