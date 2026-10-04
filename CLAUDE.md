@@ -74,8 +74,8 @@ openjobseekr/
 - `npm run test`: unit tests; `npm run test:e2e`: API tests against `DATABASE_URL_TEST`
 - `npm run test:hooks`: tests the Bash hook that blocks destructive commands
   (`.claude/hooks/validate-bash.sh`, a denylist: never complete, commits and pushes also ask)
-- `npm run check`: lint + typecheck + tests + hook tests; run it before committing (the
-  pre-commit hook only runs lint-staged, the pre-push hook runs `check`)
+- `npm run check`: lint + typecheck + tests + hook tests; run it before committing. Git hooks:
+  pre-commit runs lint-staged, pre-push runs `check`.
 - `npm run db:migrate --workspace apps/api`: create/apply migrations; then
   `npx prisma generate` in `apps/api` (Prisma 7 no longer generates after migrating)
 - `npm run api:types`: regenerate the web API types after any API DTO change (unit tests
@@ -110,9 +110,10 @@ openjobseekr/
   `database-constraints.e2e-spec.ts`.
 - The status waiting for an answer (`FOLLOW_UP_STATUS`) drives the follow-up date, the
   overdue filter and the response rate: never compare with `'SENT'` directly.
-- Enums (statuses, channels, work modes) come from `@openjobseekr/domain`. A
-  `domain-enums.check.ts` file fails the typecheck when they drift from Prisma (API) or from
-  the OpenAPI types (web).
+- Enum lists (statuses, channels, work modes) come from `@openjobseekr/domain` in the web app
+  and the shared rules; the API DTOs use the Prisma enums (for validation and Swagger). Two
+  `domain-enums.check.ts` files fail the typecheck when the domain drifts from Prisma (API)
+  or from the OpenAPI types (web).
 - Login and registration are rate-limited per IP (`AUTH_RATE_LIMIT`, 5 per minute by default).
 - Skill patterns are matched with RE2 (the engine of Google Sheets): linear time, no
   lookarounds or backreferences.

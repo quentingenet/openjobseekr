@@ -5,11 +5,12 @@ paths:
 
 # Backend (NestJS)
 
-- One module per feature under `apps/api/src/<feature>/`: `<feature>.module.ts`,
-  `<feature>.controller.ts`, and `<feature>.service.ts` and `dto/` when it has logic or inputs.
-  Pure business logic goes in `<feature>/domain/` (`stats/domain/`, `skills/domain/`)
-  with no NestJS or Prisma imports; rules the web app also needs go in `packages/domain`
-  (`@openjobseekr/domain`).
+- One folder per feature under `apps/api/src/<feature>/` with its `<feature>.module.ts`, plus a
+  `<feature>.controller.ts` when it exposes routes, and a `<feature>.service.ts` and `dto/` when
+  it has logic or inputs (e.g. `follow-up/` only provides a context, `settings/` only a
+  controller). Pure business logic goes in `<feature>/domain/` (`stats/domain/`,
+  `skills/domain/`) with no NestJS or Prisma imports; rules the web app also needs go in
+  `packages/domain` (`@openjobseekr/domain`).
 - Every request body and query is a DTO validated with `class-validator`
   (`class-transformer` for types). Never read raw `req.body` or untyped query params.
 - Controllers only map HTTP to service calls: no business logic, no Prisma, no try/catch

@@ -71,7 +71,7 @@ and the web app in sync.
 ### Requirements
 
 - Node.js 24 (see `.nvmrc`; with fnm or nvm: `fnm use` / `nvm use`)
-- PostgreSQL 17, installed locally or with Docker
+- PostgreSQL 16 or later, installed locally or with Docker (the Compose file uses 17)
 
 ### 1. Install
 
@@ -121,7 +121,7 @@ machine.
 
 | Command                                   | What it does                                          |
 | ----------------------------------------- | ----------------------------------------------------- |
-| `npm run check`                           | Lint, type check, unit and hook tests (before a push) |
+| `npm run check`                           | Lint, type check, unit and hook tests (run on push)   |
 | `npm run test`                            | Unit and component tests                              |
 | `npm run test:e2e`                        | API end-to-end tests on the `_test` database          |
 | `npm run lint` / `npm run format`         | ESLint / Prettier                                     |
