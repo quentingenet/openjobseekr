@@ -32,9 +32,9 @@ describe('CurrentUser', () => {
     expect(getFactory()(undefined, contextWithUser(user))).toEqual(user);
   });
 
-  it('fails loudly when used on a route without JwtAuthGuard', () => {
+  it('fails loudly when used on a public route', () => {
     expect(() => getFactory()(undefined, contextWithUser(undefined))).toThrow(
-      'CurrentUser used on a route without JwtAuthGuard',
+      'No authenticated user on the request (@Public() route or missing guard)',
     );
   });
 });

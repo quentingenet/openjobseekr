@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { APP_GUARD } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
 import type { Env } from '../config/env.schema.js';
 import { AuthController } from './auth.controller.js';
@@ -24,7 +25,6 @@ type JwtExpiresIn = `${number}${'s' | 'm' | 'h' | 'd'}`;
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtAuthGuard],
-  exports: [JwtAuthGuard, JwtModule],
+  providers: [AuthService, { provide: APP_GUARD, useClass: JwtAuthGuard }],
 })
 export class AuthModule {}

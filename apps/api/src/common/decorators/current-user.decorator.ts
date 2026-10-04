@@ -13,7 +13,7 @@ export const CurrentUser = createParamDecorator(
   (_data: unknown, context: ExecutionContext): AuthenticatedUser => {
     const user = context.switchToHttp().getRequest<AuthenticatedRequest>().user;
     if (!user) {
-      throw new Error('CurrentUser used on a route without JwtAuthGuard');
+      throw new Error('No authenticated user on the request (@Public() route or missing guard)');
     }
     return user;
   },

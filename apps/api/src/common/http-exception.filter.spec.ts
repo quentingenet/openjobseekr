@@ -6,6 +6,7 @@ import {
   NotFoundException,
   PayloadTooLargeException,
   ServiceUnavailableException,
+  UnprocessableEntityException,
 } from '@nestjs/common';
 import { describe, expect, it } from 'vitest';
 import { AppException } from './app.exception.js';
@@ -62,10 +63,29 @@ describe('toErrorResponse', () => {
     });
   });
 
-  it('maps an unlisted 4xx status to BAD_REQUEST and keeps the status', () => {
+  it('maps a 413 to PAYLOAD_TOO_LARGE', () => {
     expect(toErrorResponse(new PayloadTooLargeException('Too big'))).toEqual({
       status: 413,
-      body: { code: 'BAD_REQUEST', message: 'Too big' },
+      body: { code: 'PAYLOAD_TOO_LARGE', message: 'Too big' },
+    });
+  });
+
+  it('maps the body-parser size error (not an HttpException) to PAYLOAD_TOO_LARGE', () => {
+    const tooLarge = Object.assign(new Error('request entity too large'), {
+      type: 'entity.too.large',
+      status: 413,
+    });
+
+    expect(toErrorResponse(tooLarge)).toEqual({
+      status: 413,
+      body: { code: 'PAYLOAD_TOO_LARGE', message: 'Request body is too large' },
+    });
+  });
+
+  it('maps an unlisted 4xx status to BAD_REQUEST and keeps the status', () => {
+    expect(toErrorResponse(new UnprocessableEntityException('Nope'))).toEqual({
+      status: 422,
+      body: { code: 'BAD_REQUEST', message: 'Nope' },
     });
   });
 

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
@@ -13,16 +13,17 @@ import {
   type AuthenticatedUser,
   CurrentUser,
 } from '../common/decorators/current-user.decorator.js';
+import { Public } from '../common/decorators/public.decorator.js';
 import { AuthService } from './auth.service.js';
 import { AuthResponseDto, UserResponseDto } from './dto/auth-response.dto.js';
 import { LoginDto, RegisterDto } from './dto/credentials.dto.js';
-import { JwtAuthGuard } from './jwt-auth.guard.js';
 
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly auth: AuthService) {}
 
+  @Public()
   @Post('register')
   @ApiOperation({ summary: 'Create an account and return an access token' })
   @ApiCreatedResponse({ type: AuthResponseDto })
@@ -32,6 +33,7 @@ export class AuthController {
     return this.auth.register(dto);
   }
 
+  @Public()
   @Post('login')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Log in and return an access token' })
@@ -43,7 +45,6 @@ export class AuthController {
   }
 
   @Get('me')
-  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Return the authenticated user' })
   @ApiOkResponse({ type: UserResponseDto })

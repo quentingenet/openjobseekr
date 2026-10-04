@@ -1,0 +1,84 @@
+import { describe, expect, it } from 'vitest';
+import { computeFollowUpDate, isFollowUpOverdue, overdueSentBefore } from './follow-up.js';
+
+describe('computeFollowUpDate', () => {
+  // Values from the original spreadsheet ("DATE DE RELANCE" = sent date + 7 days).
+  it.each([
+    ['2026-10-01', '2026-10-08'],
+    ['2026-10-02', '2026-10-09'],
+    ['2026-10-03', '2026-10-10'],
+  ])('sent %s, status SENT, delay 7 -> %s', (sentAt, expected) => {
+    expect(computeFollowUpDate(sentAt, 'SENT', 7)).toBe(expected);
+  });
+
+  it('crosses month and year boundaries', () => {
+    expect(computeFollowUpDate('2026-10-28', 'SENT', 7)).toBe('2026-11-04');
+    expect(computeFollowUpDate('2026-12-29', 'SENT', 7)).toBe('2027-01-05');
+  });
+
+  it('handles a leap day', () => {
+    expect(computeFollowUpDate('2028-02-25', 'SENT', 7)).toBe('2028-03-03');
+  });
+
+  it('is not shifted by the daylight saving time change (France, 2026-10-25)', () => {
+    expect(computeFollowUpDate('2026-10-22', 'SENT', 7)).toBe('2026-10-29');
+  });
+
+  it('returns the sent date itself with a zero delay', () => {
+    expect(computeFollowUpDate('2026-10-01', 'SENT', 0)).toBe('2026-10-01');
+  });
+
+  it.each([
+    'RESPONSE_RECEIVED',
+    'HR_INTERVIEW',
+    'TECHNICAL_INTERVIEW',
+    'OFFER',
+    'REJECTED',
+    'NO_RESPONSE',
+  ] as const)('returns null for status %s', (status) => {
+    expect(computeFollowUpDate('2026-10-01', status, 7)).toBeNull();
+  });
+});
+
+describe('isFollowUpOverdue', () => {
+  it('is overdue when today is after the follow-up date', () => {
+    expect(isFollowUpOverdue('2026-10-08', '2026-10-09')).toBe(true);
+  });
+
+  it('is not overdue on the follow-up date itself', () => {
+    expect(isFollowUpOverdue('2026-10-08', '2026-10-08')).toBe(false);
+  });
+
+  it('is not overdue before the follow-up date', () => {
+    expect(isFollowUpOverdue('2026-10-08', '2026-10-07')).toBe(false);
+  });
+
+  it('compares across months correctly', () => {
+    expect(isFollowUpOverdue('2026-09-30', '2026-10-01')).toBe(true);
+  });
+
+  it('is never overdue without a follow-up date', () => {
+    expect(isFollowUpOverdue(null, '2026-10-09')).toBe(false);
+  });
+});
+
+describe('overdueSentBefore', () => {
+  // An application is overdue when today > sentAt + delay, i.e. sentAt < today - delay.
+  it('returns today minus the delay', () => {
+    expect(overdueSentBefore('2026-10-09', 7)).toBe('2026-10-02');
+  });
+
+  it('matches isFollowUpOverdue at the boundary', () => {
+    const today = '2026-10-09';
+    const limit = overdueSentBefore(today, 7);
+    // Sent the day before the limit: overdue. Sent on the limit: due today, not overdue.
+    expect(isFollowUpOverdue(computeFollowUpDate('2026-10-01', 'SENT', 7), today)).toBe(true);
+    expect('2026-10-01' < limit).toBe(true);
+    expect(isFollowUpOverdue(computeFollowUpDate('2026-10-02', 'SENT', 7), today)).toBe(false);
+    expect('2026-10-02' < limit).toBe(false);
+  });
+
+  it('crosses a month boundary', () => {
+    expect(overdueSentBefore('2026-11-03', 7)).toBe('2026-10-27');
+  });
+});

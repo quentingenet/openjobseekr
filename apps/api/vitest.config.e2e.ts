@@ -23,6 +23,8 @@ export default defineConfig({
     globalSetup: ['test/global-setup.ts'],
     env: {
       DATABASE_URL: testDatabaseUrl,
+      // Expected follow-up dates in the tests assume a 7-day delay.
+      FOLLOW_UP_DELAY_DAYS: '7',
     },
     testTimeout: 20_000,
     hookTimeout: 60_000,

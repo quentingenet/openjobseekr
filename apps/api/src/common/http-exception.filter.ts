@@ -16,6 +16,7 @@ const codeByStatus: Partial<Record<number, ErrorCode>> = {
   [HttpStatus.FORBIDDEN]: ErrorCode.FORBIDDEN,
   [HttpStatus.NOT_FOUND]: ErrorCode.NOT_FOUND,
   [HttpStatus.CONFLICT]: ErrorCode.CONFLICT,
+  [HttpStatus.PAYLOAD_TOO_LARGE]: ErrorCode.PAYLOAD_TOO_LARGE,
   [HttpStatus.SERVICE_UNAVAILABLE]: ErrorCode.SERVICE_UNAVAILABLE,
 };
 
@@ -23,6 +24,12 @@ const codeByStatus: Partial<Record<number, ErrorCode>> = {
 export function toErrorResponse(exception: unknown): { status: number; body: ErrorResponseBody } {
   if (exception instanceof AppException) {
     return { status: exception.getStatus(), body: exception.getResponse() as ErrorResponseBody };
+  }
+  if (isBodyTooLargeError(exception)) {
+    return {
+      status: HttpStatus.PAYLOAD_TOO_LARGE,
+      body: { code: ErrorCode.PAYLOAD_TOO_LARGE, message: 'Request body is too large' },
+    };
   }
   if (exception instanceof HttpException) {
     const status = exception.getStatus();
@@ -34,6 +41,15 @@ export function toErrorResponse(exception: unknown): { status: number; body: Err
     status: HttpStatus.INTERNAL_SERVER_ERROR,
     body: { code: ErrorCode.INTERNAL_ERROR, message: 'Internal server error' },
   };
+}
+
+/** Express body-parser rejects bodies above the JSON limit with this error type. */
+function isBodyTooLargeError(exception: unknown): boolean {
+  return (
+    typeof exception === 'object' &&
+    exception !== null &&
+    (exception as { type?: unknown }).type === 'entity.too.large'
+  );
 }
 
 @Catch()

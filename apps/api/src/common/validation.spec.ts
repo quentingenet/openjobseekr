@@ -22,7 +22,7 @@ describe('toFieldErrors', () => {
 
     expect(toFieldErrors(errors)).toEqual([
       { field: 'email', constraints: ['isEmail'] },
-      { field: 'address.city', constraints: ['isString', 'isNotEmpty'] },
+      { field: 'address.city', constraints: ['isNotEmpty', 'isString'] },
     ]);
   });
 

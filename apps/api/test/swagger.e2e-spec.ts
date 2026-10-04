@@ -21,14 +21,17 @@ describe('Swagger (e2e)', () => {
     expect(response.text).toContain('swagger-ui');
   });
 
-  it('documents the auth and health routes with bearer authentication', async () => {
+  it('documents every route, with bearer authentication', async () => {
     const response = await request(app.getHttpServer()).get('/docs-json').expect(200);
 
     expect(Object.keys(response.body.paths).sort()).toEqual([
+      '/applications',
+      '/applications/{id}',
       '/auth/login',
       '/auth/me',
       '/auth/register',
       '/health',
+      '/stats/overview',
     ]);
     expect(response.body.components.securitySchemes.bearer).toEqual({
       type: 'http',
