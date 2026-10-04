@@ -72,8 +72,8 @@ openjobseekr/
   runs lint-staged, the pre-push hook runs `check`)
 - `npm run db:migrate --workspace apps/api`: create/apply migrations; then
   `npx prisma generate` in `apps/api` (Prisma 7 no longer generates after migrating)
-- `npm run api:types`: regenerate the web API types after any API DTO change (a unit test
-  fails while `apps/web/src/api/openapi.json` is stale)
+- `npm run api:types`: regenerate the web API types after any API DTO change (unit tests
+  fail while `apps/web/src/api/openapi.json` or `schema.d.ts` is stale)
 
 ## Language and i18n
 
@@ -92,7 +92,8 @@ openjobseekr/
 - Inputs are validated by DTOs (`class-validator`); no business logic in controllers.
 - Tests: explicit expected values, no snapshots for business logic.
   In e2e tests, use the default import: `import request from 'supertest'`.
-- A Vitest test checks that every translation key exists in `en`, `fr` and `es`.
+- A Vitest test checks that every translation key exists in `en`, `fr` and `es`, and that every
+  API error code has its `errors.<CODE>` translation.
 - Limits are defined once in `@openjobseekr/domain` (`TEXT_LIMITS` per field, `SKILL_LIMITS`,
   `SKILL_LEVEL`, `SEARCH_MAX_LENGTH`, `CREDENTIAL_LIMITS`, page sizes) and used by the API
   DTOs and the web forms. The database CHECK constraints (migrations) repeat the text limits

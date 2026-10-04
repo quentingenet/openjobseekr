@@ -1,5 +1,6 @@
 import { APPLICATION_CHANNELS, APPLICATION_STATUSES, WORK_MODES } from '@openjobseekr/domain';
 import { describe, expect, it } from 'vitest';
+import openapi from '../api/openapi.json';
 import en from './en/translation.json';
 import es from './es/translation.json';
 import fr from './fr/translation.json';
@@ -52,5 +53,14 @@ describe('translations: en', () => {
     // UNSPECIFIED labels applications without a channel in the statistics.
     expect(Object.keys(en.channel).sort()).toEqual([...APPLICATION_CHANNELS, 'UNSPECIFIED'].sort());
     expect(Object.keys(en.workMode).sort()).toEqual([...WORK_MODES].sort());
+  });
+
+  it('translates every error code of the API, and the ones the client produces', () => {
+    const apiCodes = openapi.components.schemas.ProblemDetailsDto.properties.code.enum;
+    const missing = [...apiCodes, 'NETWORK_ERROR', 'UNKNOWN'].filter(
+      (code) => !(code in en.errors),
+    );
+
+    expect(missing).toEqual([]);
   });
 });

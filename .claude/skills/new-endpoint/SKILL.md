@@ -26,7 +26,7 @@ Follow these steps in order. Read `.claude/rules/backend-nestjs.md` and
 7. **Tests**: service unit tests (`*.spec.ts`) and an e2e test (`apps/api/test/*.e2e-spec.ts`)
    covering success, validation error format, 401 without a token, 404 and ownership
    isolation between two users.
-8. **Web types**: run `npm run api:types` and commit `openapi.json` and `schema.d.ts` (a unit
-   test fails while `openapi.json` is stale).
+8. **Web types**: run `npm run api:types` and commit `openapi.json` and `schema.d.ts` (unit tests
+   fail while either is stale).
 9. **Check**: run `npm run lint`, `npm run test` and `npm run test:e2e`; report results
    honestly.
