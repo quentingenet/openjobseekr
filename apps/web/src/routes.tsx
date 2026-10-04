@@ -2,6 +2,7 @@ import { Navigate, type RouteObject } from 'react-router';
 import { AppLayout } from './components/AppLayout';
 import { NotFoundPage } from './components/NotFoundPage';
 import { RedirectIfAuthenticated, RequireAuth } from './components/RequireAuth';
+import { RouteErrorPage } from './components/RouteErrorPage';
 import { ApplicationDetailPage } from './features/applications/ApplicationDetailPage';
 import {
   EditApplicationPage,
@@ -15,6 +16,7 @@ import { StatsPage } from './features/stats/StatsPage';
 export const routes: RouteObject[] = [
   {
     element: <RedirectIfAuthenticated />,
+    errorElement: <RouteErrorPage />,
     children: [
       { path: '/login', element: <AuthPage mode="login" /> },
       { path: '/register', element: <AuthPage mode="register" /> },
@@ -22,6 +24,7 @@ export const routes: RouteObject[] = [
   },
   {
     element: <RequireAuth />,
+    errorElement: <RouteErrorPage />,
     children: [
       {
         element: <AppLayout />,

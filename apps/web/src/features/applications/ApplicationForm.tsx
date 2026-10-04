@@ -3,11 +3,6 @@ import {
   Alert,
   Box,
   Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
   Grid,
   MenuItem,
   Paper,
@@ -17,25 +12,26 @@ import {
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
-import { type ReactNode, useEffect } from 'react';
-import { Controller, type FieldErrors, useForm, useWatch } from 'react-hook-form';
+import type { ReactNode } from 'react';
+import { Controller, useForm, useWatch } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useBlocker } from 'react-router';
-import { ApiError } from '../../api/client';
 import { APPLICATION_CHANNELS, APPLICATION_STATUSES, WORK_MODES } from '../../api/types';
-import { errorMessage } from '../../lib/errors';
+import { FormErrorAlert } from '../../components/FormErrorAlert';
+import { UnsavedChangesGuard } from '../../components/UnsavedChangesGuard';
 import { translateFieldError } from '../../lib/field-error';
 import { addDays, formatDate } from '../../lib/format';
+import { applyServerErrors } from '../../lib/server-errors';
 import {
   type ApplicationFormField,
   type ApplicationFormValues,
   applicationFormSchema,
-  constraintToMessage,
   isCalendarDate,
 } from './application-form.schema';
 import { TEXT_LIMITS, type TextField as LimitedField } from './limits';
 
 export type ApplicationFormOutput = ReturnType<typeof applicationFormSchema.parse>;
+
+const FORM_FIELDS = Object.keys(applicationFormSchema.shape) as ApplicationFormField[];
 
 interface ApplicationFormProps {
   defaultValues: ApplicationFormValues;
@@ -149,44 +145,18 @@ export function ApplicationForm({
           })
         : t('form.noFollowUp');
 
-  // Warn before leaving the page with unsaved changes (in-app navigation and tab close).
-  const shouldBlock = isDirty && !isSubmitting && !isSubmitSuccessful;
-  const blocker = useBlocker(
-    ({ currentLocation, nextLocation }) =>
-      shouldBlock && currentLocation.pathname !== nextLocation.pathname,
-  );
-  useEffect(() => {
-    if (!shouldBlock) return;
-    const onBeforeUnload = (event: BeforeUnloadEvent) => event.preventDefault();
-    window.addEventListener('beforeunload', onBeforeUnload);
-    return () => window.removeEventListener('beforeunload', onBeforeUnload);
-  }, [shouldBlock]);
-
   const submit = handleSubmit(async (values) => {
     try {
       await onSubmit(values, dirtyFields);
     } catch (error) {
-      // Field errors from the API go under their field; anything else in the banner.
-      const fields = error instanceof ApiError ? error.fieldErrors : [];
-      for (const { field, constraints } of fields) {
-        if (field in defaultValues) {
-          setError(field as ApplicationFormField, {
-            type: 'server',
-            message: constraintToMessage(constraints),
-          });
-        }
-      }
-      setError('root.server', { type: 'server', message: errorMessage(error, t) });
+      applyServerErrors(error, setError, FORM_FIELDS, t);
     }
   });
-
-  const rootError = (errors as FieldErrors & { root?: { server?: { message?: string } } }).root
-    ?.server;
 
   return (
     <Box component="form" noValidate onSubmit={submit}>
       <Stack spacing={3}>
-        {rootError?.message && <Alert severity="error">{rootError.message}</Alert>}
+        <FormErrorAlert error={errors.root?.server} />
 
         <Section title={t('form.sections.offer')}>
           <Grid size={{ xs: 12, md: 4 }}>
@@ -275,20 +245,7 @@ export function ApplicationForm({
         </Stack>
       </Stack>
 
-      <Dialog open={blocker.state === 'blocked'} onClose={() => blocker.reset?.()}>
-        <DialogTitle>{t('form.unsavedTitle')}</DialogTitle>
-        <DialogContent>
-          <DialogContentText>{t('form.unsavedMessage')}</DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => blocker.reset?.()} autoFocus>
-            {t('form.stay')}
-          </Button>
-          <Button color="error" onClick={() => blocker.proceed?.()}>
-            {t('form.leave')}
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <UnsavedChangesGuard active={isDirty && !isSubmitting && !isSubmitSuccessful} />
     </Box>
   );
 }

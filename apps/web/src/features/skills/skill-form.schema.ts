@@ -44,12 +44,3 @@ export function toSkillInput(values: z.output<typeof skillFormSchema>) {
     level: values.level === '' ? null : values.level,
   };
 }
-
-/** API constraint names -> translation keys. */
-export function skillConstraintToMessage(constraints: string[]): string {
-  if (constraints.includes('isRegex')) return 'validation.regex';
-  if (constraints.includes('isNotEmpty')) return 'validation.required';
-  if (constraints.includes('maxLength')) return 'validation.tooLong';
-  if (constraints.includes('min') || constraints.includes('max')) return 'validation.level';
-  return 'validation.invalid';
-}

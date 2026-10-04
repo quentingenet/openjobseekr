@@ -1,6 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
-  Alert,
   Button,
   Dialog,
   DialogActions,
@@ -10,23 +9,27 @@ import {
   Stack,
   TextField,
 } from '@mui/material';
-import type { FieldErrors } from 'react-hook-form';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { ApiError } from '../../api/client';
 import type { Skill } from '../../api/types';
-import { errorMessage } from '../../lib/errors';
+import { FormErrorAlert } from '../../components/FormErrorAlert';
 import { translateFieldError } from '../../lib/field-error';
+import { applyServerErrors } from '../../lib/server-errors';
 import {
   SKILL_LIMITS,
   type SkillFormValues,
-  skillConstraintToMessage,
   skillFormSchema,
   skillToForm,
   toSkillInput,
 } from './skill-form.schema';
 
 type SkillFormOutput = ReturnType<typeof skillFormSchema.parse>;
+
+// The level is the only number of the form: its min/max errors get a dedicated message.
+const LEVEL_CONSTRAINTS: [string, string][] = [
+  ['min', 'validation.level'],
+  ['max', 'validation.level'],
+];
 
 interface SkillDialogProps {
   /** Skill to edit; undefined to create one. */
@@ -54,17 +57,9 @@ export function SkillDialog({ skill, onClose, onSubmit }: SkillDialogProps) {
     try {
       await onSubmit(toSkillInput(values));
     } catch (error) {
-      for (const { field, constraints } of error instanceof ApiError ? error.fieldErrors : []) {
-        if (field === 'name' || field === 'pattern' || field === 'level') {
-          setError(field, { type: 'server', message: skillConstraintToMessage(constraints) });
-        }
-      }
-      setError('root.server', { type: 'server', message: errorMessage(error, t) });
+      applyServerErrors(error, setError, ['name', 'pattern', 'level'], t, LEVEL_CONSTRAINTS);
     }
   });
-
-  const rootError = (errors as FieldErrors & { root?: { server?: { message?: string } } }).root
-    ?.server;
 
   return (
     <Dialog open onClose={onClose} fullWidth maxWidth="sm">
@@ -72,7 +67,7 @@ export function SkillDialog({ skill, onClose, onSubmit }: SkillDialogProps) {
         <DialogTitle>{skill ? t('skills.form.editTitle') : t('skills.form.newTitle')}</DialogTitle>
         <DialogContent>
           <Stack spacing={2} sx={{ pt: 1 }}>
-            {rootError?.message && <Alert severity="error">{rootError.message}</Alert>}
+            <FormErrorAlert error={errors.root?.server} />
             <TextField
               {...register('name')}
               label={t('skills.form.name')}

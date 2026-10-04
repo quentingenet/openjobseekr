@@ -4,1213 +4,1217 @@
  */
 
 export interface paths {
-  '/auth/register': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/auth/register": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create an account and return an access token */
+        post: operations["AuthController_register"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /** Create an account and return an access token */
-    post: operations['AuthController_register'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/auth/login': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/auth/login": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Log in and return an access token */
+        post: operations["AuthController_login"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /** Log in and return an access token */
-    post: operations['AuthController_login'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/auth/me': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/auth/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Return the authenticated user */
+        get: operations["AuthController_me"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Return the authenticated user */
-    get: operations['AuthController_me'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/health': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/health": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Check that the API and its database are up */
+        get: operations["HealthController_check"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Check that the API and its database are up */
-    get: operations['HealthController_check'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/applications': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/applications": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List applications (without the job posting text), newest first */
+        get: operations["ApplicationsController_list"];
+        put?: never;
+        /** Create an application */
+        post: operations["ApplicationsController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** List applications (without the job posting text), newest first */
-    get: operations['ApplicationsController_list'];
-    put?: never;
-    /** Create an application */
-    post: operations['ApplicationsController_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/applications/{id}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/applications/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get an application, including the job posting text */
+        get: operations["ApplicationsController_findOne"];
+        put?: never;
+        post?: never;
+        /** Delete an application */
+        delete: operations["ApplicationsController_remove"];
+        options?: never;
+        head?: never;
+        /** Update some fields of an application */
+        patch: operations["ApplicationsController_update"];
+        trace?: never;
     };
-    /** Get an application, including the job posting text */
-    get: operations['ApplicationsController_findOne'];
-    put?: never;
-    post?: never;
-    /** Delete an application */
-    delete: operations['ApplicationsController_remove'];
-    options?: never;
-    head?: never;
-    /** Update some fields of an application */
-    patch: operations['ApplicationsController_update'];
-    trace?: never;
-  };
-  '/stats/overview': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/stats/overview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Counts by status and channel, and the response rate */
+        get: operations["StatsController_overview"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Counts by status and channel, and the response rate */
-    get: operations['StatsController_overview'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/settings': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Settings used by the web app */
+        get: operations["SettingsController_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Settings used by the web app */
-    get: operations['SettingsController_get'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/skills': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/skills": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List skills, by name */
+        get: operations["SkillsController_list"];
+        put?: never;
+        /** Create a skill */
+        post: operations["SkillsController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** List skills, by name */
-    get: operations['SkillsController_list'];
-    put?: never;
-    /** Create a skill */
-    post: operations['SkillsController_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/skills/stats': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/skills/stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** How often each skill appears in the saved job postings */
+        get: operations["SkillsController_stats"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** How often each skill appears in the saved job postings */
-    get: operations['SkillsController_stats'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/skills/{id}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/skills/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete a skill */
+        delete: operations["SkillsController_remove"];
+        options?: never;
+        head?: never;
+        /** Update a skill */
+        patch: operations["SkillsController_update"];
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post?: never;
-    /** Delete a skill */
-    delete: operations['SkillsController_remove'];
-    options?: never;
-    head?: never;
-    /** Update a skill */
-    patch: operations['SkillsController_update'];
-    trace?: never;
-  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
-  schemas: {
-    RegisterDto: {
-      /** @example jane@example.com */
-      email: string;
-      /** @description At most 72 bytes (UTF-8) */
-      password: string;
+    schemas: {
+        RegisterDto: {
+            /** @example jane@example.com */
+            email: string;
+            /** @description At most 72 bytes (UTF-8) */
+            password: string;
+        };
+        UserResponseDto: {
+            /** Format: uuid */
+            id: string;
+            /** @example jane@example.com */
+            email: string;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        AuthResponseDto: {
+            /** @description JWT access token, sent as `Authorization: Bearer <token>` */
+            accessToken: string;
+            user: components["schemas"]["UserResponseDto"];
+        };
+        LoginDto: {
+            /** @example jane@example.com */
+            email: string;
+            password: string;
+        };
+        CreateApplicationDto: {
+            /**
+             * @description YYYY-MM-DD
+             * @example 2026-10-01
+             */
+            sentAt: string;
+            company: string;
+            jobTitle: string;
+            location?: string | null;
+            response?: string | null;
+            resources?: string | null;
+            /** @enum {string|null} */
+            channel?: "CAREER_SITE" | "LINKEDIN" | "WELCOME_TO_THE_JUNGLE" | "HELLOWORK" | "APEC" | "RECRUITMENT_AGENCY" | "UNSOLICITED" | "REFERRAL" | "OTHER" | null;
+            /** @description Channel name when channel is OTHER (e.g. "Indeed"); requires channel OTHER */
+            channelDetail?: string | null;
+            /**
+             * @default SENT
+             * @enum {string}
+             */
+            status: "SENT" | "RESPONSE_RECEIVED" | "HR_INTERVIEW" | "TECHNICAL_INTERVIEW" | "OFFER" | "REJECTED" | "NO_RESPONSE";
+            contact?: string | null;
+            /** @enum {string|null} */
+            workMode?: "ONSITE" | "HYBRID" | "FULL_REMOTE" | "UNSPECIFIED" | null;
+            remoteRhythm?: string | null;
+            salaryRange?: string | null;
+            cvVersion?: string | null;
+            stack?: string | null;
+            recruitmentProcess?: string | null;
+            notes?: string | null;
+            jobPostingText?: string | null;
+        };
+        ApplicationDetailDto: {
+            /** Format: uuid */
+            id: string;
+            /** @example 2026-10-01 */
+            sentAt: string;
+            company: string;
+            jobTitle: string;
+            location: string | null;
+            response: string | null;
+            resources: string | null;
+            /** @enum {string|null} */
+            channel: "CAREER_SITE" | "LINKEDIN" | "WELCOME_TO_THE_JUNGLE" | "HELLOWORK" | "APEC" | "RECRUITMENT_AGENCY" | "UNSOLICITED" | "REFERRAL" | "OTHER" | null;
+            /** @description Precision for the OTHER channel */
+            channelDetail: string | null;
+            /** @enum {string} */
+            status: "SENT" | "RESPONSE_RECEIVED" | "HR_INTERVIEW" | "TECHNICAL_INTERVIEW" | "OFFER" | "REJECTED" | "NO_RESPONSE";
+            contact: string | null;
+            /**
+             * @description Computed: sentAt + follow-up delay while the status is SENT
+             * @example 2026-10-08
+             */
+            followUpDate: string | null;
+            /** @description Computed: true when today is after followUpDate */
+            followUpOverdue: boolean;
+            /** @enum {string|null} */
+            workMode: "ONSITE" | "HYBRID" | "FULL_REMOTE" | "UNSPECIFIED" | null;
+            remoteRhythm: string | null;
+            salaryRange: string | null;
+            cvVersion: string | null;
+            stack: string | null;
+            recruitmentProcess: string | null;
+            notes: string | null;
+            /** @description Only in the detail response */
+            jobPostingText: string | null;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        ApplicationSummaryDto: {
+            /** Format: uuid */
+            id: string;
+            /** @example 2026-10-01 */
+            sentAt: string;
+            company: string;
+            jobTitle: string;
+            location: string | null;
+            response: string | null;
+            resources: string | null;
+            /** @enum {string|null} */
+            channel: "CAREER_SITE" | "LINKEDIN" | "WELCOME_TO_THE_JUNGLE" | "HELLOWORK" | "APEC" | "RECRUITMENT_AGENCY" | "UNSOLICITED" | "REFERRAL" | "OTHER" | null;
+            /** @description Precision for the OTHER channel */
+            channelDetail: string | null;
+            /** @enum {string} */
+            status: "SENT" | "RESPONSE_RECEIVED" | "HR_INTERVIEW" | "TECHNICAL_INTERVIEW" | "OFFER" | "REJECTED" | "NO_RESPONSE";
+            contact: string | null;
+            /**
+             * @description Computed: sentAt + follow-up delay while the status is SENT
+             * @example 2026-10-08
+             */
+            followUpDate: string | null;
+            /** @description Computed: true when today is after followUpDate */
+            followUpOverdue: boolean;
+            /** @enum {string|null} */
+            workMode: "ONSITE" | "HYBRID" | "FULL_REMOTE" | "UNSPECIFIED" | null;
+            remoteRhythm: string | null;
+            salaryRange: string | null;
+            cvVersion: string | null;
+            stack: string | null;
+            recruitmentProcess: string | null;
+            notes: string | null;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        ApplicationListDto: {
+            items: components["schemas"]["ApplicationSummaryDto"][];
+            /** @description Number of applications matching the filters */
+            total: number;
+            limit: number;
+            offset: number;
+        };
+        UpdateApplicationDto: {
+            location?: string | null;
+            response?: string | null;
+            resources?: string | null;
+            /** @enum {string|null} */
+            channel?: "CAREER_SITE" | "LINKEDIN" | "WELCOME_TO_THE_JUNGLE" | "HELLOWORK" | "APEC" | "RECRUITMENT_AGENCY" | "UNSOLICITED" | "REFERRAL" | "OTHER" | null;
+            /** @description Channel name when channel is OTHER (e.g. "Indeed"); requires channel OTHER */
+            channelDetail?: string | null;
+            contact?: string | null;
+            /** @enum {string|null} */
+            workMode?: "ONSITE" | "HYBRID" | "FULL_REMOTE" | "UNSPECIFIED" | null;
+            remoteRhythm?: string | null;
+            salaryRange?: string | null;
+            cvVersion?: string | null;
+            stack?: string | null;
+            recruitmentProcess?: string | null;
+            notes?: string | null;
+            jobPostingText?: string | null;
+            /**
+             * @description YYYY-MM-DD
+             * @example 2026-10-01
+             */
+            sentAt?: string;
+            company?: string;
+            jobTitle?: string;
+            /** @enum {string} */
+            status?: "SENT" | "RESPONSE_RECEIVED" | "HR_INTERVIEW" | "TECHNICAL_INTERVIEW" | "OFFER" | "REJECTED" | "NO_RESPONSE";
+        };
+        StatsOverviewDto: {
+            total: number;
+            /**
+             * @description Count per status code; every code is present
+             * @example {
+             *       "SENT": 4,
+             *       "HR_INTERVIEW": 1,
+             *       "REJECTED": 1
+             *     }
+             */
+            byStatus: {
+                [key: string]: number;
+            };
+            /**
+             * @description Count per channel code; UNSPECIFIED counts applications without a channel
+             * @example {
+             *       "LINKEDIN": 3,
+             *       "APEC": 2,
+             *       "UNSPECIFIED": 1
+             *     }
+             */
+            byChannel: {
+                [key: string]: number;
+            };
+            /** @description Responses / total (not rounded); null without applications */
+            responseRate: number | null;
+        };
+        SettingsDto: {
+            /**
+             * @description Days between sending an application and following up
+             * @example 7
+             */
+            followUpDelayDays: number;
+        };
+        SkillDto: {
+            /** Format: uuid */
+            id: string;
+            /** @example TypeScript */
+            name: string;
+            /** @example \bTypeScript\b */
+            pattern: string;
+            level: number | null;
+        };
+        SkillStatDto: {
+            /** Format: uuid */
+            id: string;
+            /** @example TypeScript */
+            name: string;
+            /** @example \bTypeScript\b */
+            pattern: string;
+            level: number | null;
+            /** @description Number of job postings whose text matches the pattern */
+            postingCount: number;
+            /** @description postingCount / postingsAnalyzed; null when no posting text was saved */
+            frequency: number | null;
+        };
+        SkillStatsDto: {
+            /** @description Applications with a job posting text */
+            postingsAnalyzed: number;
+            /** @description Most frequent first, then by name */
+            skills: components["schemas"]["SkillStatDto"][];
+        };
+        CreateSkillDto: {
+            /** @example TypeScript */
+            name: string;
+            /**
+             * @description Regular expression matched case-insensitively against job posting texts
+             * @example \bTypeScript\b
+             */
+            pattern: string;
+            level?: number | null;
+        };
+        UpdateSkillDto: {
+            level?: number | null;
+            name?: string;
+            pattern?: string;
+        };
+        FieldErrorDto: {
+            /** @example company */
+            field: string;
+            /**
+             * @description Failed constraint names, sorted
+             * @example [
+             *       "isNotEmpty"
+             *     ]
+             */
+            constraints: string[];
+        };
+        ProblemDetailsDto: {
+            /** @example urn:openjobseekr:error:application-not-found */
+            type: string;
+            /** @example Application not found */
+            title: string;
+            /** @example 404 */
+            status: number;
+            /** @description Developer message about this occurrence */
+            detail?: string;
+            /** @example /applications/6c3f4d2e-0000-4000-8000-000000000001 */
+            instance: string;
+            /**
+             * @description Stable code, translated by the web app
+             * @enum {string}
+             */
+            code: "VALIDATION_FAILED" | "BAD_REQUEST" | "UNAUTHORIZED" | "INVALID_CREDENTIALS" | "FORBIDDEN" | "NOT_FOUND" | "APPLICATION_NOT_FOUND" | "SKILL_NOT_FOUND" | "CONFLICT" | "EMAIL_ALREADY_USED" | "SKILL_NAME_ALREADY_USED" | "PAYLOAD_TOO_LARGE" | "INTERNAL_ERROR" | "SERVICE_UNAVAILABLE";
+            /** @description Invalid fields (VALIDATION_FAILED) */
+            errors?: components["schemas"]["FieldErrorDto"][];
+        };
     };
-    UserResponseDto: {
-      /** Format: uuid */
-      id: string;
-      /** @example jane@example.com */
-      email: string;
-      /** Format: date-time */
-      createdAt: string;
-    };
-    AuthResponseDto: {
-      /** @description JWT access token, sent as `Authorization: Bearer <token>` */
-      accessToken: string;
-      user: components['schemas']['UserResponseDto'];
-    };
-    LoginDto: {
-      /** @example jane@example.com */
-      email: string;
-      password: string;
-    };
-    CreateApplicationDto: {
-      /**
-       * @description YYYY-MM-DD
-       * @example 2026-10-01
-       */
-      sentAt: string;
-      company: string;
-      jobTitle: string;
-      location?: string | null;
-      response?: string | null;
-      resources?: string | null;
-      /** @enum {string|null} */
-      channel?:
-        | 'CAREER_SITE'
-        | 'LINKEDIN'
-        | 'WELCOME_TO_THE_JUNGLE'
-        | 'HELLOWORK'
-        | 'APEC'
-        | 'RECRUITMENT_AGENCY'
-        | 'UNSOLICITED'
-        | 'REFERRAL'
-        | 'OTHER'
-        | null;
-      /** @description Channel name when channel is OTHER (e.g. "Indeed"); requires channel OTHER */
-      channelDetail?: string | null;
-      /**
-       * @default SENT
-       * @enum {string}
-       */
-      status:
-        | 'SENT'
-        | 'RESPONSE_RECEIVED'
-        | 'HR_INTERVIEW'
-        | 'TECHNICAL_INTERVIEW'
-        | 'OFFER'
-        | 'REJECTED'
-        | 'NO_RESPONSE';
-      contact?: string | null;
-      /** @enum {string|null} */
-      workMode?: 'ONSITE' | 'HYBRID' | 'FULL_REMOTE' | 'UNSPECIFIED' | null;
-      remoteRhythm?: string | null;
-      salaryRange?: string | null;
-      cvVersion?: string | null;
-      stack?: string | null;
-      recruitmentProcess?: string | null;
-      notes?: string | null;
-      jobPostingText?: string | null;
-    };
-    ApplicationDetailDto: {
-      /** Format: uuid */
-      id: string;
-      /** @example 2026-10-01 */
-      sentAt: string;
-      company: string;
-      jobTitle: string;
-      location: string | null;
-      response: string | null;
-      resources: string | null;
-      /** @enum {string|null} */
-      channel:
-        | 'CAREER_SITE'
-        | 'LINKEDIN'
-        | 'WELCOME_TO_THE_JUNGLE'
-        | 'HELLOWORK'
-        | 'APEC'
-        | 'RECRUITMENT_AGENCY'
-        | 'UNSOLICITED'
-        | 'REFERRAL'
-        | 'OTHER'
-        | null;
-      /** @description Precision for the OTHER channel */
-      channelDetail: string | null;
-      /** @enum {string} */
-      status:
-        | 'SENT'
-        | 'RESPONSE_RECEIVED'
-        | 'HR_INTERVIEW'
-        | 'TECHNICAL_INTERVIEW'
-        | 'OFFER'
-        | 'REJECTED'
-        | 'NO_RESPONSE';
-      contact: string | null;
-      /**
-       * @description Computed: sentAt + follow-up delay while the status is SENT
-       * @example 2026-10-08
-       */
-      followUpDate: string | null;
-      /** @description Computed: true when today is after followUpDate */
-      followUpOverdue: boolean;
-      /** @enum {string|null} */
-      workMode: 'ONSITE' | 'HYBRID' | 'FULL_REMOTE' | 'UNSPECIFIED' | null;
-      remoteRhythm: string | null;
-      salaryRange: string | null;
-      cvVersion: string | null;
-      stack: string | null;
-      recruitmentProcess: string | null;
-      notes: string | null;
-      /** @description Only in the detail response */
-      jobPostingText: string | null;
-      /** Format: date-time */
-      createdAt: string;
-      /** Format: date-time */
-      updatedAt: string;
-    };
-    ApplicationSummaryDto: {
-      /** Format: uuid */
-      id: string;
-      /** @example 2026-10-01 */
-      sentAt: string;
-      company: string;
-      jobTitle: string;
-      location: string | null;
-      response: string | null;
-      resources: string | null;
-      /** @enum {string|null} */
-      channel:
-        | 'CAREER_SITE'
-        | 'LINKEDIN'
-        | 'WELCOME_TO_THE_JUNGLE'
-        | 'HELLOWORK'
-        | 'APEC'
-        | 'RECRUITMENT_AGENCY'
-        | 'UNSOLICITED'
-        | 'REFERRAL'
-        | 'OTHER'
-        | null;
-      /** @description Precision for the OTHER channel */
-      channelDetail: string | null;
-      /** @enum {string} */
-      status:
-        | 'SENT'
-        | 'RESPONSE_RECEIVED'
-        | 'HR_INTERVIEW'
-        | 'TECHNICAL_INTERVIEW'
-        | 'OFFER'
-        | 'REJECTED'
-        | 'NO_RESPONSE';
-      contact: string | null;
-      /**
-       * @description Computed: sentAt + follow-up delay while the status is SENT
-       * @example 2026-10-08
-       */
-      followUpDate: string | null;
-      /** @description Computed: true when today is after followUpDate */
-      followUpOverdue: boolean;
-      /** @enum {string|null} */
-      workMode: 'ONSITE' | 'HYBRID' | 'FULL_REMOTE' | 'UNSPECIFIED' | null;
-      remoteRhythm: string | null;
-      salaryRange: string | null;
-      cvVersion: string | null;
-      stack: string | null;
-      recruitmentProcess: string | null;
-      notes: string | null;
-      /** Format: date-time */
-      createdAt: string;
-      /** Format: date-time */
-      updatedAt: string;
-    };
-    ApplicationListDto: {
-      items: components['schemas']['ApplicationSummaryDto'][];
-      /** @description Number of applications matching the filters */
-      total: number;
-      limit: number;
-      offset: number;
-    };
-    UpdateApplicationDto: {
-      location?: string | null;
-      response?: string | null;
-      resources?: string | null;
-      /** @enum {string|null} */
-      channel?:
-        | 'CAREER_SITE'
-        | 'LINKEDIN'
-        | 'WELCOME_TO_THE_JUNGLE'
-        | 'HELLOWORK'
-        | 'APEC'
-        | 'RECRUITMENT_AGENCY'
-        | 'UNSOLICITED'
-        | 'REFERRAL'
-        | 'OTHER'
-        | null;
-      /** @description Channel name when channel is OTHER (e.g. "Indeed"); requires channel OTHER */
-      channelDetail?: string | null;
-      contact?: string | null;
-      /** @enum {string|null} */
-      workMode?: 'ONSITE' | 'HYBRID' | 'FULL_REMOTE' | 'UNSPECIFIED' | null;
-      remoteRhythm?: string | null;
-      salaryRange?: string | null;
-      cvVersion?: string | null;
-      stack?: string | null;
-      recruitmentProcess?: string | null;
-      notes?: string | null;
-      jobPostingText?: string | null;
-      /**
-       * @description YYYY-MM-DD
-       * @example 2026-10-01
-       */
-      sentAt?: string;
-      company?: string;
-      jobTitle?: string;
-      /** @enum {string} */
-      status?:
-        | 'SENT'
-        | 'RESPONSE_RECEIVED'
-        | 'HR_INTERVIEW'
-        | 'TECHNICAL_INTERVIEW'
-        | 'OFFER'
-        | 'REJECTED'
-        | 'NO_RESPONSE';
-    };
-    StatsOverviewDto: {
-      total: number;
-      /**
-       * @description Count per status code; every code is present
-       * @example {
-       *       "SENT": 4,
-       *       "HR_INTERVIEW": 1,
-       *       "REJECTED": 1
-       *     }
-       */
-      byStatus: {
-        [key: string]: number;
-      };
-      /**
-       * @description Count per channel code; UNSPECIFIED counts applications without a channel
-       * @example {
-       *       "LINKEDIN": 3,
-       *       "APEC": 2,
-       *       "UNSPECIFIED": 1
-       *     }
-       */
-      byChannel: {
-        [key: string]: number;
-      };
-      /** @description Responses / total (not rounded); null without applications */
-      responseRate: number | null;
-    };
-    SettingsDto: {
-      /**
-       * @description Days between sending an application and following up
-       * @example 7
-       */
-      followUpDelayDays: number;
-    };
-    SkillDto: {
-      /** Format: uuid */
-      id: string;
-      /** @example TypeScript */
-      name: string;
-      /** @example \bTypeScript\b */
-      pattern: string;
-      level: number | null;
-    };
-    SkillStatDto: {
-      /** Format: uuid */
-      id: string;
-      /** @example TypeScript */
-      name: string;
-      /** @example \bTypeScript\b */
-      pattern: string;
-      level: number | null;
-      /** @description Number of job postings whose text matches the pattern */
-      postingCount: number;
-      /** @description postingCount / postingsAnalyzed; null when no posting text was saved */
-      frequency: number | null;
-    };
-    SkillStatsDto: {
-      /** @description Applications with a job posting text */
-      postingsAnalyzed: number;
-      /** @description Most frequent first, then by name */
-      skills: components['schemas']['SkillStatDto'][];
-    };
-    CreateSkillDto: {
-      /** @example TypeScript */
-      name: string;
-      /**
-       * @description Regular expression matched case-insensitively against job posting texts
-       * @example \bTypeScript\b
-       */
-      pattern: string;
-      level?: number | null;
-    };
-    UpdateSkillDto: {
-      level?: number | null;
-      name?: string;
-      pattern?: string;
-    };
-  };
-  responses: never;
-  parameters: never;
-  requestBodies: never;
-  headers: never;
-  pathItems: never;
+    responses: never;
+    parameters: never;
+    requestBodies: never;
+    headers: never;
+    pathItems: never;
 }
 export type $defs = Record<string, never>;
 export interface operations {
-  AuthController_register: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['RegisterDto'];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
+    AuthController_register: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          'application/json': components['schemas']['AuthResponseDto'];
-        };
-      };
-      /** @description VALIDATION_FAILED */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description EMAIL_ALREADY_USED */
-      409: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  AuthController_login: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['LoginDto'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AuthResponseDto'];
-        };
-      };
-      /** @description VALIDATION_FAILED */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description INVALID_CREDENTIALS */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  AuthController_me: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['UserResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  HealthController_check: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description The Health Check is successful */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /**
-             * @example ok
-             * @enum {string}
-             */
-            status?: 'ok' | 'degraded';
-            /**
-             * @example {
-             *       "database": {
-             *         "status": "up",
-             *         "responseTime": 12
-             *       }
-             *     }
-             */
-            info?: {
-              [key: string]: {
-                /** @enum {string} */
-                status: 'up' | 'degraded' | 'down';
-                /** @description Time the health indicator took to respond, in ms */
-                responseTime?: number;
-              } & {
-                [key: string]: unknown;
-              };
-            } | null;
-            /** @example {} */
-            error?: {
-              [key: string]: {
-                /** @enum {string} */
-                status: 'up' | 'degraded' | 'down';
-                /** @description Time the health indicator took to respond, in ms */
-                responseTime?: number;
-              } & {
-                [key: string]: unknown;
-              };
-            } | null;
-            /**
-             * @example {
-             *       "database": {
-             *         "status": "up",
-             *         "responseTime": 12
-             *       }
-             *     }
-             */
-            details?: {
-              [key: string]: {
-                /** @enum {string} */
-                status: 'up' | 'degraded' | 'down';
-                /** @description Time the health indicator took to respond, in ms */
-                responseTime?: number;
-              } & {
-                [key: string]: unknown;
-              };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RegisterDto"];
             };
-          };
         };
-      };
-      /** @description The Health Check is not successful */
-      503: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /**
-             * @example error
-             * @enum {string}
-             */
-            status?: 'error' | 'shutting_down';
-            /**
-             * @example {
-             *       "database": {
-             *         "status": "up",
-             *         "responseTime": 12
-             *       }
-             *     }
-             */
-            info?: {
-              [key: string]: {
-                /** @enum {string} */
-                status: 'up' | 'degraded' | 'down';
-                /** @description Time the health indicator took to respond, in ms */
-                responseTime?: number;
-              } & {
-                [key: string]: unknown;
-              };
-            } | null;
-            /**
-             * @example {
-             *       "redis": {
-             *         "status": "down",
-             *         "message": "Could not connect",
-             *         "responseTime": 3005
-             *       }
-             *     }
-             */
-            error?: {
-              [key: string]: {
-                /** @enum {string} */
-                status: 'up' | 'degraded' | 'down';
-                /** @description Time the health indicator took to respond, in ms */
-                responseTime?: number;
-              } & {
-                [key: string]: unknown;
-              };
-            } | null;
-            /**
-             * @example {
-             *       "database": {
-             *         "status": "up",
-             *         "responseTime": 12
-             *       },
-             *       "redis": {
-             *         "status": "down",
-             *         "message": "Could not connect",
-             *         "responseTime": 3005
-             *       }
-             *     }
-             */
-            details?: {
-              [key: string]: {
-                /** @enum {string} */
-                status: 'up' | 'degraded' | 'down';
-                /** @description Time the health indicator took to respond, in ms */
-                responseTime?: number;
-              } & {
-                [key: string]: unknown;
-              };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthResponseDto"];
+                };
             };
-          };
+            /** @description VALIDATION_FAILED */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetailsDto"];
+                };
+            };
+            /** @description EMAIL_ALREADY_USED */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetailsDto"];
+                };
+            };
         };
-      };
     };
-  };
-  ApplicationsController_list: {
-    parameters: {
-      query?: {
-        status?:
-          | 'SENT'
-          | 'RESPONSE_RECEIVED'
-          | 'HR_INTERVIEW'
-          | 'TECHNICAL_INTERVIEW'
-          | 'OFFER'
-          | 'REJECTED'
-          | 'NO_RESPONSE';
-        channel?:
-          | 'CAREER_SITE'
-          | 'LINKEDIN'
-          | 'WELCOME_TO_THE_JUNGLE'
-          | 'HELLOWORK'
-          | 'APEC'
-          | 'RECRUITMENT_AGENCY'
-          | 'UNSOLICITED'
-          | 'REFERRAL'
-          | 'OTHER';
-        /** @description true: only applications whose follow-up date is past. false: no filter. */
-        overdue?: boolean;
-        /** @description Case-insensitive search on company and job title */
-        q?: string;
-        /** @description Order by sent date (desc: newest first) */
-        order?: 'asc' | 'desc';
-        limit?: number;
-        offset?: number;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
+    AuthController_login: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LoginDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthResponseDto"];
+                };
+            };
+            /** @description VALIDATION_FAILED */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetailsDto"];
+                };
+            };
+            /** @description INVALID_CREDENTIALS */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetailsDto"];
+                };
+            };
+        };
     };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+    AuthController_me: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          'application/json': components['schemas']['ApplicationListDto'];
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserResponseDto"];
+                };
+            };
+            /** @description UNAUTHORIZED */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetailsDto"];
+                };
+            };
         };
-      };
-      /** @description VALIDATION_FAILED */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
     };
-  };
-  ApplicationsController_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    HealthController_check: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The Health Check is successful */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /**
+                         * @example ok
+                         * @enum {string}
+                         */
+                        status?: "ok" | "degraded";
+                        /**
+                         * @example {
+                         *       "database": {
+                         *         "status": "up",
+                         *         "responseTime": 12
+                         *       }
+                         *     }
+                         */
+                        info?: {
+                            [key: string]: {
+                                /** @enum {string} */
+                                status: "up" | "degraded" | "down";
+                                /** @description Time the health indicator took to respond, in ms */
+                                responseTime?: number;
+                            } & {
+                                [key: string]: unknown;
+                            };
+                        } | null;
+                        /** @example {} */
+                        error?: {
+                            [key: string]: {
+                                /** @enum {string} */
+                                status: "up" | "degraded" | "down";
+                                /** @description Time the health indicator took to respond, in ms */
+                                responseTime?: number;
+                            } & {
+                                [key: string]: unknown;
+                            };
+                        } | null;
+                        /**
+                         * @example {
+                         *       "database": {
+                         *         "status": "up",
+                         *         "responseTime": 12
+                         *       }
+                         *     }
+                         */
+                        details?: {
+                            [key: string]: {
+                                /** @enum {string} */
+                                status: "up" | "degraded" | "down";
+                                /** @description Time the health indicator took to respond, in ms */
+                                responseTime?: number;
+                            } & {
+                                [key: string]: unknown;
+                            };
+                        };
+                    };
+                };
+            };
+            /** @description The Health Check is not successful */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /**
+                         * @example error
+                         * @enum {string}
+                         */
+                        status?: "error" | "shutting_down";
+                        /**
+                         * @example {
+                         *       "database": {
+                         *         "status": "up",
+                         *         "responseTime": 12
+                         *       }
+                         *     }
+                         */
+                        info?: {
+                            [key: string]: {
+                                /** @enum {string} */
+                                status: "up" | "degraded" | "down";
+                                /** @description Time the health indicator took to respond, in ms */
+                                responseTime?: number;
+                            } & {
+                                [key: string]: unknown;
+                            };
+                        } | null;
+                        /**
+                         * @example {
+                         *       "redis": {
+                         *         "status": "down",
+                         *         "message": "Could not connect",
+                         *         "responseTime": 3005
+                         *       }
+                         *     }
+                         */
+                        error?: {
+                            [key: string]: {
+                                /** @enum {string} */
+                                status: "up" | "degraded" | "down";
+                                /** @description Time the health indicator took to respond, in ms */
+                                responseTime?: number;
+                            } & {
+                                [key: string]: unknown;
+                            };
+                        } | null;
+                        /**
+                         * @example {
+                         *       "database": {
+                         *         "status": "up",
+                         *         "responseTime": 12
+                         *       },
+                         *       "redis": {
+                         *         "status": "down",
+                         *         "message": "Could not connect",
+                         *         "responseTime": 3005
+                         *       }
+                         *     }
+                         */
+                        details?: {
+                            [key: string]: {
+                                /** @enum {string} */
+                                status: "up" | "degraded" | "down";
+                                /** @description Time the health indicator took to respond, in ms */
+                                responseTime?: number;
+                            } & {
+                                [key: string]: unknown;
+                            };
+                        };
+                    };
+                };
+            };
+        };
     };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['CreateApplicationDto'];
-      };
+    ApplicationsController_list: {
+        parameters: {
+            query?: {
+                status?: "SENT" | "RESPONSE_RECEIVED" | "HR_INTERVIEW" | "TECHNICAL_INTERVIEW" | "OFFER" | "REJECTED" | "NO_RESPONSE";
+                channel?: "CAREER_SITE" | "LINKEDIN" | "WELCOME_TO_THE_JUNGLE" | "HELLOWORK" | "APEC" | "RECRUITMENT_AGENCY" | "UNSOLICITED" | "REFERRAL" | "OTHER";
+                /** @description true: only applications whose follow-up date is past. false: no filter. */
+                overdue?: boolean;
+                /** @description Case-insensitive search on company and job title */
+                q?: string;
+                /** @description Order by sent date (desc: newest first) */
+                order?: "asc" | "desc";
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApplicationListDto"];
+                };
+            };
+            /** @description VALIDATION_FAILED */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetailsDto"];
+                };
+            };
+            /** @description UNAUTHORIZED */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetailsDto"];
+                };
+            };
+        };
     };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
+    ApplicationsController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          'application/json': components['schemas']['ApplicationDetailDto'];
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateApplicationDto"];
+            };
         };
-      };
-      /** @description VALIDATION_FAILED */
-      400: {
-        headers: {
-          [name: string]: unknown;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApplicationDetailDto"];
+                };
+            };
+            /** @description VALIDATION_FAILED */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetailsDto"];
+                };
+            };
+            /** @description UNAUTHORIZED */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetailsDto"];
+                };
+            };
         };
-        content?: never;
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
     };
-  };
-  ApplicationsController_findOne: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
+    ApplicationsController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApplicationDetailDto"];
+                };
+            };
+            /** @description UNAUTHORIZED */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetailsDto"];
+                };
+            };
+            /** @description APPLICATION_NOT_FOUND */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetailsDto"];
+                };
+            };
+        };
     };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+    ApplicationsController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
         };
-        content: {
-          'application/json': components['schemas']['ApplicationDetailDto'];
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description UNAUTHORIZED */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetailsDto"];
+                };
+            };
+            /** @description APPLICATION_NOT_FOUND */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetailsDto"];
+                };
+            };
         };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description APPLICATION_NOT_FOUND */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
     };
-  };
-  ApplicationsController_remove: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
+    ApplicationsController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateApplicationDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApplicationDetailDto"];
+                };
+            };
+            /** @description VALIDATION_FAILED */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetailsDto"];
+                };
+            };
+            /** @description UNAUTHORIZED */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetailsDto"];
+                };
+            };
+            /** @description APPLICATION_NOT_FOUND */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetailsDto"];
+                };
+            };
+        };
     };
-    requestBody?: never;
-    responses: {
-      204: {
-        headers: {
-          [name: string]: unknown;
+    StatsController_overview: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content?: never;
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StatsOverviewDto"];
+                };
+            };
+            /** @description UNAUTHORIZED */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetailsDto"];
+                };
+            };
         };
-        content?: never;
-      };
-      /** @description APPLICATION_NOT_FOUND */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
     };
-  };
-  ApplicationsController_update: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
+    SettingsController_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SettingsDto"];
+                };
+            };
+            /** @description UNAUTHORIZED */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetailsDto"];
+                };
+            };
+        };
     };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['UpdateApplicationDto'];
-      };
+    SkillsController_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SkillDto"][];
+                };
+            };
+            /** @description UNAUTHORIZED */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetailsDto"];
+                };
+            };
+        };
     };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+    SkillsController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          'application/json': components['schemas']['ApplicationDetailDto'];
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateSkillDto"];
+            };
         };
-      };
-      /** @description VALIDATION_FAILED */
-      400: {
-        headers: {
-          [name: string]: unknown;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SkillDto"];
+                };
+            };
+            /** @description VALIDATION_FAILED */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetailsDto"];
+                };
+            };
+            /** @description UNAUTHORIZED */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetailsDto"];
+                };
+            };
+            /** @description SKILL_NAME_ALREADY_USED */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetailsDto"];
+                };
+            };
         };
-        content?: never;
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description APPLICATION_NOT_FOUND */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
     };
-  };
-  StatsController_overview: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    SkillsController_stats: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SkillStatsDto"];
+                };
+            };
+            /** @description UNAUTHORIZED */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetailsDto"];
+                };
+            };
+        };
     };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+    SkillsController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
         };
-        content: {
-          'application/json': components['schemas']['StatsOverviewDto'];
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description UNAUTHORIZED */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetailsDto"];
+                };
+            };
+            /** @description SKILL_NOT_FOUND */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetailsDto"];
+                };
+            };
         };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
     };
-  };
-  SettingsController_get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    SkillsController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateSkillDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SkillDto"];
+                };
+            };
+            /** @description VALIDATION_FAILED */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetailsDto"];
+                };
+            };
+            /** @description UNAUTHORIZED */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetailsDto"];
+                };
+            };
+            /** @description SKILL_NOT_FOUND */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetailsDto"];
+                };
+            };
+            /** @description SKILL_NAME_ALREADY_USED */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetailsDto"];
+                };
+            };
+        };
     };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['SettingsDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  SkillsController_list: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['SkillDto'][];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  SkillsController_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['CreateSkillDto'];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['SkillDto'];
-        };
-      };
-      /** @description VALIDATION_FAILED */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description SKILL_NAME_ALREADY_USED */
-      409: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  SkillsController_stats: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['SkillStatsDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  SkillsController_remove: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      204: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description SKILL_NOT_FOUND */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  SkillsController_update: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['UpdateSkillDto'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['SkillDto'];
-        };
-      };
-      /** @description VALIDATION_FAILED */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description SKILL_NOT_FOUND */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description SKILL_NAME_ALREADY_USED */
-      409: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
 }

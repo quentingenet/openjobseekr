@@ -1,19 +1,23 @@
-import { HttpException, HttpStatus } from '@nestjs/common';
-import type { ErrorCode, ErrorResponseBody } from './error-codes.js';
+import { HttpException } from '@nestjs/common';
+import { ERROR_CATALOG, type ErrorCode } from './error-codes.js';
 
-/** HTTP exception carrying a stable error code. Throw this from services. */
+export interface FieldError {
+  field: string;
+  constraints: string[];
+}
+
+/**
+ * Error with a stable code; its HTTP status and title come from `ERROR_CATALOG`.
+ * The global filter turns it into an RFC 9457 problem.
+ */
 export class AppException extends HttpException {
   constructor(
     readonly code: ErrorCode,
-    message: string,
-    status: HttpStatus,
-    readonly details?: unknown,
+    /** Developer message specific to this occurrence (RFC 9457 `detail`). */
+    readonly detail?: string,
+    /** Invalid fields, for VALIDATION_FAILED. */
+    readonly errors?: FieldError[],
   ) {
-    const body: ErrorResponseBody = {
-      code,
-      message,
-      ...(details === undefined ? {} : { details }),
-    };
-    super(body, status);
+    super(detail ?? ERROR_CATALOG[code].title, ERROR_CATALOG[code].status);
   }
 }

@@ -1,14 +1,13 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import {
-  ApiBadRequestResponse,
   ApiBearerAuth,
-  ApiConflictResponse,
   ApiCreatedResponse,
   ApiOkResponse,
   ApiOperation,
   ApiTags,
-  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
+import { ApiProblem } from '../common/decorators/api-problem.decorator.js';
+import { ErrorCode } from '../common/error-codes.js';
 import {
   type AuthenticatedUser,
   CurrentUser,
@@ -27,8 +26,8 @@ export class AuthController {
   @Post('register')
   @ApiOperation({ summary: 'Create an account and return an access token' })
   @ApiCreatedResponse({ type: AuthResponseDto })
-  @ApiBadRequestResponse({ description: 'VALIDATION_FAILED' })
-  @ApiConflictResponse({ description: 'EMAIL_ALREADY_USED' })
+  @ApiProblem(HttpStatus.BAD_REQUEST, ErrorCode.VALIDATION_FAILED)
+  @ApiProblem(HttpStatus.CONFLICT, ErrorCode.EMAIL_ALREADY_USED)
   register(@Body() dto: RegisterDto): Promise<AuthResponseDto> {
     return this.auth.register(dto);
   }
@@ -38,8 +37,8 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Log in and return an access token' })
   @ApiOkResponse({ type: AuthResponseDto })
-  @ApiBadRequestResponse({ description: 'VALIDATION_FAILED' })
-  @ApiUnauthorizedResponse({ description: 'INVALID_CREDENTIALS' })
+  @ApiProblem(HttpStatus.BAD_REQUEST, ErrorCode.VALIDATION_FAILED)
+  @ApiProblem(HttpStatus.UNAUTHORIZED, ErrorCode.INVALID_CREDENTIALS)
   login(@Body() dto: LoginDto): Promise<AuthResponseDto> {
     return this.auth.login(dto);
   }
@@ -48,7 +47,7 @@ export class AuthController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Return the authenticated user' })
   @ApiOkResponse({ type: UserResponseDto })
-  @ApiUnauthorizedResponse({ description: 'UNAUTHORIZED' })
+  @ApiProblem(HttpStatus.UNAUTHORIZED, ErrorCode.UNAUTHORIZED)
   me(@CurrentUser() user: AuthenticatedUser): Promise<UserResponseDto> {
     return this.auth.getProfile(user.id);
   }

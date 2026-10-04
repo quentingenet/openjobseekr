@@ -4,9 +4,9 @@ import { useNavigate, useParams } from 'react-router';
 import {
   useApplication,
   useCreateApplication,
-  useSettings,
   useUpdateApplication,
-} from '../../api/hooks';
+} from '../../api/queries/applications';
+import { useSettings } from '../../api/queries/stats';
 import { PageTitle } from '../../components/PageTitle';
 import { ErrorState, LoadingState } from '../../components/PageStates';
 import {

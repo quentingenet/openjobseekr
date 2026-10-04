@@ -13,7 +13,7 @@ import {
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router';
-import { useLogin, useRegister } from '../../api/hooks';
+import { useLogin, useRegister } from '../../api/queries/auth';
 import { LanguageSwitcher } from '../../components/LanguageSwitcher';
 import { errorMessage } from '../../lib/errors';
 import { translateFieldError } from '../../lib/field-error';

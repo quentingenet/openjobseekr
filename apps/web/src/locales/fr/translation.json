@@ -100,7 +100,6 @@
     "deleteTitle": "Supprimer cette candidature ?",
     "deleteMessage": "La candidature chez {{company}} sera supprimée définitivement.",
     "confirmDelete": "Supprimer",
-    "cancel": "Annuler",
     "deleted": "Candidature supprimée",
     "noPostingText": "Aucun texte d'annonce enregistré.",
     "createdAt": "Créée le {{date}}",
@@ -180,7 +179,9 @@
     "retry": "Réessayer",
     "pageNotFound": "Page introuvable",
     "goHome": "Aller à mes candidatures",
-    "back": "Retour"
+    "back": "Retour",
+    "cancel": "Annuler",
+    "unexpectedError": "Un problème est survenu à l'affichage de cette page."
   },
   "skills": {
     "title": "Compétences",
@@ -212,7 +213,6 @@
     "deleteTitle": "Supprimer cette compétence ?",
     "deleteMessage": "La compétence « {{name}} » sera supprimée.",
     "confirmDelete": "Supprimer",
-    "cancel": "Annuler",
     "subtitle_one": "Fréquence de chaque compétence dans votre annonce enregistrée.",
     "subtitle_other": "Fréquence de chaque compétence dans vos {{count}} annonces enregistrées."
   }

@@ -1,26 +1,34 @@
+import type { components } from './schema';
 import { tokenStorage } from './token-storage';
 
 const API_BASE = '/api';
 
-export interface FieldError {
-  field: string;
-  constraints: string[];
-}
+export type ProblemDetails = components['schemas']['ProblemDetailsDto'];
+export type FieldError = NonNullable<ProblemDetails['errors']>[number];
+/** API error codes, plus the two the client produces itself. */
+export type ApiErrorCode = ProblemDetails['code'] | 'NETWORK_ERROR' | 'UNKNOWN';
 
-/** Error returned by the API (`{ code, message, details? }`) or a network failure. */
+/** An RFC 9457 problem returned by the API, or a network failure. */
 export class ApiError extends Error {
   constructor(
     readonly status: number,
-    readonly code: string,
+    readonly code: ApiErrorCode,
     message: string,
-    readonly details?: unknown,
+    /** Invalid fields of a VALIDATION_FAILED problem. */
+    readonly fieldErrors: FieldError[] = [],
   ) {
     super(message);
     this.name = 'ApiError';
   }
 
-  get fieldErrors(): FieldError[] {
-    return Array.isArray(this.details) ? (this.details as FieldError[]) : [];
+  static fromProblem(status: number, payload: unknown): ApiError {
+    const problem = (payload ?? {}) as Partial<ProblemDetails>;
+    return new ApiError(
+      status,
+      problem.code ?? 'UNKNOWN',
+      problem.detail ?? problem.title ?? `HTTP ${status}`,
+      problem.errors ?? [],
+    );
   }
 }
 
@@ -41,13 +49,15 @@ function buildUrl(path: string, query?: Record<string, QueryValue>): string {
   return `${API_BASE}${path}${search ? `?${search}` : ''}`;
 }
 
-/** Thin typed wrapper around fetch: adds the token, sends JSON, turns errors into ApiError. */
+/** Thin typed wrapper around fetch: adds the token, sends JSON, turns problems into ApiError. */
 export async function apiRequest<T>(
   method: 'GET' | 'POST' | 'PATCH' | 'DELETE',
   path: string,
   options: RequestOptions = {},
 ): Promise<T> {
-  const headers: Record<string, string> = { Accept: 'application/json' };
+  const headers: Record<string, string> = {
+    Accept: 'application/json, application/problem+json',
+  };
   const token = tokenStorage.get();
   if (token) headers.Authorization = `Bearer ${token}`;
   if (options.body !== undefined) headers['Content-Type'] = 'application/json';
@@ -67,14 +77,6 @@ export async function apiRequest<T>(
 
   if (response.status === 204) return undefined as T;
   const payload: unknown = await response.json().catch(() => undefined);
-  if (!response.ok) {
-    const body = (payload ?? {}) as { code?: string; message?: string; details?: unknown };
-    throw new ApiError(
-      response.status,
-      body.code ?? 'UNKNOWN',
-      body.message ?? response.statusText,
-      body.details,
-    );
-  }
+  if (!response.ok) throw ApiError.fromProblem(response.status, payload);
   return payload as T;
 }

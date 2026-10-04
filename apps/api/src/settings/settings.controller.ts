@@ -1,14 +1,9 @@
 import { Controller, Get } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import {
-  ApiBearerAuth,
-  ApiOkResponse,
-  ApiOperation,
-  ApiProperty,
-  ApiTags,
-  ApiUnauthorizedResponse,
-} from '@nestjs/swagger';
-import type { Env } from '../config/env.schema.js';
+import { HttpStatus } from '@nestjs/common';
+import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiProperty, ApiTags } from '@nestjs/swagger';
+import { FollowUpContextProvider } from '../applications/follow-up-context.provider.js';
+import { ApiProblem } from '../common/decorators/api-problem.decorator.js';
+import { ErrorCode } from '../common/error-codes.js';
 
 export class SettingsDto {
   @ApiProperty({ example: 7, description: 'Days between sending an application and following up' })
@@ -20,13 +15,13 @@ export class SettingsDto {
 @ApiBearerAuth()
 @Controller('settings')
 export class SettingsController {
-  constructor(private readonly config: ConfigService<Env, true>) {}
+  constructor(private readonly followUp: FollowUpContextProvider) {}
 
   @Get()
   @ApiOperation({ summary: 'Settings used by the web app' })
   @ApiOkResponse({ type: SettingsDto })
-  @ApiUnauthorizedResponse({ description: 'UNAUTHORIZED' })
+  @ApiProblem(HttpStatus.UNAUTHORIZED, ErrorCode.UNAUTHORIZED)
   get(): SettingsDto {
-    return { followUpDelayDays: this.config.get('FOLLOW_UP_DELAY_DAYS', { infer: true }) };
+    return { followUpDelayDays: this.followUp.delayDays };
   }
 }

@@ -1,8 +1,8 @@
 import type { ValidationError } from '@nestjs/common';
 import { IsEmail } from 'class-validator';
 import { describe, expect, it } from 'vitest';
-import { AppException } from './app.exception.js';
 import { createValidationPipe, toFieldErrors } from './validation.js';
+import { appError } from './testing/app-error.js';
 
 describe('toFieldErrors', () => {
   it('lists the failed constraint names per field, including nested fields', () => {
@@ -45,12 +45,11 @@ describe('createValidationPipe', () => {
       .transform({ email: 'not-an-email' }, metadata)
       .catch((e: unknown) => e);
 
-    expect(error).toBeInstanceOf(AppException);
-    expect((error as AppException).getStatus()).toBe(400);
-    expect((error as AppException).getResponse()).toEqual({
+    expect(appError(error)).toEqual({
       code: 'VALIDATION_FAILED',
-      message: 'Request validation failed',
-      details: [{ field: 'email', constraints: ['isEmail'] }],
+      status: 400,
+      detail: undefined,
+      errors: [{ field: 'email', constraints: ['isEmail'] }],
     });
   });
 
@@ -59,11 +58,9 @@ describe('createValidationPipe', () => {
       .transform({ email: 'jane@example.com', isAdmin: true }, metadata)
       .catch((e: unknown) => e);
 
-    expect((error as AppException).getResponse()).toEqual({
-      code: 'VALIDATION_FAILED',
-      message: 'Request validation failed',
-      details: [{ field: 'isAdmin', constraints: ['whitelistValidation'] }],
-    });
+    expect(appError(error).errors).toEqual([
+      { field: 'isAdmin', constraints: ['whitelistValidation'] },
+    ]);
   });
 
   it('returns an instance of the DTO class for a valid body', async () => {

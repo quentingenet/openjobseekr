@@ -1,7 +1,7 @@
 import type { JwtService } from '@nestjs/jwt';
 import bcrypt from 'bcrypt';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { AppException } from '../common/app.exception.js';
+import { appError } from '../common/testing/app-error.js';
 import { Prisma } from '../generated/prisma/client.js';
 import type { PrismaService } from '../prisma/prisma.service.js';
 import { AuthService } from './auth.service.js';
@@ -51,21 +51,17 @@ describe('AuthService', () => {
       });
     });
 
-    it('throws EMAIL_ALREADY_USED (409) on a duplicate email', async () => {
-      ctx.prisma.user.create.mockRejectedValue(
-        new Prisma.PrismaClientKnownRequestError('Unique constraint failed', {
-          code: 'P2002',
-          clientVersion: '7.10.0',
-        }),
-      );
+    it('lets a duplicate email through to the global error handling (EMAIL_ALREADY_USED)', async () => {
+      const duplicate = new Prisma.PrismaClientKnownRequestError('Unique constraint failed', {
+        code: 'P2002',
+        clientVersion: '7.10.0',
+        meta: { modelName: 'User' },
+      });
+      ctx.prisma.user.create.mockRejectedValue(duplicate);
 
-      const error = await ctx.service
-        .register({ email: 'jane@example.com', password: 'correct horse' })
-        .catch((e: unknown) => e);
-
-      expect(error).toBeInstanceOf(AppException);
-      expect((error as AppException).code).toBe('EMAIL_ALREADY_USED');
-      expect((error as AppException).getStatus()).toBe(409);
+      await expect(
+        ctx.service.register({ email: 'jane@example.com', password: 'correct horse' }),
+      ).rejects.toBe(duplicate);
     });
   });
 
@@ -103,9 +99,7 @@ describe('AuthService', () => {
         .login({ email: 'jane@example.com', password: 'wrong password' })
         .catch((e: unknown) => e);
 
-      expect(error).toBeInstanceOf(AppException);
-      expect((error as AppException).code).toBe('INVALID_CREDENTIALS');
-      expect((error as AppException).getStatus()).toBe(401);
+      expect(appError(error)).toMatchObject({ code: 'INVALID_CREDENTIALS', status: 401 });
     });
 
     it('throws the same INVALID_CREDENTIALS error for an unknown email', async () => {
@@ -115,9 +109,11 @@ describe('AuthService', () => {
         .login({ email: 'nobody@example.com', password: 'whatever1' })
         .catch((e: unknown) => e);
 
-      expect((error as AppException).getResponse()).toEqual({
+      expect(appError(error)).toEqual({
         code: 'INVALID_CREDENTIALS',
-        message: 'Invalid email or password',
+        status: 401,
+        detail: undefined,
+        errors: undefined,
       });
       expect(ctx.jwt.signAsync).not.toHaveBeenCalled();
     });
@@ -147,11 +143,11 @@ describe('AuthService', () => {
 
       const error = await ctx.service.getProfile('deleted-user').catch((e: unknown) => e);
 
-      expect(error).toBeInstanceOf(AppException);
-      expect((error as AppException).getStatus()).toBe(401);
-      expect((error as AppException).getResponse()).toEqual({
+      expect(appError(error)).toEqual({
         code: 'UNAUTHORIZED',
-        message: 'User no longer exists',
+        status: 401,
+        detail: 'User no longer exists',
+        errors: undefined,
       });
     });
   });

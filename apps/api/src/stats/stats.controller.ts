@@ -1,12 +1,9 @@
 import { Controller, Get } from '@nestjs/common';
-import {
-  ApiBearerAuth,
-  ApiOkResponse,
-  ApiOperation,
-  ApiTags,
-  ApiUnauthorizedResponse,
-} from '@nestjs/swagger';
+import { HttpStatus } from '@nestjs/common';
+import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import type { Overview } from '../applications/domain/overview.js';
+import { ApiProblem } from '../common/decorators/api-problem.decorator.js';
+import { ErrorCode } from '../common/error-codes.js';
 import {
   type AuthenticatedUser,
   CurrentUser,
@@ -23,7 +20,7 @@ export class StatsController {
   @Get('overview')
   @ApiOperation({ summary: 'Counts by status and channel, and the response rate' })
   @ApiOkResponse({ type: StatsOverviewDto })
-  @ApiUnauthorizedResponse({ description: 'UNAUTHORIZED' })
+  @ApiProblem(HttpStatus.UNAUTHORIZED, ErrorCode.UNAUTHORIZED)
   overview(@CurrentUser() user: AuthenticatedUser): Promise<Overview> {
     return this.stats.overview(user.id);
   }

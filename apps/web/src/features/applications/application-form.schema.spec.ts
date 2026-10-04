@@ -3,7 +3,6 @@ import type { Application } from '../../api/types';
 import {
   applicationFormSchema,
   applicationToForm,
-  constraintToMessage,
   emptyApplicationForm,
   isCalendarDate,
   toCreateInput,
@@ -169,16 +168,5 @@ describe('applicationToForm', () => {
     expect(form.notes).toBe('Call back');
     expect(form).not.toHaveProperty('id');
     expect(form).not.toHaveProperty('followUpDate');
-  });
-});
-
-describe('constraintToMessage', () => {
-  it.each([
-    [['isNotEmpty', 'isString'], 'validation.required'],
-    [['maxLength'], 'validation.tooLong'],
-    [['isCalendarDate'], 'validation.date'],
-    [['isEnum'], 'validation.invalid'],
-  ])('maps %j to %s', (constraints, key) => {
-    expect(constraintToMessage(constraints)).toBe(key);
   });
 });

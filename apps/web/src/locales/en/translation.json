@@ -100,7 +100,6 @@
     "deleteTitle": "Delete this application?",
     "deleteMessage": "The application to {{company}} will be permanently deleted.",
     "confirmDelete": "Delete",
-    "cancel": "Cancel",
     "deleted": "Application deleted",
     "noPostingText": "No job posting text saved.",
     "createdAt": "Created on {{date}}",
@@ -180,7 +179,9 @@
     "retry": "Retry",
     "pageNotFound": "Page not found",
     "goHome": "Go to my applications",
-    "back": "Back"
+    "back": "Back",
+    "cancel": "Cancel",
+    "unexpectedError": "Something went wrong while displaying this page."
   },
   "skills": {
     "title": "Skills",
@@ -212,7 +213,6 @@
     "deleteTitle": "Delete this skill?",
     "deleteMessage": "The skill “{{name}}” will be deleted.",
     "confirmDelete": "Delete",
-    "cancel": "Cancel",
     "subtitle_one": "How often each skill appears in your saved job posting.",
     "subtitle_other": "How often each skill appears in your {{count}} saved job postings."
   }

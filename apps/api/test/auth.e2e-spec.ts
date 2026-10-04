@@ -71,14 +71,24 @@ describe('Auth (e2e)', () => {
       .expect(409);
 
     expect(response.body).toEqual({
+      type: 'urn:openjobseekr:error:email-already-used',
+      title: 'Email already used',
+      status: 409,
+      instance: '/auth/register',
       code: 'EMAIL_ALREADY_USED',
-      message: 'An account already exists for this email',
     });
   });
 
   it('rejects a wrong password and an unknown email with the same error', async () => {
     await request(app.getHttpServer()).post('/auth/register').send(credentials).expect(201);
-    const expected = { code: 'INVALID_CREDENTIALS', message: 'Invalid email or password' };
+    // Identical answers: the response never reveals whether the email has an account.
+    const expected = {
+      type: 'urn:openjobseekr:error:invalid-credentials',
+      title: 'Invalid email or password',
+      status: 401,
+      instance: '/auth/login',
+      code: 'INVALID_CREDENTIALS',
+    };
 
     const wrongPassword = await request(app.getHttpServer())
       .post('/auth/login')
@@ -97,7 +107,14 @@ describe('Auth (e2e)', () => {
     it('returns 401 UNAUTHORIZED without a token', async () => {
       const response = await request(app.getHttpServer()).get('/auth/me').expect(401);
 
-      expect(response.body).toEqual({ code: 'UNAUTHORIZED', message: 'Missing bearer token' });
+      expect(response.body).toEqual({
+        type: 'urn:openjobseekr:error:unauthorized',
+        title: 'Authentication required',
+        status: 401,
+        detail: 'Missing bearer token',
+        instance: '/auth/me',
+        code: 'UNAUTHORIZED',
+      });
     });
 
     it('returns 401 UNAUTHORIZED for a signed token without a user id', async () => {
@@ -108,7 +125,14 @@ describe('Auth (e2e)', () => {
         .set('Authorization', `Bearer ${token}`)
         .expect(401);
 
-      expect(response.body).toEqual({ code: 'UNAUTHORIZED', message: 'Invalid or expired token' });
+      expect(response.body).toEqual({
+        type: 'urn:openjobseekr:error:unauthorized',
+        title: 'Authentication required',
+        status: 401,
+        detail: 'Invalid or expired token',
+        instance: '/auth/me',
+        code: 'UNAUTHORIZED',
+      });
     });
 
     it('returns 401 UNAUTHORIZED with an invalid token', async () => {
@@ -117,27 +141,53 @@ describe('Auth (e2e)', () => {
         .set('Authorization', 'Bearer not.a.jwt')
         .expect(401);
 
-      expect(response.body).toEqual({ code: 'UNAUTHORIZED', message: 'Invalid or expired token' });
+      expect(response.body).toEqual({
+        type: 'urn:openjobseekr:error:unauthorized',
+        title: 'Authentication required',
+        status: 401,
+        detail: 'Invalid or expired token',
+        instance: '/auth/me',
+        code: 'UNAUTHORIZED',
+      });
     });
   });
 
-  describe('validation error format', () => {
-    it('returns 400 VALIDATION_FAILED with the failing fields', async () => {
+  describe('error format (RFC 9457 problem details)', () => {
+    it('answers application/problem+json with type, title, status, detail, instance and code', async () => {
+      const response = await request(app.getHttpServer()).get('/auth/me').expect(401);
+
+      expect(response.headers['content-type']).toBe('application/problem+json; charset=utf-8');
+      expect(response.body).toEqual({
+        type: 'urn:openjobseekr:error:unauthorized',
+        title: 'Authentication required',
+        status: 401,
+        detail: 'Missing bearer token',
+        instance: '/auth/me',
+        code: 'UNAUTHORIZED',
+      });
+    });
+
+    it('lists the invalid fields in `errors`', async () => {
       const response = await request(app.getHttpServer())
         .post('/auth/register')
         .send({ email: 'not-an-email', password: 'short' })
         .expect(400);
 
       expect(response.body).toEqual({
+        type: 'urn:openjobseekr:error:validation-failed',
+        title: 'Validation failed',
+        status: 400,
+        instance: '/auth/register',
         code: 'VALIDATION_FAILED',
-        message: 'Request validation failed',
-        details: [
+        errors: [
           { field: 'email', constraints: ['isEmail'] },
           { field: 'password', constraints: ['minLength'] },
         ],
       });
     });
+  });
 
+  describe('validation error format', () => {
     it('rejects a password longer than 72 bytes, even under 72 characters', async () => {
       // 37 characters, 74 bytes in UTF-8.
       const password = 'é'.repeat(37);
@@ -147,10 +197,10 @@ describe('Auth (e2e)', () => {
         .send({ email: credentials.email, password })
         .expect(400);
 
-      expect(response.body).toEqual({
+      expect(response.body).toMatchObject({
+        status: 400,
         code: 'VALIDATION_FAILED',
-        message: 'Request validation failed',
-        details: [{ field: 'password', constraints: ['isByteLength'] }],
+        errors: [{ field: 'password', constraints: ['isByteLength'] }],
       });
     });
 
@@ -160,10 +210,10 @@ describe('Auth (e2e)', () => {
         .send({ ...credentials, role: 'admin' })
         .expect(400);
 
-      expect(response.body).toEqual({
+      expect(response.body).toMatchObject({
+        status: 400,
         code: 'VALIDATION_FAILED',
-        message: 'Request validation failed',
-        details: [{ field: 'role', constraints: ['whitelistValidation'] }],
+        errors: [{ field: 'role', constraints: ['whitelistValidation'] }],
       });
     });
 
@@ -175,8 +225,12 @@ describe('Auth (e2e)', () => {
         .expect(400);
 
       expect(response.body).toEqual({
+        type: 'urn:openjobseekr:error:bad-request',
+        title: 'Bad request',
+        status: 400,
+        detail: 'Unexpected end of JSON input',
+        instance: '/auth/login',
         code: 'BAD_REQUEST',
-        message: 'Unexpected end of JSON input',
       });
     });
   });
@@ -184,6 +238,13 @@ describe('Auth (e2e)', () => {
   it('returns 404 NOT_FOUND for an unknown route', async () => {
     const response = await request(app.getHttpServer()).get('/does-not-exist').expect(404);
 
-    expect(response.body).toEqual({ code: 'NOT_FOUND', message: 'Cannot GET /does-not-exist' });
+    expect(response.body).toEqual({
+      type: 'urn:openjobseekr:error:not-found',
+      title: 'Not found',
+      status: 404,
+      detail: 'Cannot GET /does-not-exist',
+      instance: '/does-not-exist',
+      code: 'NOT_FOUND',
+    });
   });
 });

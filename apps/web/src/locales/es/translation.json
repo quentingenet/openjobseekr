@@ -100,7 +100,6 @@
     "deleteTitle": "¿Eliminar esta candidatura?",
     "deleteMessage": "La candidatura a {{company}} se eliminará definitivamente.",
     "confirmDelete": "Eliminar",
-    "cancel": "Cancelar",
     "deleted": "Candidatura eliminada",
     "noPostingText": "No se ha guardado el texto del anuncio.",
     "createdAt": "Creada el {{date}}",
@@ -180,7 +179,9 @@
     "retry": "Reintentar",
     "pageNotFound": "Página no encontrada",
     "goHome": "Ir a mis candidaturas",
-    "back": "Volver"
+    "back": "Volver",
+    "cancel": "Cancelar",
+    "unexpectedError": "Se ha producido un problema al mostrar esta página."
   },
   "skills": {
     "title": "Competencias",
@@ -212,7 +213,6 @@
     "deleteTitle": "¿Eliminar esta competencia?",
     "deleteMessage": "Se eliminará la competencia «{{name}}».",
     "confirmDelete": "Eliminar",
-    "cancel": "Cancelar",
     "subtitle_one": "Frecuencia de cada competencia en tu anuncio guardado.",
     "subtitle_other": "Frecuencia de cada competencia en tus {{count}} anuncios guardados."
   }

@@ -1,7 +1,5 @@
 import {
-  Box,
   Grid,
-  LinearProgress,
   Paper,
   Stack,
   Table,
@@ -12,9 +10,10 @@ import {
   Typography,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { useStatsOverview } from '../../api/hooks';
+import { useStatsOverview } from '../../api/queries/stats';
 import { APPLICATION_CHANNELS, APPLICATION_STATUSES } from '../../api/types';
 import { ErrorState, LoadingState } from '../../components/PageStates';
+import { ShareBar } from '../../components/ShareBar';
 import { formatNumber, formatPercent } from '../../lib/format';
 import { PageTitle } from '../../components/PageTitle';
 
@@ -60,18 +59,7 @@ function BreakdownTable({
                 <TableCell>{label}</TableCell>
                 <TableCell align="right">{formatNumber(count, i18n.language)}</TableCell>
                 <TableCell>
-                  <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-                    <Box sx={{ flexGrow: 1 }}>
-                      <LinearProgress
-                        variant="determinate"
-                        value={share * 100}
-                        aria-label={label}
-                      />
-                    </Box>
-                    <Typography variant="caption" sx={{ minWidth: 48, textAlign: 'right' }}>
-                      {formatPercent(share, i18n.language)}
-                    </Typography>
-                  </Stack>
+                  <ShareBar ratio={share} label={label} />
                 </TableCell>
               </TableRow>
             );

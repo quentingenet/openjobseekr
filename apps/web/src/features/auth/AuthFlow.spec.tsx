@@ -9,7 +9,7 @@ import { ApiError } from '../../api/client';
 import { AppProviders } from '../../components/AppProviders';
 import { RedirectIfAuthenticated, RequireAuth } from '../../components/RequireAuth';
 import i18n from '../../i18n';
-import { mockApi } from '../../test/api-mock';
+import { mockApi, problem } from '../../test/api-mock';
 import { AuthPage } from './AuthPage';
 
 async function renderApp(url: string, language: 'en' | 'fr' = 'en') {
@@ -62,7 +62,7 @@ describe('authentication flow', () => {
     mockApi({
       'POST /api/auth/login': {
         status: 401,
-        body: { code: 'INVALID_CREDENTIALS', message: 'Invalid email or password' },
+        body: problem(401, 'INVALID_CREDENTIALS'),
       },
     });
     await renderApp('/login', 'fr');

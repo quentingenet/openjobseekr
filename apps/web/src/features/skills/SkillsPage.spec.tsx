@@ -2,7 +2,7 @@ import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { SkillStats } from '../../api/types';
-import { mockApi } from '../../test/api-mock';
+import { mockApi, problem } from '../../test/api-mock';
 import { renderWithProviders } from '../../test/render';
 import { SkillsPage } from './SkillsPage';
 
@@ -76,11 +76,7 @@ describe('SkillsPage', () => {
       'GET /api/skills/stats': { body: stats },
       'POST /api/skills': {
         status: 400,
-        body: {
-          code: 'VALIDATION_FAILED',
-          message: 'Request validation failed',
-          details: [{ field: 'pattern', constraints: ['isRegex'] }],
-        },
+        body: problem(400, 'VALIDATION_FAILED', [{ field: 'pattern', constraints: ['isRegex'] }]),
       },
     });
     await renderWithProviders(<SkillsPage />, { path: '/skills', language: 'fr' });

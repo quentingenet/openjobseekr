@@ -22,7 +22,7 @@ describe('apiRequest', () => {
     expect(fetchMock).toHaveBeenCalledWith('/api/applications?status=SENT&limit=20', {
       method: 'POST',
       headers: {
-        Accept: 'application/json',
+        Accept: 'application/json, application/problem+json',
         Authorization: 'Bearer token-1',
         'Content-Type': 'application/json',
       },
@@ -31,15 +31,18 @@ describe('apiRequest', () => {
     });
   });
 
-  it('turns an error response into an ApiError with code and field details', async () => {
+  it('turns an RFC 9457 problem into an ApiError with code, title and invalid fields', async () => {
     vi.stubGlobal(
       'fetch',
       vi.fn().mockResolvedValue(
         jsonResponse(
           {
+            type: 'urn:openjobseekr:error:validation-failed',
+            title: 'Validation failed',
+            status: 400,
+            instance: '/applications',
             code: 'VALIDATION_FAILED',
-            message: 'Request validation failed',
-            details: [{ field: 'company', constraints: ['isNotEmpty'] }],
+            errors: [{ field: 'company', constraints: ['isNotEmpty'] }],
           },
           400,
         ),
@@ -51,6 +54,8 @@ describe('apiRequest', () => {
     expect(error).toBeInstanceOf(ApiError);
     expect((error as ApiError).status).toBe(400);
     expect((error as ApiError).code).toBe('VALIDATION_FAILED');
+    // Without a detail, the problem title is the message.
+    expect((error as ApiError).message).toBe('Validation failed');
     expect((error as ApiError).fieldErrors).toEqual([
       { field: 'company', constraints: ['isNotEmpty'] },
     ]);

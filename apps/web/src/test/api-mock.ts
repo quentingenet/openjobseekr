@@ -1,4 +1,5 @@
 import { vi } from 'vitest';
+import type { FieldError, ProblemDetails } from '../api/client';
 import { jsonResponse } from './render';
 
 type Handler = { status?: number; body?: unknown } | ((request: RecordedRequest) => Response);
@@ -35,4 +36,20 @@ export function mockApi(handlers: Record<string, Handler>) {
   });
   vi.stubGlobal('fetch', fetchMock);
   return { fetchMock, requests };
+}
+
+/** An RFC 9457 problem body as the API sends it. */
+export function problem(
+  status: number,
+  code: ProblemDetails['code'],
+  errors?: FieldError[],
+): ProblemDetails {
+  return {
+    type: `urn:openjobseekr:error:${code.toLowerCase().replaceAll('_', '-')}`,
+    title: code,
+    status,
+    instance: '/test',
+    code,
+    ...(errors ? { errors } : {}),
+  };
 }

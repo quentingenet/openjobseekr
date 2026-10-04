@@ -1,5 +1,4 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { AppException } from '../common/app.exception.js';
 import { Prisma } from '../generated/prisma/client.js';
 import type { PrismaService } from '../prisma/prisma.service.js';
 import { SkillsService } from './skills.service.js';
@@ -24,43 +23,33 @@ describe('SkillsService', () => {
     ctx = setup();
   });
 
-  it('turns a duplicate name into SKILL_NAME_ALREADY_USED (409)', async () => {
-    ctx.prisma.skill.create.mockRejectedValue(prismaError('P2002'));
-
-    const error = await ctx.service
-      .create('user-1', { name: 'Java', pattern: '\\bJava\\b' })
-      .catch((e: unknown) => e);
-
-    expect(error).toBeInstanceOf(AppException);
-    expect((error as AppException).getStatus()).toBe(409);
-    expect((error as AppException).getResponse()).toEqual({
-      code: 'SKILL_NAME_ALREADY_USED',
-      message: 'A skill named "Java" already exists',
-    });
-  });
-
-  it('turns a missing or foreign skill into SKILL_NOT_FOUND (404), scoped by user', async () => {
-    ctx.prisma.skill.update.mockRejectedValue(prismaError('P2025'));
-    ctx.prisma.skill.delete.mockRejectedValue(prismaError('P2025'));
-
-    const update = await ctx.service.update('user-1', ID, { level: 2 }).catch((e: unknown) => e);
-    const remove = await ctx.service.remove('user-1', ID).catch((e: unknown) => e);
-
-    expect((update as AppException).getResponse()).toEqual({
-      code: 'SKILL_NOT_FOUND',
-      message: `Skill ${ID} not found`,
-    });
-    expect((remove as AppException).getStatus()).toBe(404);
-    expect(ctx.prisma.skill.delete).toHaveBeenCalledWith({ where: { id: ID, userId: 'user-1' } });
-  });
-
-  it('rethrows other database errors unchanged', async () => {
-    const failure = new Error('connection lost');
-    ctx.prisma.skill.create.mockRejectedValue(failure);
+  it('lets database errors through to the global error handling', async () => {
+    const duplicate = prismaError('P2002');
+    const missing = prismaError('P2025');
+    ctx.prisma.skill.create.mockRejectedValue(duplicate);
+    ctx.prisma.skill.update.mockRejectedValue(missing);
+    ctx.prisma.skill.delete.mockRejectedValue(missing);
 
     await expect(ctx.service.create('user-1', { name: 'Java', pattern: 'Java' })).rejects.toBe(
-      failure,
+      duplicate,
     );
+    await expect(ctx.service.update('user-1', ID, { level: 2 })).rejects.toBe(missing);
+    await expect(ctx.service.remove('user-1', ID)).rejects.toBe(missing);
+  });
+
+  it('updates and deletes only within the user scope', async () => {
+    ctx.prisma.skill.update.mockResolvedValue({ id: ID, name: 'Java', pattern: 'Java', level: 2 });
+    ctx.prisma.skill.delete.mockResolvedValue({});
+
+    await ctx.service.update('user-1', ID, { level: 2 });
+    await ctx.service.remove('user-1', ID);
+
+    expect(ctx.prisma.skill.update).toHaveBeenCalledWith({
+      where: { id: ID, userId: 'user-1' },
+      data: { level: 2 },
+      select: { id: true, name: true, pattern: true, level: true },
+    });
+    expect(ctx.prisma.skill.delete).toHaveBeenCalledWith({ where: { id: ID, userId: 'user-1' } });
   });
 
   it('stores a missing level as null', async () => {

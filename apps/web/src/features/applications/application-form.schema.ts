@@ -126,14 +126,6 @@ export function toUpdateInput(
   return Object.fromEntries(changed.map((field) => [field, full[field]])) as UpdateApplicationInput;
 }
 
-/** API constraint names -> translation keys, to show server errors under the right field. */
-export function constraintToMessage(constraints: string[]): string {
-  if (constraints.includes('isNotEmpty')) return 'validation.required';
-  if (constraints.includes('maxLength')) return 'validation.tooLong';
-  if (constraints.includes('isCalendarDate')) return 'validation.date';
-  return 'validation.invalid';
-}
-
 export function todayLocal(): string {
   const now = new Date();
   return [

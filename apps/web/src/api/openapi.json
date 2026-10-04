@@ -27,14 +27,30 @@
             }
           },
           "400": {
-            "description": "VALIDATION_FAILED"
+            "description": "VALIDATION_FAILED",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
           },
           "409": {
-            "description": "EMAIL_ALREADY_USED"
+            "description": "EMAIL_ALREADY_USED",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
           }
         },
         "summary": "Create an account and return an access token",
-        "tags": ["auth"]
+        "tags": [
+          "auth"
+        ]
       }
     },
     "/auth/login": {
@@ -63,14 +79,30 @@
             }
           },
           "400": {
-            "description": "VALIDATION_FAILED"
+            "description": "VALIDATION_FAILED",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
           },
           "401": {
-            "description": "INVALID_CREDENTIALS"
+            "description": "INVALID_CREDENTIALS",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
           }
         },
         "summary": "Log in and return an access token",
-        "tags": ["auth"]
+        "tags": [
+          "auth"
+        ]
       }
     },
     "/auth/me": {
@@ -89,7 +121,14 @@
             }
           },
           "401": {
-            "description": "UNAUTHORIZED"
+            "description": "UNAUTHORIZED",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -98,7 +137,9 @@
           }
         ],
         "summary": "Return the authenticated user",
-        "tags": ["auth"]
+        "tags": [
+          "auth"
+        ]
       }
     },
     "/health": {
@@ -115,7 +156,10 @@
                   "properties": {
                     "status": {
                       "type": "string",
-                      "enum": ["ok", "degraded"],
+                      "enum": [
+                        "ok",
+                        "degraded"
+                      ],
                       "example": "ok"
                     },
                     "info": {
@@ -128,11 +172,17 @@
                       },
                       "additionalProperties": {
                         "type": "object",
-                        "required": ["status"],
+                        "required": [
+                          "status"
+                        ],
                         "properties": {
                           "status": {
                             "type": "string",
-                            "enum": ["up", "degraded", "down"]
+                            "enum": [
+                              "up",
+                              "degraded",
+                              "down"
+                            ]
                           },
                           "responseTime": {
                             "type": "number",
@@ -148,11 +198,17 @@
                       "example": {},
                       "additionalProperties": {
                         "type": "object",
-                        "required": ["status"],
+                        "required": [
+                          "status"
+                        ],
                         "properties": {
                           "status": {
                             "type": "string",
-                            "enum": ["up", "degraded", "down"]
+                            "enum": [
+                              "up",
+                              "degraded",
+                              "down"
+                            ]
                           },
                           "responseTime": {
                             "type": "number",
@@ -173,11 +229,17 @@
                       },
                       "additionalProperties": {
                         "type": "object",
-                        "required": ["status"],
+                        "required": [
+                          "status"
+                        ],
                         "properties": {
                           "status": {
                             "type": "string",
-                            "enum": ["up", "degraded", "down"]
+                            "enum": [
+                              "up",
+                              "degraded",
+                              "down"
+                            ]
                           },
                           "responseTime": {
                             "type": "number",
@@ -201,7 +263,10 @@
                   "properties": {
                     "status": {
                       "type": "string",
-                      "enum": ["error", "shutting_down"],
+                      "enum": [
+                        "error",
+                        "shutting_down"
+                      ],
                       "example": "error"
                     },
                     "info": {
@@ -214,11 +279,17 @@
                       },
                       "additionalProperties": {
                         "type": "object",
-                        "required": ["status"],
+                        "required": [
+                          "status"
+                        ],
                         "properties": {
                           "status": {
                             "type": "string",
-                            "enum": ["up", "degraded", "down"]
+                            "enum": [
+                              "up",
+                              "degraded",
+                              "down"
+                            ]
                           },
                           "responseTime": {
                             "type": "number",
@@ -240,11 +311,17 @@
                       },
                       "additionalProperties": {
                         "type": "object",
-                        "required": ["status"],
+                        "required": [
+                          "status"
+                        ],
                         "properties": {
                           "status": {
                             "type": "string",
-                            "enum": ["up", "degraded", "down"]
+                            "enum": [
+                              "up",
+                              "degraded",
+                              "down"
+                            ]
                           },
                           "responseTime": {
                             "type": "number",
@@ -270,11 +347,17 @@
                       },
                       "additionalProperties": {
                         "type": "object",
-                        "required": ["status"],
+                        "required": [
+                          "status"
+                        ],
                         "properties": {
                           "status": {
                             "type": "string",
-                            "enum": ["up", "degraded", "down"]
+                            "enum": [
+                              "up",
+                              "degraded",
+                              "down"
+                            ]
                           },
                           "responseTime": {
                             "type": "number",
@@ -291,7 +374,9 @@
           }
         },
         "summary": "Check that the API and its database are up",
-        "tags": ["health"]
+        "tags": [
+          "health"
+        ]
       }
     },
     "/applications": {
@@ -320,10 +405,24 @@
             }
           },
           "400": {
-            "description": "VALIDATION_FAILED"
+            "description": "VALIDATION_FAILED",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
           },
           "401": {
-            "description": "UNAUTHORIZED"
+            "description": "UNAUTHORIZED",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -332,7 +431,9 @@
           }
         ],
         "summary": "Create an application",
-        "tags": ["applications"]
+        "tags": [
+          "applications"
+        ]
       },
       "get": {
         "operationId": "ApplicationsController_list",
@@ -399,7 +500,10 @@
             "schema": {
               "default": "desc",
               "type": "string",
-              "enum": ["asc", "desc"]
+              "enum": [
+                "asc",
+                "desc"
+              ]
             }
           },
           {
@@ -437,10 +541,24 @@
             }
           },
           "400": {
-            "description": "VALIDATION_FAILED"
+            "description": "VALIDATION_FAILED",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
           },
           "401": {
-            "description": "UNAUTHORIZED"
+            "description": "UNAUTHORIZED",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -449,7 +567,9 @@
           }
         ],
         "summary": "List applications (without the job posting text), newest first",
-        "tags": ["applications"]
+        "tags": [
+          "applications"
+        ]
       }
     },
     "/applications/{id}": {
@@ -477,10 +597,24 @@
             }
           },
           "401": {
-            "description": "UNAUTHORIZED"
+            "description": "UNAUTHORIZED",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
           },
           "404": {
-            "description": "APPLICATION_NOT_FOUND"
+            "description": "APPLICATION_NOT_FOUND",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -489,7 +623,9 @@
           }
         ],
         "summary": "Get an application, including the job posting text",
-        "tags": ["applications"]
+        "tags": [
+          "applications"
+        ]
       },
       "patch": {
         "operationId": "ApplicationsController_update",
@@ -525,13 +661,34 @@
             }
           },
           "400": {
-            "description": "VALIDATION_FAILED"
+            "description": "VALIDATION_FAILED",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
           },
           "401": {
-            "description": "UNAUTHORIZED"
+            "description": "UNAUTHORIZED",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
           },
           "404": {
-            "description": "APPLICATION_NOT_FOUND"
+            "description": "APPLICATION_NOT_FOUND",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -540,7 +697,9 @@
           }
         ],
         "summary": "Update some fields of an application",
-        "tags": ["applications"]
+        "tags": [
+          "applications"
+        ]
       },
       "delete": {
         "operationId": "ApplicationsController_remove",
@@ -559,10 +718,24 @@
             "description": ""
           },
           "401": {
-            "description": "UNAUTHORIZED"
+            "description": "UNAUTHORIZED",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
           },
           "404": {
-            "description": "APPLICATION_NOT_FOUND"
+            "description": "APPLICATION_NOT_FOUND",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -571,7 +744,9 @@
           }
         ],
         "summary": "Delete an application",
-        "tags": ["applications"]
+        "tags": [
+          "applications"
+        ]
       }
     },
     "/stats/overview": {
@@ -590,7 +765,14 @@
             }
           },
           "401": {
-            "description": "UNAUTHORIZED"
+            "description": "UNAUTHORIZED",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -599,7 +781,9 @@
           }
         ],
         "summary": "Counts by status and channel, and the response rate",
-        "tags": ["stats"]
+        "tags": [
+          "stats"
+        ]
       }
     },
     "/settings": {
@@ -618,7 +802,14 @@
             }
           },
           "401": {
-            "description": "UNAUTHORIZED"
+            "description": "UNAUTHORIZED",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -627,7 +818,9 @@
           }
         ],
         "summary": "Settings used by the web app",
-        "tags": ["settings"]
+        "tags": [
+          "settings"
+        ]
       }
     },
     "/skills": {
@@ -649,7 +842,14 @@
             }
           },
           "401": {
-            "description": "UNAUTHORIZED"
+            "description": "UNAUTHORIZED",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -658,7 +858,9 @@
           }
         ],
         "summary": "List skills, by name",
-        "tags": ["skills"]
+        "tags": [
+          "skills"
+        ]
       },
       "post": {
         "operationId": "SkillsController_create",
@@ -685,13 +887,34 @@
             }
           },
           "400": {
-            "description": "VALIDATION_FAILED"
+            "description": "VALIDATION_FAILED",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
           },
           "401": {
-            "description": "UNAUTHORIZED"
+            "description": "UNAUTHORIZED",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
           },
           "409": {
-            "description": "SKILL_NAME_ALREADY_USED"
+            "description": "SKILL_NAME_ALREADY_USED",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -700,7 +923,9 @@
           }
         ],
         "summary": "Create a skill",
-        "tags": ["skills"]
+        "tags": [
+          "skills"
+        ]
       }
     },
     "/skills/stats": {
@@ -719,7 +944,14 @@
             }
           },
           "401": {
-            "description": "UNAUTHORIZED"
+            "description": "UNAUTHORIZED",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -728,7 +960,9 @@
           }
         ],
         "summary": "How often each skill appears in the saved job postings",
-        "tags": ["skills"]
+        "tags": [
+          "skills"
+        ]
       }
     },
     "/skills/{id}": {
@@ -766,16 +1000,44 @@
             }
           },
           "400": {
-            "description": "VALIDATION_FAILED"
+            "description": "VALIDATION_FAILED",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
           },
           "401": {
-            "description": "UNAUTHORIZED"
+            "description": "UNAUTHORIZED",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
           },
           "404": {
-            "description": "SKILL_NOT_FOUND"
+            "description": "SKILL_NOT_FOUND",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
           },
           "409": {
-            "description": "SKILL_NAME_ALREADY_USED"
+            "description": "SKILL_NAME_ALREADY_USED",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -784,7 +1046,9 @@
           }
         ],
         "summary": "Update a skill",
-        "tags": ["skills"]
+        "tags": [
+          "skills"
+        ]
       },
       "delete": {
         "operationId": "SkillsController_remove",
@@ -803,10 +1067,24 @@
             "description": ""
           },
           "401": {
-            "description": "UNAUTHORIZED"
+            "description": "UNAUTHORIZED",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
           },
           "404": {
-            "description": "SKILL_NOT_FOUND"
+            "description": "SKILL_NOT_FOUND",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -815,13 +1093,15 @@
           }
         ],
         "summary": "Delete a skill",
-        "tags": ["skills"]
+        "tags": [
+          "skills"
+        ]
       }
     }
   },
   "info": {
     "title": "OpenJobSeekR API",
-    "description": "Local job application tracker. Errors use { code, message, details? }.",
+    "description": "Local job application tracker. Errors are RFC 9457 problem details (application/problem+json) with a stable `code`.",
     "version": "0.1.0",
     "contact": {}
   },
@@ -849,7 +1129,10 @@
             "description": "At most 72 bytes (UTF-8)"
           }
         },
-        "required": ["email", "password"]
+        "required": [
+          "email",
+          "password"
+        ]
       },
       "UserResponseDto": {
         "type": "object",
@@ -867,7 +1150,11 @@
             "format": "date-time"
           }
         },
-        "required": ["id", "email", "createdAt"]
+        "required": [
+          "id",
+          "email",
+          "createdAt"
+        ]
       },
       "AuthResponseDto": {
         "type": "object",
@@ -880,7 +1167,10 @@
             "$ref": "#/components/schemas/UserResponseDto"
           }
         },
-        "required": ["accessToken", "user"]
+        "required": [
+          "accessToken",
+          "user"
+        ]
       },
       "LoginDto": {
         "type": "object",
@@ -893,7 +1183,10 @@
             "type": "string"
           }
         },
-        "required": ["email", "password"]
+        "required": [
+          "email",
+          "password"
+        ]
       },
       "CreateApplicationDto": {
         "type": "object",
@@ -967,7 +1260,12 @@
           },
           "workMode": {
             "type": "string",
-            "enum": ["ONSITE", "HYBRID", "FULL_REMOTE", "UNSPECIFIED"],
+            "enum": [
+              "ONSITE",
+              "HYBRID",
+              "FULL_REMOTE",
+              "UNSPECIFIED"
+            ],
             "nullable": true
           },
           "remoteRhythm": {
@@ -1006,7 +1304,11 @@
             "maxLength": 50000
           }
         },
-        "required": ["sentAt", "company", "jobTitle"]
+        "required": [
+          "sentAt",
+          "company",
+          "jobTitle"
+        ]
       },
       "ApplicationDetailDto": {
         "type": "object",
@@ -1085,7 +1387,12 @@
           },
           "workMode": {
             "type": "string",
-            "enum": ["ONSITE", "HYBRID", "FULL_REMOTE", "UNSPECIFIED"],
+            "enum": [
+              "ONSITE",
+              "HYBRID",
+              "FULL_REMOTE",
+              "UNSPECIFIED"
+            ],
             "nullable": true
           },
           "remoteRhythm": {
@@ -1229,7 +1536,12 @@
           },
           "workMode": {
             "type": "string",
-            "enum": ["ONSITE", "HYBRID", "FULL_REMOTE", "UNSPECIFIED"],
+            "enum": [
+              "ONSITE",
+              "HYBRID",
+              "FULL_REMOTE",
+              "UNSPECIFIED"
+            ],
             "nullable": true
           },
           "remoteRhythm": {
@@ -1310,7 +1622,12 @@
             "type": "number"
           }
         },
-        "required": ["items", "total", "limit", "offset"]
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ]
       },
       "UpdateApplicationDto": {
         "type": "object",
@@ -1358,7 +1675,12 @@
           },
           "workMode": {
             "type": "string",
-            "enum": ["ONSITE", "HYBRID", "FULL_REMOTE", "UNSPECIFIED"],
+            "enum": [
+              "ONSITE",
+              "HYBRID",
+              "FULL_REMOTE",
+              "UNSPECIFIED"
+            ],
             "nullable": true
           },
           "remoteRhythm": {
@@ -1459,7 +1781,12 @@
             "description": "Responses / total (not rounded); null without applications"
           }
         },
-        "required": ["total", "byStatus", "byChannel", "responseRate"]
+        "required": [
+          "total",
+          "byStatus",
+          "byChannel",
+          "responseRate"
+        ]
       },
       "SettingsDto": {
         "type": "object",
@@ -1470,7 +1797,9 @@
             "description": "Days between sending an application and following up"
           }
         },
-        "required": ["followUpDelayDays"]
+        "required": [
+          "followUpDelayDays"
+        ]
       },
       "SkillDto": {
         "type": "object",
@@ -1494,7 +1823,12 @@
             "maximum": 5
           }
         },
-        "required": ["id", "name", "pattern", "level"]
+        "required": [
+          "id",
+          "name",
+          "pattern",
+          "level"
+        ]
       },
       "SkillStatDto": {
         "type": "object",
@@ -1527,7 +1861,14 @@
             "description": "postingCount / postingsAnalyzed; null when no posting text was saved"
           }
         },
-        "required": ["id", "name", "pattern", "level", "postingCount", "frequency"]
+        "required": [
+          "id",
+          "name",
+          "pattern",
+          "level",
+          "postingCount",
+          "frequency"
+        ]
       },
       "SkillStatsDto": {
         "type": "object",
@@ -1544,7 +1885,10 @@
             }
           }
         },
-        "required": ["postingsAnalyzed", "skills"]
+        "required": [
+          "postingsAnalyzed",
+          "skills"
+        ]
       },
       "CreateSkillDto": {
         "type": "object",
@@ -1567,7 +1911,10 @@
             "maximum": 5
           }
         },
-        "required": ["name", "pattern"]
+        "required": [
+          "name",
+          "pattern"
+        ]
       },
       "UpdateSkillDto": {
         "type": "object",
@@ -1587,6 +1934,88 @@
             "maxLength": 200
           }
         }
+      },
+      "FieldErrorDto": {
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": "string",
+            "example": "company"
+          },
+          "constraints": {
+            "example": [
+              "isNotEmpty"
+            ],
+            "description": "Failed constraint names, sorted",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "field",
+          "constraints"
+        ]
+      },
+      "ProblemDetailsDto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "urn:openjobseekr:error:application-not-found"
+          },
+          "title": {
+            "type": "string",
+            "example": "Application not found"
+          },
+          "status": {
+            "type": "number",
+            "example": 404
+          },
+          "detail": {
+            "type": "string",
+            "description": "Developer message about this occurrence"
+          },
+          "instance": {
+            "type": "string",
+            "example": "/applications/6c3f4d2e-0000-4000-8000-000000000001"
+          },
+          "code": {
+            "type": "string",
+            "enum": [
+              "VALIDATION_FAILED",
+              "BAD_REQUEST",
+              "UNAUTHORIZED",
+              "INVALID_CREDENTIALS",
+              "FORBIDDEN",
+              "NOT_FOUND",
+              "APPLICATION_NOT_FOUND",
+              "SKILL_NOT_FOUND",
+              "CONFLICT",
+              "EMAIL_ALREADY_USED",
+              "SKILL_NAME_ALREADY_USED",
+              "PAYLOAD_TOO_LARGE",
+              "INTERNAL_ERROR",
+              "SERVICE_UNAVAILABLE"
+            ],
+            "description": "Stable code, translated by the web app"
+          },
+          "errors": {
+            "description": "Invalid fields (VALIDATION_FAILED)",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FieldErrorDto"
+            }
+          }
+        },
+        "required": [
+          "type",
+          "title",
+          "status",
+          "instance",
+          "code"
+        ]
       }
     }
   }

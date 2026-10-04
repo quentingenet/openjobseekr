@@ -131,7 +131,7 @@ describe('Applications (e2e)', () => {
         .expect(400);
 
       expect(response.body.code).toBe('VALIDATION_FAILED');
-      expect(response.body.details).toEqual([
+      expect(response.body.errors).toEqual([
         { field: 'company', constraints: ['isNotEmpty', 'isString', 'maxLength'] },
         { field: 'status', constraints: ['isEnum'] },
       ]);
@@ -144,8 +144,11 @@ describe('Applications (e2e)', () => {
 
       const response = await api().get(`/applications/${id}`).set(auth()).expect(404);
       expect(response.body).toEqual({
+        type: 'urn:openjobseekr:error:application-not-found',
+        title: 'Application not found',
+        status: 404,
+        instance: `/applications/${id}`,
         code: 'APPLICATION_NOT_FOUND',
-        message: `Application ${id} not found`,
       });
     });
 
@@ -154,10 +157,10 @@ describe('Applications (e2e)', () => {
       await api().delete(`/applications/${UNKNOWN_ID}`).set(auth()).expect(404);
 
       const response = await api().get('/applications/not-a-uuid').set(auth()).expect(400);
-      expect(response.body).toEqual({
+      expect(response.body).toMatchObject({
+        status: 400,
         code: 'VALIDATION_FAILED',
-        message: 'Request validation failed',
-        details: [{ field: 'id', constraints: ['isUuid'] }],
+        errors: [{ field: 'id', constraints: ['isUuid'] }],
       });
     });
   });
@@ -196,7 +199,7 @@ describe('Applications (e2e)', () => {
         })
         .expect(400);
 
-      expect(response.body.details).toEqual([
+      expect(response.body.errors).toEqual([
         { field: 'channelDetail', constraints: ['requiresOtherChannel'] },
       ]);
     });
@@ -211,7 +214,7 @@ describe('Applications (e2e)', () => {
         .expect(400);
 
       expect(response.body.code).toBe('VALIDATION_FAILED');
-      expect(response.body.details).toEqual([
+      expect(response.body.errors).toEqual([
         { field: 'userId', constraints: ['whitelistValidation'] },
         { field: 'sentAt', constraints: ['isCalendarDate'] },
         { field: 'company', constraints: ['isNotEmpty'] },
@@ -232,7 +235,7 @@ describe('Applications (e2e)', () => {
         })
         .expect(400);
 
-      expect(response.body.details).toEqual([
+      expect(response.body.errors).toEqual([
         { field: 'jobPostingText', constraints: ['maxLength'] },
       ]);
     });
@@ -263,8 +266,11 @@ describe('Applications (e2e)', () => {
         .expect(413);
 
       expect(response.body).toEqual({
+        type: 'urn:openjobseekr:error:payload-too-large',
+        title: 'Request body too large',
+        status: 413,
+        instance: '/applications',
         code: 'PAYLOAD_TOO_LARGE',
-        message: 'Request body is too large',
       });
     });
 
@@ -274,7 +280,7 @@ describe('Applications (e2e)', () => {
         .set(auth())
         .expect(400);
 
-      expect(response.body.details).toEqual([{ field: 'offset', constraints: ['max'] }]);
+      expect(response.body.errors).toEqual([{ field: 'offset', constraints: ['max'] }]);
     });
 
     it('treats % and _ in the search as plain characters', async () => {
@@ -381,7 +387,7 @@ describe('Applications (e2e)', () => {
         .set(auth())
         .expect(400);
 
-      expect(response.body.details).toEqual([
+      expect(response.body.errors).toEqual([
         { field: 'status', constraints: ['isEnum'] },
         { field: 'overdue', constraints: ['isBoolean'] },
         { field: 'order', constraints: ['isIn'] },
@@ -395,7 +401,14 @@ describe('Applications (e2e)', () => {
       const { id } = await create({ sentAt: '2026-10-01', company: 'Acme', jobTitle: 'Dev' });
       const otherToken = await registerUser(app, 'john@example.com');
       const asOther = { Authorization: `Bearer ${otherToken}` };
-      const notFound = { code: 'APPLICATION_NOT_FOUND', message: `Application ${id} not found` };
+      // Exactly the answer for a missing application: nothing reveals that it exists.
+      const notFound = {
+        type: 'urn:openjobseekr:error:application-not-found',
+        title: 'Application not found',
+        status: 404,
+        instance: `/applications/${id}`,
+        code: 'APPLICATION_NOT_FOUND',
+      };
 
       const list = await api().get('/applications').set(asOther).expect(200);
       expect(list.body).toMatchObject({ items: [], total: 0 });

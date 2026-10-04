@@ -1,7 +1,7 @@
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { mockApi } from '../../test/api-mock';
+import { mockApi, problem } from '../../test/api-mock';
 import { APPLICATION_ID, application } from '../../test/fixtures';
 import { renderWithProviders } from '../../test/render';
 import { EditApplicationPage, NewApplicationPage } from './ApplicationFormPage';
@@ -44,11 +44,7 @@ describe('application form pages', () => {
       [`GET ${detailUrl}`]: { body: application },
       [`PATCH ${detailUrl}`]: {
         status: 400,
-        body: {
-          code: 'VALIDATION_FAILED',
-          message: 'Request validation failed',
-          details: [{ field: 'channel', constraints: ['isEnum'] }],
-        },
+        body: problem(400, 'VALIDATION_FAILED', [{ field: 'channel', constraints: ['isEnum'] }]),
       },
       'GET /api/settings': { body: { followUpDelayDays: 7 } },
     });

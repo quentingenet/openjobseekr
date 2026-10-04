@@ -1,10 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import {
-  isValidRegex,
-  skillConstraintToMessage,
-  skillFormSchema,
-  toSkillInput,
-} from './skill-form.schema';
+import { isValidRegex, skillFormSchema, toSkillInput } from './skill-form.schema';
 
 describe('skill form', () => {
   it('accepts a valid skill and turns "not rated" into null', () => {
@@ -32,10 +27,5 @@ describe('skill form', () => {
     ['[a-', false],
   ])('isValidRegex(%s) is %s', (pattern, expected) => {
     expect(isValidRegex(pattern)).toBe(expected);
-  });
-
-  it('maps API constraints to messages', () => {
-    expect(skillConstraintToMessage(['isRegex'])).toBe('validation.regex');
-    expect(skillConstraintToMessage(['max'])).toBe('validation.level');
   });
 });

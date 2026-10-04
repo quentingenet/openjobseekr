@@ -1,29 +1,14 @@
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutlined';
 import EditIcon from '@mui/icons-material/Edit';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
-import {
-  Alert,
-  Box,
-  Button,
-  Chip,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Grid,
-  Paper,
-  Snackbar,
-  Stack,
-  Typography,
-} from '@mui/material';
+import { Box, Button, Chip, Grid, Paper, Snackbar, Stack, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink, useLocation, useNavigate, useParams } from 'react-router';
-import { useApplication, useDeleteApplication } from '../../api/hooks';
+import { useApplication, useDeleteApplication } from '../../api/queries/applications';
 import type { Application, ApplicationStatus } from '../../api/types';
+import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { ErrorState, LoadingState } from '../../components/PageStates';
-import { errorMessage } from '../../lib/errors';
 import { formatDate, formatDateTime } from '../../lib/format';
 import { channelLabel } from './channel-label';
 import { StatusChip } from './StatusChip';
@@ -171,36 +156,18 @@ export function ApplicationDetailPage() {
         {t('detail.updatedAt', { date: formatDateTime(data.updatedAt, language) })}
       </Typography>
 
-      <Dialog open={confirmOpen} onClose={() => setConfirmOpen(false)}>
-        <DialogTitle>{t('detail.deleteTitle')}</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            {t('detail.deleteMessage', { company: data.company })}
-          </DialogContentText>
-          {remove.isError && (
-            <Alert severity="error" sx={{ mt: 2 }}>
-              {errorMessage(remove.error, t)}
-            </Alert>
-          )}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setConfirmOpen(false)} autoFocus>
-            {t('detail.cancel')}
-          </Button>
-          <Button
-            color="error"
-            variant="contained"
-            loading={remove.isPending}
-            onClick={() =>
-              remove.mutate(id, {
-                onSuccess: () => void navigate('/applications', { replace: true }),
-              })
-            }
-          >
-            {t('detail.confirmDelete')}
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <ConfirmDialog
+        open={confirmOpen}
+        title={t('detail.deleteTitle')}
+        message={t('detail.deleteMessage', { company: data.company })}
+        confirmLabel={t('detail.confirmDelete')}
+        loading={remove.isPending}
+        error={remove.error}
+        onCancel={() => setConfirmOpen(false)}
+        onConfirm={() =>
+          remove.mutate(id, { onSuccess: () => void navigate('/applications', { replace: true }) })
+        }
+      />
 
       <Snackbar
         open={savedNotice}

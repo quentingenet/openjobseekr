@@ -82,8 +82,11 @@ describe('Skills (e2e)', () => {
         .expect(409);
 
       expect(response.body).toEqual({
+        type: 'urn:openjobseekr:error:skill-name-already-used',
+        title: 'Skill name already used',
+        status: 409,
+        instance: '/skills',
         code: 'SKILL_NAME_ALREADY_USED',
-        message: 'A skill named "React" already exists',
       });
     });
 
@@ -95,8 +98,11 @@ describe('Skills (e2e)', () => {
         .expect(404);
 
       expect(response.body).toEqual({
+        type: 'urn:openjobseekr:error:skill-not-found',
+        title: 'Skill not found',
+        status: 404,
+        instance: `/skills/${UNKNOWN_ID}`,
         code: 'SKILL_NOT_FOUND',
-        message: `Skill ${UNKNOWN_ID} not found`,
       });
     });
   });
@@ -109,10 +115,10 @@ describe('Skills (e2e)', () => {
         .send({ name: 'Broken', pattern: '(unclosed' })
         .expect(400);
 
-      expect(response.body).toEqual({
+      expect(response.body).toMatchObject({
+        status: 400,
         code: 'VALIDATION_FAILED',
-        message: 'Request validation failed',
-        details: [{ field: 'pattern', constraints: ['isRegex'] }],
+        errors: [{ field: 'pattern', constraints: ['isRegex'] }],
       });
     });
 
@@ -134,7 +140,7 @@ describe('Skills (e2e)', () => {
         .send({ name: 'Look', pattern: 'a(?=b)' })
         .expect(400);
 
-      expect(response.body.details).toEqual([{ field: 'pattern', constraints: ['isRegex'] }]);
+      expect(response.body.errors).toEqual([{ field: 'pattern', constraints: ['isRegex'] }]);
     });
 
     it('rejects a level outside 0-5 and clearing the name', async () => {
@@ -151,8 +157,8 @@ describe('Skills (e2e)', () => {
         .send({ name: null })
         .expect(400);
 
-      expect(create.body.details).toEqual([{ field: 'level', constraints: ['max'] }]);
-      expect(update.body.details).toEqual([
+      expect(create.body.errors).toEqual([{ field: 'level', constraints: ['max'] }]);
+      expect(update.body.errors).toEqual([
         { field: 'name', constraints: ['isNotEmpty', 'isString', 'maxLength'] },
       ]);
     });

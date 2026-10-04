@@ -1,4 +1,4 @@
-import { type CanActivate, type ExecutionContext, HttpStatus, Injectable } from '@nestjs/common';
+import { type CanActivate, type ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { AppException } from '../common/app.exception.js';
@@ -46,5 +46,5 @@ function extractBearerToken(header: string | undefined): string | undefined {
 }
 
 function unauthorized(message: string): AppException {
-  return new AppException(ErrorCode.UNAUTHORIZED, message, HttpStatus.UNAUTHORIZED);
+  return new AppException(ErrorCode.UNAUTHORIZED, message);
 }

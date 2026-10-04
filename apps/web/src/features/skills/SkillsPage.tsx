@@ -2,16 +2,9 @@ import AddIcon from '@mui/icons-material/Add';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import EditIcon from '@mui/icons-material/Edit';
 import {
-  Alert,
   Box,
   Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
   IconButton,
-  LinearProgress,
   Paper,
   Rating,
   Stack,
@@ -26,12 +19,18 @@ import {
 } from '@mui/material';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useCreateSkill, useDeleteSkill, useSkillStats, useUpdateSkill } from '../../api/hooks';
+import {
+  useCreateSkill,
+  useDeleteSkill,
+  useSkillStats,
+  useUpdateSkill,
+} from '../../api/queries/skills';
 import type { SkillStat } from '../../api/types';
+import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { ErrorState, LoadingState } from '../../components/PageStates';
+import { ShareBar } from '../../components/ShareBar';
 import { TruncatedText } from '../../components/TruncatedText';
-import { errorMessage } from '../../lib/errors';
-import { formatNumber, formatPercent } from '../../lib/format';
+import { formatNumber } from '../../lib/format';
 import { SkillDialog } from './SkillDialog';
 import { PageTitle } from '../../components/PageTitle';
 
@@ -105,18 +104,7 @@ export function SkillsPage() {
                     {skill.frequency === null ? (
                       '—'
                     ) : (
-                      <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-                        <Box sx={{ flexGrow: 1 }}>
-                          <LinearProgress
-                            variant="determinate"
-                            value={skill.frequency * 100}
-                            aria-label={skill.name}
-                          />
-                        </Box>
-                        <Typography variant="caption" sx={{ minWidth: 48, textAlign: 'right' }}>
-                          {formatPercent(skill.frequency, language)}
-                        </Typography>
-                      </Stack>
+                      <ShareBar ratio={skill.frequency} label={skill.name} />
                     )}
                   </TableCell>
                   <TableCell>
@@ -179,34 +167,18 @@ export function SkillsPage() {
         />
       )}
 
-      <Dialog open={toDelete !== null} onClose={() => setToDelete(null)}>
-        <DialogTitle>{t('skills.deleteTitle')}</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            {t('skills.deleteMessage', { name: toDelete?.name ?? '' })}
-          </DialogContentText>
-          {deleteSkill.isError && (
-            <Alert severity="error" sx={{ mt: 2 }}>
-              {errorMessage(deleteSkill.error, t)}
-            </Alert>
-          )}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setToDelete(null)} autoFocus>
-            {t('skills.cancel')}
-          </Button>
-          <Button
-            color="error"
-            variant="contained"
-            loading={deleteSkill.isPending}
-            onClick={() => {
-              if (toDelete) deleteSkill.mutate(toDelete.id, { onSuccess: () => setToDelete(null) });
-            }}
-          >
-            {t('skills.confirmDelete')}
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <ConfirmDialog
+        open={toDelete !== null}
+        title={t('skills.deleteTitle')}
+        message={t('skills.deleteMessage', { name: toDelete?.name ?? '' })}
+        confirmLabel={t('skills.confirmDelete')}
+        loading={deleteSkill.isPending}
+        error={deleteSkill.error}
+        onCancel={() => setToDelete(null)}
+        onConfirm={() => {
+          if (toDelete) deleteSkill.mutate(toDelete.id, { onSuccess: () => setToDelete(null) });
+        }}
+      />
     </Stack>
   );
 }

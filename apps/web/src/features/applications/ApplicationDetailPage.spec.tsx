@@ -1,7 +1,7 @@
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { mockApi } from '../../test/api-mock';
+import { mockApi, problem } from '../../test/api-mock';
 import { APPLICATION_ID, application } from '../../test/fixtures';
 import { renderWithProviders } from '../../test/render';
 import { ApplicationDetailPage } from './ApplicationDetailPage';
@@ -62,7 +62,7 @@ describe('ApplicationDetailPage', () => {
     mockApi({
       [`GET ${detailUrl}`]: {
         status: 404,
-        body: { code: 'APPLICATION_NOT_FOUND', message: 'Application not found' },
+        body: problem(404, 'APPLICATION_NOT_FOUND'),
       },
     });
     await renderWithProviders(<ApplicationDetailPage />, {

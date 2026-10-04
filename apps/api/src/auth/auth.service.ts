@@ -1,9 +1,8 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import bcrypt from 'bcrypt';
 import { AppException } from '../common/app.exception.js';
 import { ErrorCode } from '../common/error-codes.js';
-import { Prisma } from '../generated/prisma/client.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 import type { AuthResponseDto, UserResponseDto } from './dto/auth-response.dto.js';
 import type { LoginDto, RegisterDto } from './dto/credentials.dto.js';
@@ -33,22 +32,12 @@ export class AuthService {
 
   async register(dto: RegisterDto): Promise<AuthResponseDto> {
     const passwordHash = await bcrypt.hash(dto.password, BCRYPT_COST);
-    try {
-      const user = await this.prisma.user.create({
-        data: { email: dto.email, passwordHash },
-        select: { id: true, email: true, createdAt: true },
-      });
-      return this.buildAuthResponse(user);
-    } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
-        throw new AppException(
-          ErrorCode.EMAIL_ALREADY_USED,
-          'An account already exists for this email',
-          HttpStatus.CONFLICT,
-        );
-      }
-      throw error;
-    }
+    // A duplicate email is reported as EMAIL_ALREADY_USED by the global error handling.
+    const user = await this.prisma.user.create({
+      data: { email: dto.email, passwordHash },
+      select: { id: true, email: true, createdAt: true },
+    });
+    return this.buildAuthResponse(user);
   }
 
   async login(dto: LoginDto): Promise<AuthResponseDto> {
@@ -56,11 +45,7 @@ export class AuthService {
     const hash = user?.passwordHash ?? (await this.getDummyHash());
     const passwordMatches = await bcrypt.compare(dto.password, hash);
     if (!user || !passwordMatches) {
-      throw new AppException(
-        ErrorCode.INVALID_CREDENTIALS,
-        'Invalid email or password',
-        HttpStatus.UNAUTHORIZED,
-      );
+      throw new AppException(ErrorCode.INVALID_CREDENTIALS);
     }
     return this.buildAuthResponse(user);
   }
@@ -71,11 +56,7 @@ export class AuthService {
       select: { id: true, email: true, createdAt: true },
     });
     if (!user) {
-      throw new AppException(
-        ErrorCode.UNAUTHORIZED,
-        'User no longer exists',
-        HttpStatus.UNAUTHORIZED,
-      );
+      throw new AppException(ErrorCode.UNAUTHORIZED, 'User no longer exists');
     }
     return toUserResponse(user);
   }
