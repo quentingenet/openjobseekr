@@ -51,9 +51,9 @@ openjobseekr/
 
 - One folder per feature, on both the API and the web side.
 - Pure business logic lives in `<feature>/domain/` (applications, skills): no NestJS or
-  Prisma imports there. Rules the web app also needs (calendar dates) live in
-  `packages/domain` (`@openjobseekr/domain`), pure TypeScript without dependencies: never
-  duplicate them in an app.
+  Prisma imports there. Rules the web app also needs (calendar dates, follow-up date,
+  statuses) live in `packages/domain` (`@openjobseekr/domain`), pure TypeScript without
+  dependencies: never duplicate them in an app.
 - Tools load `@openjobseekr/domain` from its sources (`source` export condition); only the
   compiled API needs its `dist/`, built by the API `dev` and `build` scripts.
 - Unit tests sit next to the code (`*.spec.ts`); e2e tests live in `apps/api/test/`.

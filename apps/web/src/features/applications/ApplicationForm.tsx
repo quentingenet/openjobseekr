@@ -11,7 +11,7 @@ import {
   Typography,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { addDays, isCalendarDate } from '@openjobseekr/domain';
+import { computeFollowUpDate, isCalendarDate } from '@openjobseekr/domain';
 import dayjs from 'dayjs';
 import type { ReactNode } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
@@ -136,14 +136,16 @@ export function ApplicationForm({
 
   // Live preview of the follow-up date, like the spreadsheet column.
   const [sentAt, status, channel] = useWatch({ control, name: ['sentAt', 'status', 'channel'] });
-  const followUpPreview =
+  const followUpDate =
     followUpDelayDays === undefined || !isCalendarDate(sentAt)
+      ? undefined
+      : computeFollowUpDate(sentAt, status, followUpDelayDays);
+  const followUpPreview =
+    followUpDate === undefined
       ? null
-      : status === 'SENT'
-        ? t('form.followUpPreview', {
-            date: formatDate(addDays(sentAt, followUpDelayDays), i18n.language),
-          })
-        : t('form.noFollowUp');
+      : followUpDate === null
+        ? t('form.noFollowUp')
+        : t('form.followUpPreview', { date: formatDate(followUpDate, i18n.language) });
 
   const submit = handleSubmit(async (values) => {
     try {

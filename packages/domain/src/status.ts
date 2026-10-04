@@ -1,6 +1,7 @@
 /**
  * Application statuses, mirrored from the Prisma `Status` enum so that the domain does not
- * import Prisma. `domain-enums.check.ts` fails to compile if the two drift apart.
+ * import Prisma. `apps/api/src/applications/domain-enums.check.ts` fails to compile if the
+ * two drift apart.
  */
 export const APPLICATION_STATUSES = [
   'SENT',

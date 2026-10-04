@@ -113,12 +113,12 @@ ends with `_test` and differs from the development database.
 
 ```text
 packages/
-└── domain/                 business rules shared by the API and the web app (pure TypeScript)
+└── domain/                 rules shared by the API and the web app: dates, follow-up, statuses
 apps/
 ├── api/                    NestJS API
 │   ├── prisma/             schema and migrations
 │   ├── src/
-│   │   ├── applications/   CRUD, filters, follow-up logic (pure functions in domain/)
+│   │   ├── applications/   CRUD, filters, statistics (pure functions in domain/)
 │   │   ├── skills/         skills and their frequency in job postings
 │   │   ├── stats/          statistics by status and channel
 │   │   ├── auth/           registration, login, JWT guard

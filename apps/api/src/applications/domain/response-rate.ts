@@ -1,4 +1,4 @@
-import type { ApplicationStatus } from './status.js';
+import type { ApplicationStatus } from '@openjobseekr/domain';
 
 const NO_ANSWER_STATUSES: ReadonlySet<ApplicationStatus> = new Set(['SENT', 'NO_RESPONSE']);
 

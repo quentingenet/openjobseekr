@@ -1,5 +1,5 @@
+import { computeFollowUpDate, isFollowUpOverdue, overdueSentBefore } from '@openjobseekr/domain';
 import type { Application, Prisma } from '../generated/prisma/client.js';
-import { computeFollowUpDate, isFollowUpOverdue, overdueSentBefore } from './domain/follow-up.js';
 import type {
   ApplicationDetailDto,
   ApplicationSummaryDto,

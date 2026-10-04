@@ -1,6 +1,6 @@
+import { APPLICATION_STATUSES, type ApplicationStatus } from '@openjobseekr/domain';
 import { APPLICATION_CHANNELS, type ApplicationChannel } from './channel.js';
 import { computeResponseRate } from './response-rate.js';
-import { APPLICATION_STATUSES, type ApplicationStatus } from './status.js';
 
 /** Bucket for applications without a channel (the column is optional in the spreadsheet). */
 export const UNSPECIFIED_CHANNEL = 'UNSPECIFIED';
