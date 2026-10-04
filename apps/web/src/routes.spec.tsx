@@ -20,6 +20,10 @@ async function renderRoutes(url: string) {
   return router;
 }
 
+// A lazy page is a dynamic import: on a cold cache (fresh clone), transforming its modules
+// takes longer than the default 1 s wait of findBy* queries.
+const LAZY_PAGE = { timeout: 10_000 };
+
 const zeros = (codes: readonly string[]) => Object.fromEntries(codes.map((code) => [code, 0]));
 
 describe('routes', () => {
@@ -30,7 +34,7 @@ describe('routes', () => {
   it('sends a visitor to the login page, loaded on demand', async () => {
     const router = await renderRoutes('/stats');
 
-    expect(await screen.findByRole('heading', { name: 'Log in' })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: 'Log in' }, LAZY_PAGE)).toBeInTheDocument();
     expect(router.state.location.pathname).toBe('/login');
   });
 
@@ -49,6 +53,8 @@ describe('routes', () => {
 
     await renderRoutes('/stats');
 
-    expect(await screen.findByRole('heading', { name: 'Statistics' })).toBeInTheDocument();
+    expect(
+      await screen.findByRole('heading', { name: 'Statistics' }, LAZY_PAGE),
+    ).toBeInTheDocument();
   });
 });
