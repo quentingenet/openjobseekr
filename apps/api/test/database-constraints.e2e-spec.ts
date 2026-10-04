@@ -1,27 +1,12 @@
 import type { INestApplication } from '@nestjs/common';
+import { TEXT_LIMITS } from '@openjobseekr/domain';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
-import { TEXT_LIMITS } from '../src/applications/dto/application-input.dto.js';
 import type { PrismaService } from '../src/prisma/prisma.service.js';
 import { createTestApp, resetDatabase } from './helpers/create-app.js';
 
 // Writes straight through Prisma, bypassing the API validation, to check that the database
 // protects itself (e.g. against a script or a future import that forgets to validate).
-const limits = {
-  company: TEXT_LIMITS.short,
-  jobTitle: TEXT_LIMITS.short,
-  location: TEXT_LIMITS.short,
-  response: TEXT_LIMITS.medium,
-  resources: TEXT_LIMITS.medium,
-  channelDetail: TEXT_LIMITS.short,
-  contact: TEXT_LIMITS.short,
-  remoteRhythm: TEXT_LIMITS.short,
-  salaryRange: TEXT_LIMITS.short,
-  cvVersion: TEXT_LIMITS.short,
-  stack: TEXT_LIMITS.medium,
-  recruitmentProcess: TEXT_LIMITS.long,
-  notes: TEXT_LIMITS.long,
-  jobPostingText: TEXT_LIMITS.jobPostingText,
-} as const;
+const limits = TEXT_LIMITS;
 
 describe('Database constraints (e2e)', () => {
   let app: INestApplication;

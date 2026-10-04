@@ -52,7 +52,7 @@ openjobseekr/
 - One folder per feature, on both the API and the web side.
 - Pure business logic lives in `<feature>/domain/` (applications, skills): no NestJS or
   Prisma imports there. Rules the web app also needs (calendar dates, follow-up date,
-  enums) live in `packages/domain` (`@openjobseekr/domain`), pure TypeScript without
+  enums, limits) live in `packages/domain` (`@openjobseekr/domain`), pure TypeScript without
   dependencies: never duplicate them in an app.
 - Tools load `@openjobseekr/domain` from its sources (`source` export condition); only the
   compiled API needs its `dist/`, built by the API `dev` and `build` scripts.
@@ -88,8 +88,9 @@ openjobseekr/
 - Tests: explicit expected values, no snapshots for business logic.
   In e2e tests, use the default import: `import request from 'supertest'`.
 - A Vitest test checks that every translation key exists in `en`, `fr` and `es`.
-- Text length limits exist in three places kept in sync by tests: API DTOs (`TEXT_LIMITS`,
-  `SKILL_LIMITS`), database CHECK constraints (migrations) and the web forms.
+- Text length limits (`TEXT_LIMITS` per field, `SKILL_LIMITS`) and page sizes are defined once
+  in `@openjobseekr/domain`, used by the API DTOs and the web forms. The database CHECK
+  constraints (migrations) repeat them, checked by `text-limits.spec.ts`.
 - Skill patterns are matched with RE2 (the engine of Google Sheets): linear time, no
   lookarounds or backreferences.
 - Do not create or commit new Markdown files (docs, notes); existing ones are edited on request.

@@ -16,12 +16,13 @@ import {
   TableSortLabel,
   Typography,
 } from '@mui/material';
+import { PAGE_SIZES } from '@openjobseekr/domain';
 import { useTranslation } from 'react-i18next';
 import type { ApplicationList, ListApplicationsQuery } from '../../../api/types';
 import { useIsMobile } from '../../../lib/useIsMobile';
 import { ApplicationCard } from './ApplicationCard';
 import { ApplicationRow } from './ApplicationRow';
-import { PAGE_SIZES, type QueryChanges } from './useApplicationsQuery';
+import type { QueryChanges } from './useApplicationsQuery';
 
 // Hidden on screen but read by screen readers (sort direction of the column).
 const visuallyHidden = {

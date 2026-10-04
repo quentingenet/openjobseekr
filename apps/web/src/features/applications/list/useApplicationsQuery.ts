@@ -1,10 +1,12 @@
-import { APPLICATION_CHANNELS, APPLICATION_STATUSES } from '@openjobseekr/domain';
+import {
+  APPLICATION_CHANNELS,
+  APPLICATION_STATUSES,
+  DEFAULT_PAGE_SIZE,
+  PAGE_SIZES,
+} from '@openjobseekr/domain';
 import { useCallback, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router';
 import type { ListApplicationsQuery } from '../../../api/types';
-
-export const PAGE_SIZES = [10, 20, 50];
-const DEFAULT_PAGE_SIZE = 20;
 
 export type QueryChanges = Record<string, string | null>;
 
@@ -18,7 +20,7 @@ export function parseListQuery(params: URLSearchParams): ListApplicationsQuery {
   const channel = params.get('channel');
   const limit = Number(params.get('limit'));
   const page = Number(params.get('page'));
-  const pageSize = PAGE_SIZES.includes(limit) ? limit : DEFAULT_PAGE_SIZE;
+  const pageSize = (PAGE_SIZES as readonly number[]).includes(limit) ? limit : DEFAULT_PAGE_SIZE;
   return {
     status: isOneOf(APPLICATION_STATUSES, status) ? status : undefined,
     channel: isOneOf(APPLICATION_CHANNELS, channel) ? channel : undefined,

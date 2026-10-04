@@ -2,11 +2,11 @@ import {
   APPLICATION_CHANNELS,
   APPLICATION_STATUSES,
   isCalendarDate,
+  TEXT_LIMITS,
   WORK_MODES,
 } from '@openjobseekr/domain';
 import { z } from 'zod';
 import type { Application, CreateApplicationInput, UpdateApplicationInput } from '../../api/types';
-import { TEXT_LIMITS } from './limits';
 
 // Messages are translation keys, translated when displayed.
 const requiredText = (max: number) =>

@@ -1,4 +1,5 @@
 import { ApiProperty, ApiPropertyOptional, OmitType, PartialType } from '@nestjs/swagger';
+import { SKILL_LIMITS } from '@openjobseekr/domain';
 import { Type } from 'class-transformer';
 import {
   IsInt,
@@ -13,8 +14,6 @@ import {
 import { IsOptionalNotNull } from '../../common/decorators/validation.decorators.js';
 import { Trim } from '../../common/transforms.js';
 import { checkSkillPattern } from '../domain/skill-pattern.js';
-
-export const SKILL_LIMITS = { name: 100, pattern: 200 } as const;
 
 /** Valid RE2 regular expression (`isRegex`), the syntax of Google Sheets' REGEXMATCH. */
 const IsRegex = (): PropertyDecorator =>

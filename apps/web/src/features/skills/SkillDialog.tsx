@@ -9,6 +9,7 @@ import {
   Stack,
   TextField,
 } from '@mui/material';
+import { SKILL_LIMITS } from '@openjobseekr/domain';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import type { Skill } from '../../api/types';
@@ -17,7 +18,6 @@ import { translateFieldError } from '../../lib/field-error';
 import { useIsMobile } from '../../lib/useIsMobile';
 import { applyServerErrors } from '../../lib/server-errors';
 import {
-  SKILL_LIMITS,
   type SkillFormValues,
   skillFormSchema,
   skillToForm,

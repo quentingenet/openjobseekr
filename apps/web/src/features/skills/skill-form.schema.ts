@@ -1,12 +1,11 @@
+import { SKILL_LIMITS } from '@openjobseekr/domain';
 import { z } from 'zod';
 import type { Skill } from '../../api/types';
 
 /**
- * Same limits as the API (`SKILL_LIMITS`). The browser checks JavaScript syntax; the API uses
- * RE2 and also rejects lookarounds and backreferences.
+ * The browser checks JavaScript syntax; the API uses RE2 and also rejects lookarounds and
+ * backreferences.
  */
-export const SKILL_LIMITS = { name: 100, pattern: 200 } as const;
-
 export function isValidRegex(pattern: string): boolean {
   try {
     new RegExp(pattern, 'i');

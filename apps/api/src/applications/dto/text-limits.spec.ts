@@ -1,7 +1,8 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { getMetadataStorage } from 'class-validator';
-import { CreateSkillDto, SKILL_LIMITS } from '../../skills/dto/skill-input.dto.js';
+import { SKILL_LIMITS, TEXT_LIMITS } from '@openjobseekr/domain';
+import { CreateSkillDto } from '../../skills/dto/skill-input.dto.js';
 import { CreateApplicationDto } from './application-input.dto.js';
 
 const migrationsDir = new URL('../../../prisma/migrations/', import.meta.url);
@@ -32,9 +33,9 @@ function apiLimits(dto: new () => object): Record<string, number> {
 }
 
 describe('text length limits', () => {
-  it('are the same in the database CHECK constraints and the API validation', () => {
-    expect(Object.keys(apiLimits(CreateApplicationDto))).toHaveLength(14);
-    expect(databaseLimits('Application')).toEqual(apiLimits(CreateApplicationDto));
+  it('are the shared limits in the API validation and the database CHECK constraints', () => {
+    expect(apiLimits(CreateApplicationDto)).toEqual(TEXT_LIMITS);
+    expect(databaseLimits('Application')).toEqual(TEXT_LIMITS);
   });
 
   it('are the same for skills', () => {

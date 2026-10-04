@@ -1,4 +1,5 @@
 import { ApiProperty, ApiPropertyOptional, OmitType, PartialType } from '@nestjs/swagger';
+import { TEXT_LIMITS } from '@openjobseekr/domain';
 import { IsEnum, IsNotEmpty, IsOptional, IsString, MaxLength, ValidateBy } from 'class-validator';
 import {
   IsCalendarDate,
@@ -6,14 +7,6 @@ import {
 } from '../../common/decorators/validation.decorators.js';
 import { Trim, TrimToNull } from '../../common/transforms.js';
 import { Channel, Status, WorkMode } from '../../generated/prisma/enums.js';
-
-/** Maximum text lengths. The web form uses the same values. */
-export const TEXT_LIMITS = {
-  short: 200,
-  medium: 1_000,
-  long: 10_000,
-  jobPostingText: 50_000,
-} as const;
 
 /** A precision is only allowed with the OTHER channel, sent in the same request. */
 const RequiresOtherChannel = (): PropertyDecorator =>
@@ -34,39 +27,39 @@ export class CreateApplicationDto {
   @IsCalendarDate()
   sentAt: string;
 
-  @ApiProperty({ maxLength: TEXT_LIMITS.short })
+  @ApiProperty({ maxLength: TEXT_LIMITS.company })
   @Trim()
   @IsString()
   @IsNotEmpty()
-  @MaxLength(TEXT_LIMITS.short)
+  @MaxLength(TEXT_LIMITS.company)
   company: string;
 
-  @ApiProperty({ maxLength: TEXT_LIMITS.short })
+  @ApiProperty({ maxLength: TEXT_LIMITS.jobTitle })
   @Trim()
   @IsString()
   @IsNotEmpty()
-  @MaxLength(TEXT_LIMITS.short)
+  @MaxLength(TEXT_LIMITS.jobTitle)
   jobTitle: string;
 
-  @ApiPropertyOptional({ type: String, nullable: true, maxLength: TEXT_LIMITS.short })
+  @ApiPropertyOptional({ type: String, nullable: true, maxLength: TEXT_LIMITS.location })
   @TrimToNull()
   @IsOptional()
   @IsString()
-  @MaxLength(TEXT_LIMITS.short)
+  @MaxLength(TEXT_LIMITS.location)
   location?: string | null;
 
-  @ApiPropertyOptional({ type: String, nullable: true, maxLength: TEXT_LIMITS.medium })
+  @ApiPropertyOptional({ type: String, nullable: true, maxLength: TEXT_LIMITS.response })
   @TrimToNull()
   @IsOptional()
   @IsString()
-  @MaxLength(TEXT_LIMITS.medium)
+  @MaxLength(TEXT_LIMITS.response)
   response?: string | null;
 
-  @ApiPropertyOptional({ type: String, nullable: true, maxLength: TEXT_LIMITS.medium })
+  @ApiPropertyOptional({ type: String, nullable: true, maxLength: TEXT_LIMITS.resources })
   @TrimToNull()
   @IsOptional()
   @IsString()
-  @MaxLength(TEXT_LIMITS.medium)
+  @MaxLength(TEXT_LIMITS.resources)
   resources?: string | null;
 
   @ApiPropertyOptional({ enum: Channel, nullable: true })
@@ -77,13 +70,13 @@ export class CreateApplicationDto {
   @ApiPropertyOptional({
     type: String,
     nullable: true,
-    maxLength: TEXT_LIMITS.short,
+    maxLength: TEXT_LIMITS.channelDetail,
     description: 'Channel name when channel is OTHER (e.g. "Indeed"); requires channel OTHER',
   })
   @TrimToNull()
   @IsOptional()
   @IsString()
-  @MaxLength(TEXT_LIMITS.short)
+  @MaxLength(TEXT_LIMITS.channelDetail)
   @RequiresOtherChannel()
   channelDetail?: string | null;
 
@@ -92,11 +85,11 @@ export class CreateApplicationDto {
   @IsEnum(Status)
   status?: Status;
 
-  @ApiPropertyOptional({ type: String, nullable: true, maxLength: TEXT_LIMITS.short })
+  @ApiPropertyOptional({ type: String, nullable: true, maxLength: TEXT_LIMITS.contact })
   @TrimToNull()
   @IsOptional()
   @IsString()
-  @MaxLength(TEXT_LIMITS.short)
+  @MaxLength(TEXT_LIMITS.contact)
   contact?: string | null;
 
   @ApiPropertyOptional({ enum: WorkMode, nullable: true })
@@ -104,46 +97,46 @@ export class CreateApplicationDto {
   @IsEnum(WorkMode)
   workMode?: WorkMode | null;
 
-  @ApiPropertyOptional({ type: String, nullable: true, maxLength: TEXT_LIMITS.short })
+  @ApiPropertyOptional({ type: String, nullable: true, maxLength: TEXT_LIMITS.remoteRhythm })
   @TrimToNull()
   @IsOptional()
   @IsString()
-  @MaxLength(TEXT_LIMITS.short)
+  @MaxLength(TEXT_LIMITS.remoteRhythm)
   remoteRhythm?: string | null;
 
-  @ApiPropertyOptional({ type: String, nullable: true, maxLength: TEXT_LIMITS.short })
+  @ApiPropertyOptional({ type: String, nullable: true, maxLength: TEXT_LIMITS.salaryRange })
   @TrimToNull()
   @IsOptional()
   @IsString()
-  @MaxLength(TEXT_LIMITS.short)
+  @MaxLength(TEXT_LIMITS.salaryRange)
   salaryRange?: string | null;
 
-  @ApiPropertyOptional({ type: String, nullable: true, maxLength: TEXT_LIMITS.short })
+  @ApiPropertyOptional({ type: String, nullable: true, maxLength: TEXT_LIMITS.cvVersion })
   @TrimToNull()
   @IsOptional()
   @IsString()
-  @MaxLength(TEXT_LIMITS.short)
+  @MaxLength(TEXT_LIMITS.cvVersion)
   cvVersion?: string | null;
 
-  @ApiPropertyOptional({ type: String, nullable: true, maxLength: TEXT_LIMITS.medium })
+  @ApiPropertyOptional({ type: String, nullable: true, maxLength: TEXT_LIMITS.stack })
   @TrimToNull()
   @IsOptional()
   @IsString()
-  @MaxLength(TEXT_LIMITS.medium)
+  @MaxLength(TEXT_LIMITS.stack)
   stack?: string | null;
 
-  @ApiPropertyOptional({ type: String, nullable: true, maxLength: TEXT_LIMITS.long })
+  @ApiPropertyOptional({ type: String, nullable: true, maxLength: TEXT_LIMITS.recruitmentProcess })
   @TrimToNull()
   @IsOptional()
   @IsString()
-  @MaxLength(TEXT_LIMITS.long)
+  @MaxLength(TEXT_LIMITS.recruitmentProcess)
   recruitmentProcess?: string | null;
 
-  @ApiPropertyOptional({ type: String, nullable: true, maxLength: TEXT_LIMITS.long })
+  @ApiPropertyOptional({ type: String, nullable: true, maxLength: TEXT_LIMITS.notes })
   @TrimToNull()
   @IsOptional()
   @IsString()
-  @MaxLength(TEXT_LIMITS.long)
+  @MaxLength(TEXT_LIMITS.notes)
   notes?: string | null;
 
   @ApiPropertyOptional({ type: String, nullable: true, maxLength: TEXT_LIMITS.jobPostingText })
@@ -170,20 +163,20 @@ export class UpdateApplicationDto extends PartialType(
   @IsCalendarDate()
   sentAt?: string;
 
-  @ApiPropertyOptional({ maxLength: TEXT_LIMITS.short })
+  @ApiPropertyOptional({ maxLength: TEXT_LIMITS.company })
   @Trim()
   @IsOptionalNotNull()
   @IsString()
   @IsNotEmpty()
-  @MaxLength(TEXT_LIMITS.short)
+  @MaxLength(TEXT_LIMITS.company)
   company?: string;
 
-  @ApiPropertyOptional({ maxLength: TEXT_LIMITS.short })
+  @ApiPropertyOptional({ maxLength: TEXT_LIMITS.jobTitle })
   @Trim()
   @IsOptionalNotNull()
   @IsString()
   @IsNotEmpty()
-  @MaxLength(TEXT_LIMITS.short)
+  @MaxLength(TEXT_LIMITS.jobTitle)
   jobTitle?: string;
 
   @ApiPropertyOptional({ enum: Status })

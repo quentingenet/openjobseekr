@@ -14,8 +14,10 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import {
   APPLICATION_CHANNELS,
   APPLICATION_STATUSES,
+  type ApplicationTextField as LimitedField,
   computeFollowUpDate,
   isCalendarDate,
+  TEXT_LIMITS,
   WORK_MODES,
 } from '@openjobseekr/domain';
 import dayjs from 'dayjs';
@@ -32,7 +34,6 @@ import {
   type ApplicationFormValues,
   applicationFormSchema,
 } from './application-form.schema';
-import { TEXT_LIMITS, type TextField as LimitedField } from './limits';
 
 export type ApplicationFormOutput = ReturnType<typeof applicationFormSchema.parse>;
 

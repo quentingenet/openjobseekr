@@ -1,4 +1,5 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
+import { DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE } from '@openjobseekr/domain';
 import { Transform, Type } from 'class-transformer';
 import {
   IsBoolean,
@@ -14,8 +15,6 @@ import {
 import { Trim } from '../../common/transforms.js';
 import { Channel, Status } from '../../generated/prisma/enums.js';
 
-export const DEFAULT_PAGE_SIZE = 20;
-export const MAX_PAGE_SIZE = 100;
 // Far beyond any real list; rejects absurd values with a 400 instead of a database error.
 export const MAX_OFFSET = 2_147_483_647;
 export const SEARCH_MAX_LENGTH = 100;
