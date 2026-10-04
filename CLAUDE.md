@@ -28,7 +28,7 @@ openjobseekr/
     │   ├── src/
     │   │   ├── main.ts, app.module.ts
     │   │   ├── config/       (environment validation)
-    │   │   ├── common/       (exception filter, decorators, error codes)
+    │   │   ├── common/       (exception filter, decorators, error codes, clock, calendar dates)
     │   │   ├── prisma/       (module and service)
     │   │   ├── auth/, health/, stats/, settings/
     │   │   ├── applications/ (domain/, dto/, mapper, controller, service, module)

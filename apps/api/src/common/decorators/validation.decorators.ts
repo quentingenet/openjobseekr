@@ -1,5 +1,5 @@
 import { ValidateBy, ValidateIf, type ValidationOptions } from 'class-validator';
-import { isCalendarDate } from '../../applications/domain/calendar-date.js';
+import { isCalendarDate } from '../calendar-date.js';
 
 /** A real calendar date written `YYYY-MM-DD` (rejects 2026-02-30). */
 export function IsCalendarDate(options?: ValidationOptions): PropertyDecorator {

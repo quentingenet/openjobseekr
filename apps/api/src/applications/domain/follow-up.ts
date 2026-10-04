@@ -1,4 +1,4 @@
-import { addDays } from './calendar-date.js';
+import { addDays } from '../../common/calendar-date.js';
 import type { ApplicationStatus } from './status.js';
 
 /** Follow-up date ("DATE DE RELANCE"): sent date + delay, only while waiting for an answer. */

@@ -117,7 +117,7 @@ apps/
 │   │   ├── skills/         skills and their frequency in job postings
 │   │   ├── stats/          statistics by status and channel
 │   │   ├── auth/           registration, login, JWT guard
-│   │   └── common/         error format, validation, shared decorators
+│   │   └── common/         error format, validation, shared decorators, calendar dates
 │   └── test/               end-to-end tests
 └── web/                    React app
     └── src/
