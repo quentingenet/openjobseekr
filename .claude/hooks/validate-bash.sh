@@ -17,13 +17,18 @@ fi
 # commands, then split into simple commands on shell separators.
 normalized=$(tr -d "'\"\\\\" <<<"$command")
 
-if grep -Eiq '(drop[[:space:]]+(database|schema|table)|truncate[[:space:]])' <<<"$normalized"; then
-  block "SQL that drops or empties data (DROP DATABASE/SCHEMA/TABLE, TRUNCATE)"
+# SQL only runs through psql or `prisma db execute`; elsewhere these words are just text (a
+# commit message, a grep pattern). A .sql file passed with --file is not inspected.
+if grep -Eq '(^|[[:space:]/])psql([[:space:]]|$)|prisma[[:space:]]+db[[:space:]]+execute' <<<"$normalized" &&
+  grep -Eiq 'drop[[:space:]]+(database|schema|table)|truncate[[:space:]]|delete[[:space:]]+from' <<<"$normalized"; then
+  block "SQL that drops or deletes data (DROP DATABASE/SCHEMA/TABLE, TRUNCATE, DELETE FROM)"
 fi
 
 while IFS= read -r segment; do
   read -ra words <<<"$segment"
   [[ ${#words[@]} -gt 0 ]] || continue
+  # A commit only records changes; its message may mention any command.
+  [[ "${words[0]}" == git && "${words[1]:-}" == commit ]] && continue
 
   has() {
     local w
@@ -67,6 +72,20 @@ while IFS= read -r segment; do
 
   if has git && has reset && has --hard; then
     block "git reset --hard"
+  fi
+
+  # Commands that throw away uncommitted work or unmerged commits.
+  if has git && has checkout && { has . || has -f || has --force; }; then
+    block "git checkout that discards local changes"
+  fi
+  if has git && has restore && ! { { has --staged || has -S; } && ! has --worktree && ! has -W; }; then
+    block "git restore of working tree files"
+  fi
+  if has git && has stash && { has drop || has clear; }; then
+    block "git stash drop/clear"
+  fi
+  if has git && has branch && { has -D || { has --delete && has --force; }; }; then
+    block "forced branch deletion (git branch -D)"
   fi
 
   # git clean only deletes with a force flag; -x also deletes ignored files such as .env.
