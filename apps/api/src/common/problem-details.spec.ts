@@ -60,7 +60,7 @@ describe('toProblemDetails', () => {
     [new PayloadTooLargeException('Too big'), 413, 'PAYLOAD_TOO_LARGE'],
     [new ServiceUnavailableException('Down'), 503, 'SERVICE_UNAVAILABLE'],
     [new UnprocessableEntityException('Nope'), 422, 'BAD_REQUEST'],
-    [new HttpException('Slow down', HttpStatus.TOO_MANY_REQUESTS), 429, 'BAD_REQUEST'],
+    [new HttpException('Slow down', HttpStatus.TOO_MANY_REQUESTS), 429, 'TOO_MANY_REQUESTS'],
     [new HttpException('Bad gateway', HttpStatus.BAD_GATEWAY), 502, 'INTERNAL_ERROR'],
   ])('maps the framework exception %o to %i %s', (exception, status, code) => {
     const problem = toProblemDetails(exception, '/x');

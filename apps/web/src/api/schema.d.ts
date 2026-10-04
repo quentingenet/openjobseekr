@@ -469,7 +469,7 @@ export interface components {
              * @description Stable code, translated by the web app
              * @enum {string}
              */
-            code: "VALIDATION_FAILED" | "BAD_REQUEST" | "UNAUTHORIZED" | "INVALID_CREDENTIALS" | "FORBIDDEN" | "NOT_FOUND" | "APPLICATION_NOT_FOUND" | "SKILL_NOT_FOUND" | "CONFLICT" | "EMAIL_ALREADY_USED" | "SKILL_NAME_ALREADY_USED" | "PAYLOAD_TOO_LARGE" | "INTERNAL_ERROR" | "SERVICE_UNAVAILABLE";
+            code: "VALIDATION_FAILED" | "BAD_REQUEST" | "UNAUTHORIZED" | "INVALID_CREDENTIALS" | "FORBIDDEN" | "NOT_FOUND" | "APPLICATION_NOT_FOUND" | "SKILL_NOT_FOUND" | "CONFLICT" | "EMAIL_ALREADY_USED" | "SKILL_NAME_ALREADY_USED" | "PAYLOAD_TOO_LARGE" | "TOO_MANY_REQUESTS" | "INTERNAL_ERROR" | "SERVICE_UNAVAILABLE";
             /** @description Invalid fields (VALIDATION_FAILED) */
             errors?: components["schemas"]["FieldErrorDto"][];
         };
@@ -521,6 +521,15 @@ export interface operations {
                     "application/problem+json": components["schemas"]["ProblemDetailsDto"];
                 };
             };
+            /** @description TOO_MANY_REQUESTS */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetailsDto"];
+                };
+            };
         };
     };
     AuthController_login: {
@@ -555,6 +564,15 @@ export interface operations {
             };
             /** @description INVALID_CREDENTIALS */
             401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetailsDto"];
+                };
+            };
+            /** @description TOO_MANY_REQUESTS */
+            429: {
                 headers: {
                     [name: string]: unknown;
                 };

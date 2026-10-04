@@ -7,6 +7,8 @@ export const envSchema = z.object({
   JWT_EXPIRES_IN: z.string().regex(/^\d+[smhd]$/, 'JWT_EXPIRES_IN must look like 15m, 12h or 1d'),
   FOLLOW_UP_DELAY_DAYS: z.coerce.number().int().min(0).default(7),
   PORT: z.coerce.number().int().min(1).max(65_535).default(3000),
+  // Login and registration attempts per minute and per IP address (brute force protection).
+  AUTH_RATE_LIMIT: z.coerce.number().int().min(1).default(5),
 });
 
 export type Env = z.infer<typeof envSchema>;

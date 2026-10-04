@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
+import { ThrottlerModule } from '@nestjs/throttler';
 import type { Env } from '../config/env.schema.js';
 import { AuthController } from './auth.controller.js';
 import { AuthService } from './auth.service.js';
@@ -21,6 +22,15 @@ type JwtExpiresIn = `${number}${'s' | 'm' | 'h' | 'd'}`;
           expiresIn: config.get('JWT_EXPIRES_IN', { infer: true }) as JwtExpiresIn,
         },
         verifyOptions: { algorithms: ['HS256'] },
+      }),
+    }),
+    // In-memory counters, keyed by client IP. Behind a reverse proxy, Express' `trust proxy`
+    // must be set so that the IP is the client's and not the proxy's.
+    ThrottlerModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (config: ConfigService<Env, true>) => ({
+        throttlers: [{ ttl: 60_000, limit: config.get('AUTH_RATE_LIMIT', { infer: true }) }],
+        errorMessage: 'Too many attempts, try again later',
       }),
     }),
   ],

@@ -25,6 +25,8 @@ export default defineConfig({
       DATABASE_URL: testDatabaseUrl,
       // Expected follow-up dates in the tests assume a 7-day delay.
       FOLLOW_UP_DELAY_DAYS: '7',
+      // Tests log in far more than 5 times a minute; auth-rate-limit.e2e-spec.ts lowers it.
+      AUTH_RATE_LIMIT: '1000',
     },
     testTimeout: 20_000,
     hookTimeout: 60_000,

@@ -17,7 +17,13 @@ describe('validateEnv', () => {
       JWT_EXPIRES_IN: '1d',
       FOLLOW_UP_DELAY_DAYS: 7,
       PORT: 3000,
+      AUTH_RATE_LIMIT: 5,
     });
+  });
+
+  it('reads AUTH_RATE_LIMIT and rejects a limit below 1', () => {
+    expect(validateEnv({ ...validEnv, AUTH_RATE_LIMIT: '20' }).AUTH_RATE_LIMIT).toBe(20);
+    expect(() => validateEnv({ ...validEnv, AUTH_RATE_LIMIT: '0' })).toThrow(/AUTH_RATE_LIMIT/);
   });
 
   it('applies defaults for FOLLOW_UP_DELAY_DAYS and PORT', () => {

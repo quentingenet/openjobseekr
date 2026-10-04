@@ -10,7 +10,8 @@ you only run read-only commands (`git diff`, `git status`, `git log`, `grep`).
 Check:
 
 - **Authentication**: passwords hashed with `bcrypt` (sensible cost), the password hash never
-  returned or logged, login errors do not reveal whether the email exists.
+  returned or logged, login errors do not reveal whether the email exists, login and
+  registration rate-limited (`ThrottlerGuard`, `AUTH_RATE_LIMIT`).
 - **JWT**: secret read from validated config (never hardcoded), expiry set, algorithm fixed,
   guard applied to every non-public route, user id taken from the token and never from the
   request body.

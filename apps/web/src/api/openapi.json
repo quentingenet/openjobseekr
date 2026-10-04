@@ -45,6 +45,16 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "TOO_MANY_REQUESTS",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
           }
         },
         "summary": "Create an account and return an access token",
@@ -90,6 +100,16 @@
           },
           "401": {
             "description": "INVALID_CREDENTIALS",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "TOO_MANY_REQUESTS",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -1996,6 +2016,7 @@
               "EMAIL_ALREADY_USED",
               "SKILL_NAME_ALREADY_USED",
               "PAYLOAD_TOO_LARGE",
+              "TOO_MANY_REQUESTS",
               "INTERNAL_ERROR",
               "SERVICE_UNAVAILABLE"
             ],

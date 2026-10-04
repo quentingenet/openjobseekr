@@ -170,6 +170,7 @@
     "CONFLICT": "Cette action entre en conflit avec des données existantes.",
     "BAD_REQUEST": "La requête est invalide.",
     "PAYLOAD_TOO_LARGE": "Les données envoyées sont trop volumineuses.",
+    "TOO_MANY_REQUESTS": "Trop de tentatives. Patientez une minute puis réessayez.",
     "SERVICE_UNAVAILABLE": "Le service est momentanément indisponible.",
     "INTERNAL_ERROR": "Une erreur est survenue sur le serveur.",
     "NETWORK_ERROR": "Le serveur est injoignable. L'API est-elle lancée ?",
