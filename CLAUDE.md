@@ -1,6 +1,6 @@
 # OpenJobSeekR
 
-Fully local job application tracker (technical name: `openjobseekr`). It mirrors the columns
+Local-first job application tracker, designed to be deployable (technical name: `openjobseekr`). It mirrors the columns
 of the author's Google Sheet; the data model lives in `apps/api/prisma/schema.prisma`.
 
 ## Stack
@@ -61,7 +61,8 @@ openjobseekr/
 - `npm run check`: lint + typecheck + tests, run before every commit
 - `npm run db:migrate --workspace apps/api`: create/apply migrations; then
   `npx prisma generate` in `apps/api` (Prisma 7 no longer generates after migrating)
-- `npm run api:types`: regenerate the web API types after any API DTO change
+- `npm run api:types`: regenerate the web API types after any API DTO change (a unit test
+  fails while `apps/web/src/api/openapi.json` is stale)
 
 ## Language and i18n
 

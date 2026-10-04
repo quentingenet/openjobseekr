@@ -10,6 +10,9 @@ It is free software (GPL-3.0), runs entirely on your own machine, and your data 
 it. It was born from a real job search spreadsheet and is meant to grow with the people who
 use it: ideas, translations, bug reports and pull requests are all welcome.
 
+**Local-first, designed to be deployable**: it runs on `127.0.0.1` today, and is built with
+what a hosted version would need (accounts, a standard error format).
+
 > Status: work in progress, usable day to day.
 
 ## Features
@@ -29,7 +32,7 @@ use it: ideas, translations, bug reports and pull requests are all welcome.
   (e.g. `\bJava\b`, which does not match "JavaScript"). The app counts how many of your saved
   job postings mention each one, and updates as you add postings.
 - **Languages**: English, French and Spanish, switchable at any time.
-- **Accounts**: each user only ever sees their own data.
+- **Accounts**: each user only ever sees their own data, ready for a shared or hosted setup.
 
 ## Tech stack
 
