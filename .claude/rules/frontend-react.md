@@ -11,6 +11,8 @@ paths:
 - Enums and API error codes are translated by key (`status.SENT`, `errors.<CODE>`).
 - Server state lives in TanStack Query (queries and mutations in `api/queries/<domain>.ts`); no
   `useEffect` + `fetch` and no copy of server data in local state.
+- API calls go through the typed client: `unwrap(api.GET('/path/{id}', { params }))`
+  (openapi-fetch on `schema.d.ts`). Never call `fetch` directly or cast a response type.
 - Use Material UI components and the theme (`theme.ts`) instead of custom CSS or raw HTML
   controls.
 - Accessibility: every form field has a label, buttons and icon buttons have an accessible

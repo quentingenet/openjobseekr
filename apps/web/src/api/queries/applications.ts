@@ -1,9 +1,7 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { apiRequest } from '../client';
+import { api, unwrap } from '../client';
 import { queryKeys } from '../query-keys';
 import type {
-  Application,
-  ApplicationList,
   CreateApplicationInput,
   ListApplicationsQuery,
   UpdateApplicationInput,
@@ -13,10 +11,15 @@ export function useApplications(query: ListApplicationsQuery) {
   return useQuery({
     queryKey: queryKeys.applicationList(query),
     queryFn: ({ signal }) =>
-      apiRequest<ApplicationList>('GET', '/applications', {
-        query: { ...query, overdue: query.overdue ? true : undefined },
-        signal,
-      }),
+      unwrap(
+        api.GET('/applications', {
+          // Empty filters are left out of the URL.
+          params: {
+            query: { ...query, q: query.q || undefined, overdue: query.overdue || undefined },
+          },
+          signal,
+        }),
+      ),
     // Keeps the current page visible while the next one loads.
     placeholderData: keepPreviousData,
   });
@@ -25,7 +28,8 @@ export function useApplications(query: ListApplicationsQuery) {
 export function useApplication(id: string) {
   return useQuery({
     queryKey: queryKeys.application(id),
-    queryFn: ({ signal }) => apiRequest<Application>('GET', `/applications/${id}`, { signal }),
+    queryFn: ({ signal }) =>
+      unwrap(api.GET('/applications/{id}', { params: { path: { id } }, signal })),
   });
 }
 
@@ -47,7 +51,7 @@ export function useCreateApplication() {
   const invalidateDerived = useInvalidateDerivedData();
   return useMutation({
     mutationFn: (input: CreateApplicationInput) =>
-      apiRequest<Application>('POST', '/applications', { body: input }),
+      unwrap(api.POST('/applications', { body: input })),
     onSuccess: () =>
       Promise.all([
         queryClient.invalidateQueries({ queryKey: queryKeys.applicationLists }),
@@ -61,7 +65,7 @@ export function useUpdateApplication(id: string) {
   const invalidateDerived = useInvalidateDerivedData();
   return useMutation({
     mutationFn: (input: UpdateApplicationInput) =>
-      apiRequest<Application>('PATCH', `/applications/${id}`, { body: input }),
+      unwrap(api.PATCH('/applications/{id}', { params: { path: { id } }, body: input })),
     onSuccess: () =>
       Promise.all([
         queryClient.invalidateQueries({ queryKey: queryKeys.applications }),
@@ -74,7 +78,8 @@ export function useDeleteApplication() {
   const queryClient = useQueryClient();
   const invalidateDerived = useInvalidateDerivedData();
   return useMutation({
-    mutationFn: (id: string) => apiRequest<undefined>('DELETE', `/applications/${id}`),
+    mutationFn: (id: string) =>
+      unwrap(api.DELETE('/applications/{id}', { params: { path: { id } } })),
     // Not awaited, and lists only: refetching the deleted application's detail (still on
     // screen until the page navigates away) would show a 404.
     onSuccess: () => {

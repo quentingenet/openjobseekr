@@ -1,12 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { apiRequest } from '../client';
+import { api, unwrap } from '../client';
 import { queryKeys } from '../query-keys';
-import type { CreateSkillInput, Skill, SkillStats, UpdateSkillInput } from '../types';
+import type { CreateSkillInput, UpdateSkillInput } from '../types';
 
 export function useSkillStats() {
   return useQuery({
     queryKey: queryKeys.skills,
-    queryFn: ({ signal }) => apiRequest<SkillStats>('GET', '/skills/stats', { signal }),
+    queryFn: ({ signal }) => unwrap(api.GET('/skills/stats', { signal })),
   });
 }
 
@@ -18,7 +18,7 @@ function useInvalidateSkills() {
 export function useCreateSkill() {
   const invalidate = useInvalidateSkills();
   return useMutation({
-    mutationFn: (input: CreateSkillInput) => apiRequest<Skill>('POST', '/skills', { body: input }),
+    mutationFn: (input: CreateSkillInput) => unwrap(api.POST('/skills', { body: input })),
     onSuccess: invalidate,
   });
 }
@@ -27,7 +27,7 @@ export function useUpdateSkill() {
   const invalidate = useInvalidateSkills();
   return useMutation({
     mutationFn: ({ id, input }: { id: string; input: UpdateSkillInput }) =>
-      apiRequest<Skill>('PATCH', `/skills/${id}`, { body: input }),
+      unwrap(api.PATCH('/skills/{id}', { params: { path: { id } }, body: input })),
     onSuccess: invalidate,
   });
 }
@@ -35,7 +35,7 @@ export function useUpdateSkill() {
 export function useDeleteSkill() {
   const invalidate = useInvalidateSkills();
   return useMutation({
-    mutationFn: (id: string) => apiRequest<undefined>('DELETE', `/skills/${id}`),
+    mutationFn: (id: string) => unwrap(api.DELETE('/skills/{id}', { params: { path: { id } } })),
     onSuccess: invalidate,
   });
 }

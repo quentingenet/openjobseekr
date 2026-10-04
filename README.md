@@ -38,7 +38,7 @@ settings and a shared rate-limit store.
 ## Tech stack
 
 - **Web** (`apps/web`): React, TypeScript, Vite, Material UI, TanStack Query, React Router,
-  React Hook Form + Zod, i18next
+  React Hook Form + Zod, i18next, openapi-fetch (API client typed from the OpenAPI document)
 - **API** (`apps/api`): NestJS, TypeScript, Prisma, PostgreSQL, JWT authentication,
   OpenAPI documentation
 - **Tests**: Vitest everywhere, Testing Library for the web app, Supertest for the API

@@ -39,23 +39,6 @@ export const applicationFormSchema = z.object({
 export type ApplicationFormValues = z.input<typeof applicationFormSchema>;
 export type ApplicationFormField = keyof ApplicationFormValues;
 
-const OPTIONAL_FIELDS = [
-  'location',
-  'response',
-  'resources',
-  'channel',
-  'channelDetail',
-  'contact',
-  'workMode',
-  'remoteRhythm',
-  'salaryRange',
-  'cvVersion',
-  'stack',
-  'recruitmentProcess',
-  'notes',
-  'jobPostingText',
-] as const satisfies readonly ApplicationFormField[];
-
 export function emptyApplicationForm(today: string): ApplicationFormValues {
   return {
     sentAt: today,
@@ -91,15 +74,41 @@ export function applicationToForm(application: Application): ApplicationFormValu
 
 type ParsedForm = z.output<typeof applicationFormSchema>;
 
-/** Optional fields left empty are sent as `null` (cleared). */
+/** An optional field left empty is sent as `null`, which clears it. */
+function orNull<Value extends string>(value: Value | ''): Value | null {
+  return value === '' ? null : value;
+}
+
 export function toCreateInput(values: ParsedForm): CreateApplicationInput {
-  const input: Record<string, unknown> = { ...values };
-  for (const field of OPTIONAL_FIELDS) {
-    if (input[field] === '') input[field] = null;
-  }
-  // The precision only belongs to the OTHER channel (the API rejects it otherwise).
-  if (input.channel !== 'OTHER') input.channelDetail = null;
-  return input as unknown as CreateApplicationInput;
+  return {
+    sentAt: values.sentAt,
+    company: values.company,
+    jobTitle: values.jobTitle,
+    location: orNull(values.location),
+    response: orNull(values.response),
+    resources: orNull(values.resources),
+    channel: orNull(values.channel),
+    // The precision only belongs to the OTHER channel (the API rejects it otherwise).
+    channelDetail: values.channel === 'OTHER' ? orNull(values.channelDetail) : null,
+    status: values.status,
+    contact: orNull(values.contact),
+    workMode: orNull(values.workMode),
+    remoteRhythm: orNull(values.remoteRhythm),
+    salaryRange: orNull(values.salaryRange),
+    cvVersion: orNull(values.cvVersion),
+    stack: orNull(values.stack),
+    recruitmentProcess: orNull(values.recruitmentProcess),
+    notes: orNull(values.notes),
+    jobPostingText: orNull(values.jobPostingText),
+  };
+}
+
+function copyField<Input, Field extends keyof Input>(
+  to: Partial<Input>,
+  from: Input,
+  field: Field,
+): void {
+  to[field] = from[field];
 }
 
 /** On edit, only the fields the user changed are sent. */
@@ -107,11 +116,12 @@ export function toUpdateInput(
   values: ParsedForm,
   dirtyFields: Partial<Record<ApplicationFormField, unknown>>,
 ): UpdateApplicationInput {
-  const full = toCreateInput(values) as unknown as Record<string, unknown>;
-  const changed = Object.keys(dirtyFields).filter(
-    (field) => dirtyFields[field as ApplicationFormField],
-  );
-  // The API needs the channel alongside its precision.
-  if (changed.includes('channelDetail') && !changed.includes('channel')) changed.push('channel');
-  return Object.fromEntries(changed.map((field) => [field, full[field]])) as UpdateApplicationInput;
+  const full = toCreateInput(values);
+  const input: UpdateApplicationInput = {};
+  for (const field of applicationFormSchema.keyof().options) {
+    // The API needs the channel alongside its precision.
+    const send = dirtyFields[field] || (field === 'channel' && dirtyFields.channelDetail);
+    if (send) copyField(input, full, field);
+  }
+  return input;
 }

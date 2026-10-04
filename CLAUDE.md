@@ -6,7 +6,8 @@ author's Google Sheet; the data model lives in `apps/api/prisma/schema.prisma`.
 ## Stack
 
 - Web (`apps/web`): React, TypeScript, Vite, Material UI (+ MUI X DatePicker with dayjs),
-  TanStack Query, React Router (data router), React Hook Form + Zod, react-i18next
+  TanStack Query, React Router (data router), React Hook Form + Zod, react-i18next,
+  openapi-fetch (typed API client on the generated `schema.d.ts`)
 - API (`apps/api`): NestJS 12 (ESM), strict TypeScript, Prisma 7 (`@prisma/adapter-pg`),
   PostgreSQL, RE2 (`re2`) for skill patterns
 - Shared domain (`packages/domain`, `@openjobseekr/domain`): pure TypeScript, no dependencies

@@ -1,7 +1,6 @@
-import type { components } from './schema';
+import createClient from 'openapi-fetch';
+import type { components, paths } from './schema';
 import { tokenStorage } from './token-storage';
-
-const API_BASE = '/api';
 
 export type ProblemDetails = components['schemas']['ProblemDetailsDto'];
 export type FieldError = NonNullable<ProblemDetails['errors']>[number];
@@ -32,51 +31,46 @@ export class ApiError extends Error {
   }
 }
 
-type QueryValue = string | number | boolean | undefined;
+/**
+ * Typed client generated from the OpenAPI document: the path, method, parameters, body and
+ * response types all come from `schema.d.ts`. The base URL is absolute because `Request`
+ * needs one; in the browser it is the page origin (the dev server proxies /api).
+ */
+export const api = createClient<paths>({
+  baseUrl: `${window.location.origin}/api`,
+  headers: { Accept: 'application/json, application/problem+json' },
+  // Resolved on each call, so that tests can stub the global fetch.
+  fetch: (request) => globalThis.fetch(request),
+});
 
-export interface RequestOptions {
-  body?: unknown;
-  query?: Record<string, QueryValue>;
-  signal?: AbortSignal;
-}
+api.use({
+  onRequest({ request }) {
+    const token = tokenStorage.get();
+    if (token) request.headers.set('Authorization', `Bearer ${token}`);
+    return request;
+  },
+});
 
-function buildUrl(path: string, query?: Record<string, QueryValue>): string {
-  const params = new URLSearchParams();
-  for (const [key, value] of Object.entries(query ?? {})) {
-    if (value !== undefined && value !== '') params.set(key, String(value));
-  }
-  const search = params.toString();
-  return `${API_BASE}${path}${search ? `?${search}` : ''}`;
-}
+type ClientResult =
+  | { data: unknown; error?: never; response: Response }
+  | { data?: never; error: unknown; response: Response };
 
-/** Thin typed wrapper around fetch: adds the token, sends JSON, turns problems into ApiError. */
-export async function apiRequest<T>(
-  method: 'GET' | 'POST' | 'PATCH' | 'DELETE',
-  path: string,
-  options: RequestOptions = {},
-): Promise<T> {
-  const headers: Record<string, string> = {
-    Accept: 'application/json, application/problem+json',
-  };
-  const token = tokenStorage.get();
-  if (token) headers.Authorization = `Bearer ${token}`;
-  if (options.body !== undefined) headers['Content-Type'] = 'application/json';
+/** The data type of the success branch only (inferring it from both would add `undefined`). */
+type SuccessData<Result> = Result extends { data: infer Data; error?: never } ? Data : never;
 
-  let response: Response;
+/** The data of a successful call; otherwise an ApiError (RFC 9457 problem or network failure). */
+export async function unwrap<Result extends ClientResult>(
+  call: Promise<Result>,
+): Promise<SuccessData<Result>> {
+  let result: Result;
   try {
-    response = await fetch(buildUrl(path, options.query), {
-      method,
-      headers,
-      body: options.body === undefined ? undefined : JSON.stringify(options.body),
-      signal: options.signal,
-    });
+    result = await call;
   } catch (error) {
     if (error instanceof DOMException && error.name === 'AbortError') throw error;
     throw new ApiError(0, 'NETWORK_ERROR', 'The API could not be reached');
   }
-
-  if (response.status === 204) return undefined as T;
-  const payload: unknown = await response.json().catch(() => undefined);
-  if (!response.ok) throw ApiError.fromProblem(response.status, payload);
-  return payload as T;
+  // openapi-fetch only sets `error` on failed responses.
+  if ('error' in result) throw ApiError.fromProblem(result.response.status, result.error);
+  // TypeScript cannot narrow a generic union: this is the success branch, checked just above.
+  return result.data as SuccessData<Result>;
 }

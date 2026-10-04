@@ -2,6 +2,7 @@ import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { ApplicationList } from '../../api/types';
+import { requestedUrls } from '../../test/api-mock';
 import { jsonResponse, renderWithProviders } from '../../test/render';
 import { mockMobileViewport } from '../../test/viewport';
 import { ApplicationsPage } from './ApplicationsPage';
@@ -75,9 +76,8 @@ describe('ApplicationsPage', () => {
 
     await waitFor(() => expect(router.state.location.search).toBe('?overdue=true'));
     await waitFor(() =>
-      expect(fetchMock).toHaveBeenLastCalledWith(
+      expect(requestedUrls(fetchMock).at(-1)).toBe(
         '/api/applications?overdue=true&order=desc&limit=20&offset=0',
-        expect.anything(),
       ),
     );
   });
@@ -90,9 +90,8 @@ describe('ApplicationsPage', () => {
     });
 
     await waitFor(() =>
-      expect(fetchMock).toHaveBeenCalledWith(
+      expect(requestedUrls(fetchMock)).toContain(
         '/api/applications?status=REJECTED&q=acme&order=desc&limit=10&offset=20',
-        expect.anything(),
       ),
     );
   });
@@ -134,17 +133,20 @@ describe('ApplicationsPage', () => {
 
     await waitFor(() => expect(router.state.location.search).toBe('?page=1'));
     await waitFor(() =>
-      expect(fetchMock).toHaveBeenLastCalledWith(
+      expect(requestedUrls(fetchMock).at(-1)).toBe(
         '/api/applications?order=desc&limit=20&offset=20',
-        expect.anything(),
       ),
     );
   });
 
   it('goes back to the last page when the current one is past the end', async () => {
-    fetchMock.mockImplementation((url: string) =>
+    fetchMock.mockImplementation((request: Request) =>
       Promise.resolve(
-        jsonResponse({ ...list, total: 3, items: url.includes('offset=40') ? [] : list.items }),
+        jsonResponse({
+          ...list,
+          total: 3,
+          items: request.url.includes('offset=40') ? [] : list.items,
+        }),
       ),
     );
     const { router } = await renderWithProviders(<ApplicationsPage />, {
@@ -201,10 +203,7 @@ describe('ApplicationsPage', () => {
     expect(header).toHaveAttribute('aria-sort', 'ascending');
     expect(header).toHaveTextContent('triées de la plus ancienne à la plus récente');
     await waitFor(() =>
-      expect(fetchMock).toHaveBeenLastCalledWith(
-        '/api/applications?order=asc&limit=20&offset=0',
-        expect.anything(),
-      ),
+      expect(requestedUrls(fetchMock).at(-1)).toBe('/api/applications?order=asc&limit=20&offset=0'),
     );
 
     await userEvent.click(within(header).getByRole('button'));
