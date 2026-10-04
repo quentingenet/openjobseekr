@@ -17,10 +17,6 @@ export function createSkillMatcher(pattern: string): (text: string | null) => bo
   return (text) => Boolean(text) && regex.test(text as string);
 }
 
-export function matchesSkill(pattern: string, text: string | null): boolean {
-  return createSkillMatcher(pattern)(text);
-}
-
 /** Valid RE2 syntax (no lookarounds or backreferences). A blank pattern would match nearly everything. */
 export function checkSkillPattern(pattern: string): SkillPatternCheck {
   if (pattern.trim() === '') return 'INVALID_SYNTAX';

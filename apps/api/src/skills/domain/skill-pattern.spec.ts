@@ -1,41 +1,41 @@
 import { describe, expect, it } from 'vitest';
-import { checkSkillPattern, matchesSkill } from './skill-pattern.js';
+import { checkSkillPattern, createSkillMatcher } from './skill-pattern.js';
 
-describe('matchesSkill', () => {
+describe('createSkillMatcher', () => {
   it('runs in linear time on patterns that make backtracking engines hang', () => {
     const text = `${'a'.repeat(50_000)}!`;
     const start = performance.now();
 
-    expect(matchesSkill('(a+)+$', text)).toBe(false);
-    expect(matchesSkill('(a|a)*b', text)).toBe(false);
-    expect(matchesSkill('.*.*.*.*x', text)).toBe(false);
+    expect(createSkillMatcher('(a+)+$')(text)).toBe(false);
+    expect(createSkillMatcher('(a|a)*b')(text)).toBe(false);
+    expect(createSkillMatcher('.*.*.*.*x')(text)).toBe(false);
 
     expect(performance.now() - start).toBeLessThan(1_000);
   });
 
   it('matches case-insensitively, like REGEXMATCH((?i)…) in the spreadsheet', () => {
-    expect(matchesSkill('\\bTypeScript\\b', 'Stack: typescript, React')).toBe(true);
+    expect(createSkillMatcher('\\bTypeScript\\b')('Stack: typescript, React')).toBe(true);
   });
 
   it('does not match Java inside JavaScript with \\bJava\\b', () => {
-    expect(matchesSkill('\\bJava\\b', 'Nous utilisons JavaScript et TypeScript')).toBe(false);
-    expect(matchesSkill('\\bJava\\b', 'Backend en Java 21')).toBe(true);
+    expect(createSkillMatcher('\\bJava\\b')('Nous utilisons JavaScript et TypeScript')).toBe(false);
+    expect(createSkillMatcher('\\bJava\\b')('Backend en Java 21')).toBe(true);
   });
 
   it('does not match SQL inside NoSQL with \\bSQL\\b', () => {
-    expect(matchesSkill('\\bSQL\\b', 'Base NoSQL (MongoDB)')).toBe(false);
-    expect(matchesSkill('\\bSQL\\b', 'Bonne maîtrise du SQL')).toBe(true);
+    expect(createSkillMatcher('\\bSQL\\b')('Base NoSQL (MongoDB)')).toBe(false);
+    expect(createSkillMatcher('\\bSQL\\b')('Bonne maîtrise du SQL')).toBe(true);
   });
 
   it('supports alternatives and optional groups', () => {
-    expect(matchesSkill('\\bReact(\\.?js)?\\b', 'Expérience ReactJS')).toBe(true);
-    expect(matchesSkill('\\bReact(\\.?js)?\\b', 'Expérience React.js')).toBe(true);
-    expect(matchesSkill('\\bKubernetes\\b|\\bK8s\\b', 'Déploiement sur k8s')).toBe(true);
+    expect(createSkillMatcher('\\bReact(\\.?js)?\\b')('Expérience ReactJS')).toBe(true);
+    expect(createSkillMatcher('\\bReact(\\.?js)?\\b')('Expérience React.js')).toBe(true);
+    expect(createSkillMatcher('\\bKubernetes\\b|\\bK8s\\b')('Déploiement sur k8s')).toBe(true);
   });
 
   it('never matches an empty or missing text', () => {
-    expect(matchesSkill('\\bReact\\b', '')).toBe(false);
-    expect(matchesSkill('\\bReact\\b', null)).toBe(false);
+    expect(createSkillMatcher('\\bReact\\b')('')).toBe(false);
+    expect(createSkillMatcher('\\bReact\\b')(null)).toBe(false);
   });
 });
 
