@@ -2,7 +2,9 @@ import {
   APPLICATION_CHANNELS,
   APPLICATION_STATUSES,
   DEFAULT_PAGE_SIZE,
+  MAX_OFFSET,
   PAGE_SIZES,
+  SEARCH_MAX_LENGTH,
 } from '@openjobseekr/domain';
 import { useCallback, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router';
@@ -14,7 +16,7 @@ function isOneOf<T extends string>(values: readonly T[], value: string | null): 
   return value !== null && (values as readonly string[]).includes(value);
 }
 
-/** Reads the list query from URL parameters, ignoring invalid values. */
+/** Reads the list query from URL parameters, ignoring invalid values and bounding the rest. */
 export function parseListQuery(params: URLSearchParams): ListApplicationsQuery {
   const status = params.get('status');
   const channel = params.get('channel');
@@ -25,10 +27,10 @@ export function parseListQuery(params: URLSearchParams): ListApplicationsQuery {
     status: isOneOf(APPLICATION_STATUSES, status) ? status : undefined,
     channel: isOneOf(APPLICATION_CHANNELS, channel) ? channel : undefined,
     overdue: params.get('overdue') === 'true' || undefined,
-    q: params.get('q') ?? undefined,
+    q: params.get('q')?.slice(0, SEARCH_MAX_LENGTH),
     order: params.get('order') === 'asc' ? 'asc' : 'desc',
     limit: pageSize,
-    offset: Number.isInteger(page) && page > 0 ? page * pageSize : 0,
+    offset: Number.isInteger(page) && page > 0 ? Math.min(page * pageSize, MAX_OFFSET) : 0,
   };
 }
 

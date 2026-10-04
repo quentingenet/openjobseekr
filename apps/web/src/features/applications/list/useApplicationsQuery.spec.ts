@@ -1,3 +1,4 @@
+import { MAX_OFFSET, SEARCH_MAX_LENGTH } from '@openjobseekr/domain';
 import { describe, expect, it } from 'vitest';
 import { parseListQuery } from './useApplicationsQuery';
 
@@ -30,5 +31,14 @@ describe('parseListQuery', () => {
       limit: 20,
       offset: 0,
     });
+  });
+
+  it('bounds the search and the page, which the API would reject otherwise', () => {
+    const params = new URLSearchParams(`q=${'a'.repeat(SEARCH_MAX_LENGTH + 50)}&page=1e12`);
+
+    const query = parseListQuery(params);
+
+    expect(query.q).toBe('a'.repeat(SEARCH_MAX_LENGTH));
+    expect(query.offset).toBe(MAX_OFFSET);
   });
 });

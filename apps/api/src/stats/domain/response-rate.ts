@@ -1,4 +1,8 @@
-import { type ApplicationStatus, FOLLOW_UP_STATUS } from '@openjobseekr/domain';
+import {
+  APPLICATION_STATUSES,
+  type ApplicationStatus,
+  FOLLOW_UP_STATUS,
+} from '@openjobseekr/domain';
 
 // Still waiting for an answer, or given up on: neither counts as a response.
 const NO_ANSWER_STATUSES: ReadonlySet<ApplicationStatus> = new Set([
@@ -7,8 +11,12 @@ const NO_ANSWER_STATUSES: ReadonlySet<ApplicationStatus> = new Set([
 ]);
 
 /** Share of applications that got any answer. `null` when there are no applications. */
-export function computeResponseRate(statuses: readonly ApplicationStatus[]): number | null {
-  if (statuses.length === 0) return null;
-  const responses = statuses.filter((status) => !NO_ANSWER_STATUSES.has(status)).length;
-  return responses / statuses.length;
+export function computeResponseRate(
+  countByStatus: Readonly<Record<ApplicationStatus, number>>,
+): number | null {
+  const sum = (statuses: readonly ApplicationStatus[]) =>
+    statuses.reduce((total, status) => total + countByStatus[status], 0);
+  const total = sum(APPLICATION_STATUSES);
+  if (total === 0) return null;
+  return sum(APPLICATION_STATUSES.filter((status) => !NO_ANSWER_STATUSES.has(status))) / total;
 }

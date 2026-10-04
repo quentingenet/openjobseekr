@@ -104,9 +104,9 @@ openjobseekr/
 - A Vitest test checks that every translation key exists in `en`, `fr` and `es`, and that every
   API error code has its `errors.<CODE>` translation.
 - Limits are defined once in `@openjobseekr/domain` (`TEXT_LIMITS` per field, `SKILL_LIMITS`,
-  `SKILL_LEVEL`, `SEARCH_MAX_LENGTH`, `CREDENTIAL_LIMITS`, page sizes) and used by the API
-  DTOs and the web forms. The database CHECK constraints (migrations) repeat them, checked
-  against the migrations by `text-limits.spec.ts` and against the real database by
+  `SKILL_LEVEL`, `SEARCH_MAX_LENGTH`, `CREDENTIAL_LIMITS`, page sizes, `MAX_OFFSET`) and used by
+  the API DTOs and the web forms. The database CHECK constraints (migrations) repeat them,
+  checked against the migrations by `text-limits.spec.ts` and against the real database by
   `database-constraints.e2e-spec.ts`.
 - The status waiting for an answer (`FOLLOW_UP_STATUS`) drives the follow-up date, the
   overdue filter and the response rate: never compare with `'SENT'` directly.

@@ -1,5 +1,10 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE, SEARCH_MAX_LENGTH } from '@openjobseekr/domain';
+import {
+  DEFAULT_PAGE_SIZE,
+  MAX_OFFSET,
+  MAX_PAGE_SIZE,
+  SEARCH_MAX_LENGTH,
+} from '@openjobseekr/domain';
 import { Transform, Type } from 'class-transformer';
 import {
   IsBoolean,
@@ -15,8 +20,6 @@ import {
 import { Trim } from '../../common/transforms.js';
 import { Channel, Status } from '../../generated/prisma/enums.js';
 
-// Far beyond any real list; rejects absurd values with a 400 instead of a database error.
-export const MAX_OFFSET = 2_147_483_647;
 export const SORT_ORDERS = ['asc', 'desc'] as const;
 export type SortOrder = (typeof SORT_ORDERS)[number];
 

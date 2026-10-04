@@ -35,11 +35,11 @@ describe('buildOverview', () => {
   });
 
   it('counts by status and channel, with UNSPECIFIED for a missing channel', () => {
+    // Counts per (status, channel), as the database groups them.
     const overview = buildOverview([
-      { status: 'SENT', channel: 'LINKEDIN' },
-      { status: 'SENT', channel: 'LINKEDIN' },
-      { status: 'HR_INTERVIEW', channel: 'APEC' },
-      { status: 'REJECTED', channel: null },
+      { status: 'SENT', channel: 'LINKEDIN', count: 2 },
+      { status: 'HR_INTERVIEW', channel: 'APEC', count: 1 },
+      { status: 'REJECTED', channel: null, count: 1 },
     ]);
 
     expect(overview).toEqual({

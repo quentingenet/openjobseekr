@@ -7,10 +7,14 @@ export class StatsService {
   constructor(private readonly prisma: PrismaService) {}
 
   async overview(userId: string): Promise<Overview> {
-    const applications = await this.prisma.application.findMany({
+    // The database counts: at most one row per (status, channel) pair, whatever the volume.
+    const groups = await this.prisma.application.groupBy({
+      by: ['status', 'channel'],
       where: { userId },
-      select: { status: true, channel: true },
+      _count: { _all: true },
     });
-    return buildOverview(applications);
+    return buildOverview(
+      groups.map(({ status, channel, _count }) => ({ status, channel, count: _count._all })),
+    );
   }
 }

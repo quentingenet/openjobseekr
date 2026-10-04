@@ -37,7 +37,11 @@ export class SkillsService {
     await this.prisma.skill.delete({ where: { id, userId } });
   }
 
-  /** Each skill matched against the user's saved job posting texts. */
+  /**
+   * Each skill matched against the user's saved job posting texts. Computed on each request
+   * (skills × postings, RE2 in linear time): fine for one person's search. A hosted version
+   * would store the matches when a posting or a skill changes instead.
+   */
   async stats(userId: string): Promise<SkillStatsDto> {
     const [skills, applications] = await Promise.all([
       this.list(userId),

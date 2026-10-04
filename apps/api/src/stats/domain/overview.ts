@@ -16,10 +16,15 @@ export interface Overview {
   responseRate: number | null;
 }
 
+/** Number of applications with a given status and channel. */
+export interface ApplicationGroup {
+  status: ApplicationStatus;
+  channel: ApplicationChannel | null;
+  count: number;
+}
+
 /** Statistics over a user's applications. Every code is present, even with a zero count. */
-export function buildOverview(
-  applications: readonly { status: ApplicationStatus; channel: ApplicationChannel | null }[],
-): Overview {
+export function buildOverview(groups: readonly ApplicationGroup[]): Overview {
   const byStatus = Object.fromEntries(
     APPLICATION_STATUSES.map((s) => [s, 0]),
   ) as Overview['byStatus'];
@@ -27,15 +32,12 @@ export function buildOverview(
     [...APPLICATION_CHANNELS, UNSPECIFIED_CHANNEL].map((c) => [c, 0]),
   ) as Overview['byChannel'];
 
-  for (const { status, channel } of applications) {
-    byStatus[status] += 1;
-    byChannel[channel ?? UNSPECIFIED_CHANNEL] += 1;
+  let total = 0;
+  for (const { status, channel, count } of groups) {
+    byStatus[status] += count;
+    byChannel[channel ?? UNSPECIFIED_CHANNEL] += count;
+    total += count;
   }
 
-  return {
-    total: applications.length,
-    byStatus,
-    byChannel,
-    responseRate: computeResponseRate(applications.map((a) => a.status)),
-  };
+  return { total, byStatus, byChannel, responseRate: computeResponseRate(byStatus) };
 }

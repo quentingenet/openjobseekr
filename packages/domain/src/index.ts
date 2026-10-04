@@ -16,6 +16,7 @@ export {
   type ApplicationTextField,
   CREDENTIAL_LIMITS,
   DEFAULT_PAGE_SIZE,
+  MAX_OFFSET,
   MAX_PAGE_SIZE,
   PAGE_SIZES,
   SEARCH_MAX_LENGTH,

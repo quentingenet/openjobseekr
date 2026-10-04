@@ -40,5 +40,7 @@ export const CREDENTIAL_LIMITS = {
 export const DEFAULT_PAGE_SIZE = 20;
 /** The largest page the API accepts. */
 export const MAX_PAGE_SIZE = 100;
+/** Far beyond any real list: the API rejects larger offsets with a 400, not a database error. */
+export const MAX_OFFSET = 2_147_483_647;
 /** Page sizes offered by the web app. */
 export const PAGE_SIZES = [10, 20, 50] as const;
