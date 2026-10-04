@@ -10,21 +10,24 @@ import { createOpenApiDocument } from './app.setup.js';
 // would otherwise leave it on a stale contract while every check stays green.
 const WEB_OPENAPI_PATH = new URL('../../web/src/api/openapi.json', import.meta.url);
 
+// The config module validates the environment as soon as AppModule is imported: set it in
+// vi.hoisted (run before the imports) so that the test does not need a .env file. Real
+// environment variables take precedence over .env, and the database is never queried.
+vi.hoisted(() => {
+  process.env.DATABASE_URL = 'postgresql://user:pass@localhost:5432/openjobseekr';
+  process.env.JWT_SECRET = 'a'.repeat(32);
+  process.env.JWT_EXPIRES_IN = '1d';
+});
+
 describe('OpenAPI document', () => {
   let app: INestApplication;
 
   beforeAll(async () => {
-    // Real environment variables take precedence over .env: the test does not depend on it.
-    // The database is never queried: building the document only reads decorator metadata.
-    vi.stubEnv('DATABASE_URL', 'postgresql://user:pass@localhost:5432/openjobseekr');
-    vi.stubEnv('JWT_SECRET', 'a'.repeat(32));
-    vi.stubEnv('JWT_EXPIRES_IN', '1d');
     app = await NestFactory.create(AppModule, { logger: false });
   });
 
   afterAll(async () => {
     await app.close();
-    vi.unstubAllEnvs();
   });
 
   it('matches the copy used by the web app (run `npm run api:types` after a DTO change)', () => {

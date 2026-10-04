@@ -100,7 +100,7 @@ machine.
 
 | Command                                   | What it does                                          |
 | ----------------------------------------- | ----------------------------------------------------- |
-| `npm run check`                           | Lint, type check and unit tests (run before a commit) |
+| `npm run check`                           | Lint, type check and unit tests (run before a push)   |
 | `npm run test`                            | Unit and component tests                              |
 | `npm run test:e2e`                        | API end-to-end tests on the `_test` database          |
 | `npm run lint` / `npm run format`         | ESLint / Prettier                                     |
