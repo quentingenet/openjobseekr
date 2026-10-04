@@ -13,15 +13,14 @@ import {
 } from 'class-validator';
 import { IsOptionalNotNull } from '../../common/decorators/validation.decorators.js';
 import { Trim } from '../../common/transforms.js';
-import { checkSkillPattern } from '../domain/skill-pattern.js';
+import { isValidSkillPattern } from '../domain/skill-pattern.js';
 
 /** Valid RE2 regular expression (`isRegex`), the syntax of Google Sheets' REGEXMATCH. */
 const IsRegex = (): PropertyDecorator =>
   ValidateBy({
     name: 'isRegex',
     validator: {
-      validate: (value: unknown) =>
-        typeof value === 'string' && checkSkillPattern(value) === 'VALID',
+      validate: (value: unknown) => typeof value === 'string' && isValidSkillPattern(value),
       defaultMessage: () => '$property must be a valid regular expression',
     },
   });

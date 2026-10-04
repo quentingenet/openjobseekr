@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
-import { appExceptionFromPrismaError } from '../prisma/prisma-errors.js';
 import { AppException, type FieldError } from './app.exception.js';
 import { ERROR_CATALOG, ErrorCode } from './error-codes.js';
+import { appExceptionFromPrismaError } from './prisma-errors.js';
 
 export const PROBLEM_CONTENT_TYPE = 'application/problem+json';
 

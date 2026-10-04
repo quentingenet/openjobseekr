@@ -3,23 +3,41 @@ import { AppLayout } from './components/AppLayout';
 import { NotFoundPage } from './components/NotFoundPage';
 import { RedirectIfAuthenticated, RequireAuth } from './components/RequireAuth';
 import { RouteErrorPage } from './components/RouteErrorPage';
-import { ApplicationDetailPage } from './features/applications/ApplicationDetailPage';
-import {
-  EditApplicationPage,
-  NewApplicationPage,
-} from './features/applications/ApplicationFormPage';
-import { ApplicationsPage } from './features/applications/ApplicationsPage';
-import { AuthPage } from './features/auth/AuthPage';
-import { SkillsPage } from './features/skills/SkillsPage';
-import { StatsPage } from './features/stats/StatsPage';
+
+// Each page is downloaded when its route is first visited, which keeps the first download
+// small (the form and its date picker are the heaviest part of the app).
+const authPage = (mode: 'login' | 'register') => () =>
+  import('./features/auth/AuthPage').then(({ AuthPage }) => ({
+    Component: () => <AuthPage mode={mode} />,
+  }));
+const applicationsPage = () =>
+  import('./features/applications/ApplicationsPage').then(({ ApplicationsPage }) => ({
+    Component: ApplicationsPage,
+  }));
+const newApplicationPage = () =>
+  import('./features/applications/ApplicationFormPage').then(({ NewApplicationPage }) => ({
+    Component: NewApplicationPage,
+  }));
+const editApplicationPage = () =>
+  import('./features/applications/ApplicationFormPage').then(({ EditApplicationPage }) => ({
+    Component: EditApplicationPage,
+  }));
+const applicationDetailPage = () =>
+  import('./features/applications/ApplicationDetailPage').then(({ ApplicationDetailPage }) => ({
+    Component: ApplicationDetailPage,
+  }));
+const statsPage = () =>
+  import('./features/stats/StatsPage').then(({ StatsPage }) => ({ Component: StatsPage }));
+const skillsPage = () =>
+  import('./features/skills/SkillsPage').then(({ SkillsPage }) => ({ Component: SkillsPage }));
 
 export const routes: RouteObject[] = [
   {
     element: <RedirectIfAuthenticated />,
     errorElement: <RouteErrorPage />,
     children: [
-      { path: '/login', element: <AuthPage mode="login" /> },
-      { path: '/register', element: <AuthPage mode="register" /> },
+      { path: '/login', lazy: authPage('login') },
+      { path: '/register', lazy: authPage('register') },
     ],
   },
   {
@@ -30,12 +48,12 @@ export const routes: RouteObject[] = [
         element: <AppLayout />,
         children: [
           { path: '/', element: <Navigate to="/applications" replace /> },
-          { path: '/applications', element: <ApplicationsPage /> },
-          { path: '/applications/new', element: <NewApplicationPage /> },
-          { path: '/applications/:id', element: <ApplicationDetailPage /> },
-          { path: '/applications/:id/edit', element: <EditApplicationPage /> },
-          { path: '/stats', element: <StatsPage /> },
-          { path: '/skills', element: <SkillsPage /> },
+          { path: '/applications', lazy: applicationsPage },
+          { path: '/applications/new', lazy: newApplicationPage },
+          { path: '/applications/:id', lazy: applicationDetailPage },
+          { path: '/applications/:id/edit', lazy: editApplicationPage },
+          { path: '/stats', lazy: statsPage },
+          { path: '/skills', lazy: skillsPage },
           { path: '*', element: <NotFoundPage /> },
         ],
       },

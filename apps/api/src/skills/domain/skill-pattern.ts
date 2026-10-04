@@ -1,7 +1,5 @@
 import RE2 from 're2';
 
-export type SkillPatternCheck = 'VALID' | 'INVALID_SYNTAX';
-
 /**
  * RE2 is the engine behind Google Sheets' REGEXMATCH, so results match the original sheet.
  * It runs in linear time: no pattern can make matching hang (no ReDoS), unlike JavaScript's
@@ -14,16 +12,19 @@ function compile(pattern: string): RE2 {
 /** Compiles the pattern once, for matching it against many texts. */
 export function createSkillMatcher(pattern: string): (text: string | null) => boolean {
   const regex = compile(pattern);
-  return (text) => Boolean(text) && regex.test(text as string);
+  return (text) => (text ? regex.test(text) : false);
 }
 
-/** Valid RE2 syntax (no lookarounds or backreferences). A blank pattern would match nearly everything. */
-export function checkSkillPattern(pattern: string): SkillPatternCheck {
-  if (pattern.trim() === '') return 'INVALID_SYNTAX';
+/**
+ * Valid RE2 syntax (no lookarounds or backreferences). A blank pattern is rejected: it would
+ * match nearly everything.
+ */
+export function isValidSkillPattern(pattern: string): boolean {
+  if (pattern.trim() === '') return false;
   try {
     compile(pattern);
-    return 'VALID';
+    return true;
   } catch {
-    return 'INVALID_SYNTAX';
+    return false;
   }
 }

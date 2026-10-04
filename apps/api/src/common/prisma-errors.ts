@@ -1,5 +1,5 @@
-import { AppException } from '../common/app.exception.js';
-import { ErrorCode } from '../common/error-codes.js';
+import { AppException } from './app.exception.js';
+import { ErrorCode } from './error-codes.js';
 import { Prisma } from '../generated/prisma/client.js';
 
 /** Prisma error codes the API translates. */

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { checkSkillPattern, createSkillMatcher } from './skill-pattern.js';
+import { createSkillMatcher, isValidSkillPattern } from './skill-pattern.js';
 
 describe('createSkillMatcher', () => {
   it('runs in linear time on patterns that make backtracking engines hang', () => {
@@ -39,36 +39,36 @@ describe('createSkillMatcher', () => {
   });
 });
 
-describe('checkSkillPattern', () => {
+describe('isValidSkillPattern', () => {
   it.each([
     '\\bReact(\\.?js)?\\b',
     'CI/CD|\\bCI\\b|intégration continue',
     'assistants? .{0,25}\\bIA\\b',
     '(s|ing)?',
   ])('accepts %s', (pattern) => {
-    expect(checkSkillPattern(pattern)).toBe('VALID');
+    expect(isValidSkillPattern(pattern)).toBe(true);
   });
 
   it.each(['(unclosed', '[a-', '*start', 'a{2,1}'])(
     'rejects the invalid regular expression %s',
     (pattern) => {
-      expect(checkSkillPattern(pattern)).toBe('INVALID_SYNTAX');
+      expect(isValidSkillPattern(pattern)).toBe(false);
     },
   );
 
   it.each(['(?=lookahead)', '(a)\\1'])(
     'rejects %s: not supported by RE2, the engine of Google Sheets',
     (pattern) => {
-      expect(checkSkillPattern(pattern)).toBe('INVALID_SYNTAX');
+      expect(isValidSkillPattern(pattern)).toBe(false);
     },
   );
 
   it('accepts nested repetitions: RE2 matches in linear time, they cannot freeze the API', () => {
-    expect(checkSkillPattern('(a+)+$')).toBe('VALID');
+    expect(isValidSkillPattern('(a+)+$')).toBe(true);
   });
 
   it('rejects an empty or blank pattern', () => {
-    expect(checkSkillPattern('')).toBe('INVALID_SYNTAX');
-    expect(checkSkillPattern('   ')).toBe('INVALID_SYNTAX');
+    expect(isValidSkillPattern('')).toBe(false);
+    expect(isValidSkillPattern('   ')).toBe(false);
   });
 });

@@ -32,7 +32,7 @@ openjobseekr/
     │   ├── src/
     │   │   ├── main.ts, app.module.ts
     │   │   ├── config/       (environment validation)
-    │   │   ├── common/       (exception filter, decorators, error codes, clock)
+    │   │   ├── common/       (exception filter, error codes, Prisma errors, decorators, clock)
     │   │   ├── prisma/       (module and service)
     │   │   ├── auth/, health/, settings/
     │   │   ├── follow-up/    (FollowUpModule: follow-up context for applications and settings)

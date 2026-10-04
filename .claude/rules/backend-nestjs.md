@@ -19,6 +19,6 @@ paths:
   is scoped by `userId`.
 - Errors are thrown as `new AppException(ErrorCode.X, detail?)`; status and title come from
   `ERROR_CATALOG`. No try/catch for flow control in services: Prisma errors (not found,
-  duplicate, foreign key) are translated in one place (`prisma/prisma-errors.ts`) and the
+  duplicate, foreign key) are translated in one place (`common/prisma-errors.ts`) and the
   global `ProblemDetailsFilter` formats every response.
 - Configuration comes from the validated config module, never from `process.env` directly.

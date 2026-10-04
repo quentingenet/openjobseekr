@@ -151,8 +151,8 @@ apps/
 │   │   ├── settings/       settings the web app needs (follow-up delay)
 │   │   ├── health/         health check (database included)
 │   │   ├── config/         environment validation
-│   │   ├── prisma/         Prisma service and error translation
-│   │   └── common/         error format, validation, shared decorators
+│   │   ├── prisma/         Prisma module and service
+│   │   └── common/         error format and Prisma error translation, validation, decorators
 │   └── test/               end-to-end tests
 └── web/                    React app
     └── src/
