@@ -1,6 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { AppException } from '../common/app.exception.js';
-import { ErrorCode } from '../common/error-codes.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 import {
   buildListWhere,
@@ -15,8 +13,9 @@ import type { ListApplicationsQueryDto } from './dto/list-applications-query.dto
 import { FollowUpContextProvider } from './follow-up-context.provider.js';
 
 /**
- * Every query is scoped by `userId`. A record of another user is reported as not found by the
- * global error handling (Prisma "record not found" on Application -> APPLICATION_NOT_FOUND).
+ * Every query is scoped by `userId`. A missing record, or one of another user, is reported as
+ * not found by the global error handling (Prisma "record not found" on Application ->
+ * APPLICATION_NOT_FOUND): reads, updates and deletes all rely on it.
  */
 @Injectable()
 export class ApplicationsService {
@@ -54,8 +53,9 @@ export class ApplicationsService {
   }
 
   async findOne(userId: string, id: string): Promise<ApplicationDetailDto> {
-    const application = await this.prisma.application.findFirst({ where: { id, userId } });
-    if (!application) throw new AppException(ErrorCode.APPLICATION_NOT_FOUND);
+    const application = await this.prisma.application.findUniqueOrThrow({
+      where: { id, userId },
+    });
     return toApplicationDetail(application, this.followUp.context());
   }
 

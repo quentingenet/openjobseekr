@@ -1,5 +1,4 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { appError } from '../common/testing/app-error.js';
 import { type Application, Prisma } from '../generated/prisma/client.js';
 import type { PrismaService } from '../prisma/prisma.service.js';
 import { ApplicationsService } from './applications.service.js';
@@ -39,7 +38,7 @@ function setup(delayDays = 7) {
   const prisma = {
     application: {
       create: vi.fn(),
-      findFirst: vi.fn(),
+      findUniqueOrThrow: vi.fn(),
       findMany: vi.fn(),
       count: vi.fn(),
       update: vi.fn(),
@@ -93,7 +92,7 @@ describe('ApplicationsService', () => {
 
   it('uses the configured follow-up delay', async () => {
     ctx = setup(10);
-    ctx.prisma.application.findFirst.mockResolvedValue(record);
+    ctx.prisma.application.findUniqueOrThrow.mockResolvedValue(record);
 
     const detail = await ctx.service.findOne('user-1', ID);
 
@@ -128,27 +127,18 @@ describe('ApplicationsService', () => {
     );
   });
 
-  it('looks up a single application by id and user', async () => {
-    ctx.prisma.application.findFirst.mockResolvedValue(null);
-
-    expect(appError(await ctx.service.findOne('user-1', ID).catch((e: unknown) => e))).toEqual({
-      code: 'APPLICATION_NOT_FOUND',
-      status: 404,
-      detail: undefined,
-      errors: undefined,
-    });
-    expect(ctx.prisma.application.findFirst).toHaveBeenCalledWith({
-      where: { id: ID, userId: 'user-1' },
-    });
-  });
-
-  it('updates and deletes only within the user scope; a miss surfaces as a Prisma error', async () => {
+  it('reads, updates and deletes only within the user scope; a miss surfaces as a Prisma error', async () => {
     const missing = prismaError('P2025');
+    ctx.prisma.application.findUniqueOrThrow.mockRejectedValue(missing);
     ctx.prisma.application.update.mockRejectedValue(missing);
     ctx.prisma.application.delete.mockRejectedValue(missing);
 
+    await expect(ctx.service.findOne('user-1', ID)).rejects.toBe(missing);
     await expect(ctx.service.update('user-1', ID, { notes: 'x' })).rejects.toBe(missing);
     await expect(ctx.service.remove('user-1', ID)).rejects.toBe(missing);
+    expect(ctx.prisma.application.findUniqueOrThrow).toHaveBeenCalledWith({
+      where: { id: ID, userId: 'user-1' },
+    });
     expect(ctx.prisma.application.update).toHaveBeenCalledWith({
       where: { id: ID, userId: 'user-1' },
       data: { notes: 'x' },
