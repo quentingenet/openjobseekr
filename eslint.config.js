@@ -1,6 +1,7 @@
 // @ts-check
 import eslint from '@eslint/js';
 import { defineConfig, globalIgnores } from 'eslint/config';
+import reactHooks from 'eslint-plugin-react-hooks';
 import tseslint from 'typescript-eslint';
 
 export default defineConfig(
@@ -10,6 +11,7 @@ export default defineConfig(
     '**/build/',
     '**/coverage/',
     'apps/api/src/generated/',
+    'apps/web/src/api/schema.d.ts',
   ]),
   eslint.configs.recommended,
   tseslint.configs.strict,
@@ -24,5 +26,9 @@ export default defineConfig(
         { ignoreRestSiblings: true, argsIgnorePattern: '^_' },
       ],
     },
+  },
+  {
+    files: ['apps/web/**/*.{ts,tsx}'],
+    ...reactHooks.configs.flat.recommended,
   },
 );

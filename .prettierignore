@@ -5,3 +5,5 @@ coverage
 package-lock.json
 LICENSE
 apps/api/src/generated
+apps/web/src/api/openapi.json
+apps/web/src/api/schema.d.ts

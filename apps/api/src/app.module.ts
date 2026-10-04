@@ -5,6 +5,7 @@ import { ClockModule } from './common/clock.module.js';
 import { ConfigModule } from './config/config.module.js';
 import { HealthModule } from './health/health.module.js';
 import { PrismaModule } from './prisma/prisma.module.js';
+import { SettingsModule } from './settings/settings.module.js';
 import { StatsModule } from './stats/stats.module.js';
 
 @Module({
@@ -16,6 +17,7 @@ import { StatsModule } from './stats/stats.module.js';
     HealthModule,
     ApplicationsModule,
     StatsModule,
+    SettingsModule,
   ],
 })
 export class AppModule {}

@@ -6,12 +6,16 @@ export class StatsOverviewDto implements Overview {
   total: number;
 
   @ApiProperty({
+    type: 'object',
+    additionalProperties: { type: 'number' },
     description: 'Count per status code; every code is present',
     example: { SENT: 4, HR_INTERVIEW: 1, REJECTED: 1 },
   })
   byStatus: Overview['byStatus'];
 
   @ApiProperty({
+    type: 'object',
+    additionalProperties: { type: 'number' },
     description: 'Count per channel code; UNSPECIFIED counts applications without a channel',
     example: { LINKEDIN: 3, APEC: 2, UNSPECIFIED: 1 },
   })

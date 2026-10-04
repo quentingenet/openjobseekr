@@ -31,6 +31,7 @@ describe('Swagger (e2e)', () => {
       '/auth/me',
       '/auth/register',
       '/health',
+      '/settings',
       '/stats/overview',
     ]);
     expect(response.body.components.securitySchemes.bearer).toEqual({

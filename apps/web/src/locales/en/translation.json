@@ -1,0 +1,175 @@
+{
+  "app": {
+    "title": "OpenJobSeekR"
+  },
+  "nav": {
+    "applications": "Applications",
+    "stats": "Statistics",
+    "logout": "Log out",
+    "mainNavigation": "Main navigation"
+  },
+  "language": {
+    "label": "Language",
+    "en": "English",
+    "fr": "Français"
+  },
+  "auth": {
+    "loginTitle": "Log in",
+    "registerTitle": "Create an account",
+    "email": "Email",
+    "password": "Password",
+    "passwordHelp": "8 characters minimum",
+    "submitLogin": "Log in",
+    "submitRegister": "Create my account",
+    "noAccount": "No account yet? Create one",
+    "hasAccount": "Already have an account? Log in"
+  },
+  "applications": {
+    "title": "Applications",
+    "new": "New application",
+    "search": "Search company or job title",
+    "allStatuses": "All statuses",
+    "allChannels": "All channels",
+    "overdueOnly": "Follow-ups due",
+    "empty": "No applications yet. Add your first one!",
+    "emptyFiltered": "No applications match these filters.",
+    "clearFilters": "Clear filters",
+    "rowsPerPage": "Rows per page",
+    "displayedRows": "{{from}}–{{to}} of {{count}}",
+    "overdueSince": "Follow-up due since {{date}}",
+    "tableLabel": "List of applications",
+    "columns": {
+      "sentAt": "Sent on",
+      "company": "Company",
+      "jobTitle": "Job title",
+      "channel": "Channel",
+      "status": "Status",
+      "followUp": "Follow-up",
+      "workMode": "Work mode"
+    }
+  },
+  "form": {
+    "newTitle": "New application",
+    "editTitle": "Edit application",
+    "sections": {
+      "offer": "Job offer",
+      "tracking": "Tracking",
+      "conditions": "Conditions",
+      "posting": "Job posting",
+      "notes": "Notes and process"
+    },
+    "fields": {
+      "sentAt": "Sent on",
+      "company": "Company",
+      "jobTitle": "Job title",
+      "location": "Location",
+      "response": "Response",
+      "resources": "Resources",
+      "channel": "Channel",
+      "status": "Status",
+      "contact": "Contact (name / email)",
+      "workMode": "Work mode",
+      "remoteRhythm": "Remote work rhythm",
+      "salaryRange": "Salary range",
+      "cvVersion": "CV / cover letter version",
+      "stack": "Stack / keywords",
+      "recruitmentProcess": "Recruitment process",
+      "notes": "Notes",
+      "jobPostingText": "Job posting text"
+    },
+    "notSpecified": "Not specified",
+    "followUpPreview": "Follow-up planned on {{date}}",
+    "noFollowUp": "No follow-up: the application already got an answer.",
+    "save": "Save",
+    "cancel": "Cancel",
+    "saved": "Application saved",
+    "unsavedTitle": "Leave without saving?",
+    "unsavedMessage": "Your changes will be lost.",
+    "stay": "Stay",
+    "leave": "Leave"
+  },
+  "detail": {
+    "back": "Back to the list",
+    "edit": "Edit",
+    "delete": "Delete",
+    "deleteTitle": "Delete this application?",
+    "deleteMessage": "The application to {{company}} will be permanently deleted.",
+    "confirmDelete": "Delete",
+    "cancel": "Cancel",
+    "deleted": "Application deleted",
+    "noPostingText": "No job posting text saved.",
+    "createdAt": "Created on {{date}}",
+    "updatedAt": "Updated on {{date}}",
+    "followUpOn": "Follow-up: {{date}}",
+    "followUpOverdue": "Follow-up overdue since {{date}}"
+  },
+  "stats": {
+    "title": "Statistics",
+    "total": "Applications",
+    "responseRate": "Response rate",
+    "noRate": "—",
+    "byStatus": "By status",
+    "byChannel": "By channel",
+    "count": "Count",
+    "share": "Share",
+    "empty": "Add applications to see statistics."
+  },
+  "status": {
+    "SENT": "Sent",
+    "RESPONSE_RECEIVED": "Response received",
+    "HR_INTERVIEW": "HR interview",
+    "TECHNICAL_INTERVIEW": "Technical interview",
+    "OFFER": "Offer",
+    "REJECTED": "Rejected",
+    "NO_RESPONSE": "No response"
+  },
+  "channel": {
+    "CAREER_SITE": "Career site",
+    "LINKEDIN": "LinkedIn",
+    "WELCOME_TO_THE_JUNGLE": "Welcome to the Jungle",
+    "HELLOWORK": "HelloWork",
+    "APEC": "APEC",
+    "RECRUITMENT_AGENCY": "Recruitment agency",
+    "UNSOLICITED": "Unsolicited",
+    "REFERRAL": "Referral",
+    "OTHER": "Other",
+    "UNSPECIFIED": "Not specified"
+  },
+  "workMode": {
+    "ONSITE": "On site",
+    "HYBRID": "Hybrid",
+    "FULL_REMOTE": "Full remote",
+    "UNSPECIFIED": "Not specified"
+  },
+  "validation": {
+    "required": "This field is required",
+    "tooLong": "{{max}} characters maximum",
+    "email": "Enter a valid email address",
+    "passwordTooShort": "8 characters minimum",
+    "passwordTooLong": "This password is too long",
+    "date": "Enter a valid date",
+    "invalid": "Invalid value"
+  },
+  "errors": {
+    "VALIDATION_FAILED": "Some fields are invalid.",
+    "UNAUTHORIZED": "Your session has expired. Please log in again.",
+    "INVALID_CREDENTIALS": "Wrong email or password.",
+    "EMAIL_ALREADY_USED": "An account already exists for this email.",
+    "FORBIDDEN": "You are not allowed to do this.",
+    "NOT_FOUND": "This page does not exist.",
+    "APPLICATION_NOT_FOUND": "This application does not exist or was deleted.",
+    "CONFLICT": "This action conflicts with existing data.",
+    "BAD_REQUEST": "The request is invalid.",
+    "PAYLOAD_TOO_LARGE": "The data sent is too large.",
+    "SERVICE_UNAVAILABLE": "The service is temporarily unavailable.",
+    "INTERNAL_ERROR": "Something went wrong on the server.",
+    "NETWORK_ERROR": "The server cannot be reached. Is the API running?",
+    "UNKNOWN": "An unexpected error occurred."
+  },
+  "common": {
+    "loading": "Loading…",
+    "retry": "Retry",
+    "pageNotFound": "Page not found",
+    "goHome": "Go to my applications"
+  }
+}

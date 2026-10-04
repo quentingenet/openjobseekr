@@ -1,0 +1,175 @@
+{
+  "app": {
+    "title": "OpenJobSeekR"
+  },
+  "nav": {
+    "applications": "Candidatures",
+    "stats": "Statistiques",
+    "logout": "Se déconnecter",
+    "mainNavigation": "Navigation principale"
+  },
+  "language": {
+    "label": "Langue",
+    "en": "English",
+    "fr": "Français"
+  },
+  "auth": {
+    "loginTitle": "Connexion",
+    "registerTitle": "Créer un compte",
+    "email": "Email",
+    "password": "Mot de passe",
+    "passwordHelp": "8 caractères minimum",
+    "submitLogin": "Se connecter",
+    "submitRegister": "Créer mon compte",
+    "noAccount": "Pas encore de compte ? Créez-en un",
+    "hasAccount": "Déjà un compte ? Connectez-vous"
+  },
+  "applications": {
+    "title": "Candidatures",
+    "new": "Nouvelle candidature",
+    "search": "Rechercher une entreprise ou un poste",
+    "allStatuses": "Tous les statuts",
+    "allChannels": "Tous les canaux",
+    "overdueOnly": "Relances dues",
+    "empty": "Aucune candidature pour l'instant. Ajoutez la première !",
+    "emptyFiltered": "Aucune candidature ne correspond à ces filtres.",
+    "clearFilters": "Effacer les filtres",
+    "rowsPerPage": "Lignes par page",
+    "displayedRows": "{{from}}–{{to}} sur {{count}}",
+    "overdueSince": "Relance due depuis le {{date}}",
+    "tableLabel": "Liste des candidatures",
+    "columns": {
+      "sentAt": "Envoyée le",
+      "company": "Entreprise",
+      "jobTitle": "Intitulé du poste",
+      "channel": "Canal",
+      "status": "Statut",
+      "followUp": "Relance",
+      "workMode": "Mode de travail"
+    }
+  },
+  "form": {
+    "newTitle": "Nouvelle candidature",
+    "editTitle": "Modifier la candidature",
+    "sections": {
+      "offer": "Offre",
+      "tracking": "Suivi",
+      "conditions": "Conditions",
+      "posting": "Annonce",
+      "notes": "Notes et processus"
+    },
+    "fields": {
+      "sentAt": "Date d'envoi",
+      "company": "Entreprise",
+      "jobTitle": "Intitulé du poste",
+      "location": "Localisation",
+      "response": "Réponse",
+      "resources": "Ressources",
+      "channel": "Canal",
+      "status": "Statut",
+      "contact": "Contact (nom / email)",
+      "workMode": "Mode de travail",
+      "remoteRhythm": "Rythme de télétravail",
+      "salaryRange": "Fourchette de salaire",
+      "cvVersion": "Version du CV / de la lettre",
+      "stack": "Stack / mots-clés",
+      "recruitmentProcess": "Processus de recrutement",
+      "notes": "Notes",
+      "jobPostingText": "Texte de l'annonce"
+    },
+    "notSpecified": "Non renseigné",
+    "followUpPreview": "Relance prévue le {{date}}",
+    "noFollowUp": "Pas de relance : la candidature a déjà reçu une réponse.",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "saved": "Candidature enregistrée",
+    "unsavedTitle": "Quitter sans enregistrer ?",
+    "unsavedMessage": "Vos modifications seront perdues.",
+    "stay": "Rester",
+    "leave": "Quitter"
+  },
+  "detail": {
+    "back": "Retour à la liste",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "deleteTitle": "Supprimer cette candidature ?",
+    "deleteMessage": "La candidature chez {{company}} sera supprimée définitivement.",
+    "confirmDelete": "Supprimer",
+    "cancel": "Annuler",
+    "deleted": "Candidature supprimée",
+    "noPostingText": "Aucun texte d'annonce enregistré.",
+    "createdAt": "Créée le {{date}}",
+    "updatedAt": "Modifiée le {{date}}",
+    "followUpOn": "Relance : {{date}}",
+    "followUpOverdue": "Relance en retard depuis le {{date}}"
+  },
+  "stats": {
+    "title": "Statistiques",
+    "total": "Candidatures",
+    "responseRate": "Taux de réponse",
+    "noRate": "—",
+    "byStatus": "Par statut",
+    "byChannel": "Par canal",
+    "count": "Nombre",
+    "share": "Part",
+    "empty": "Ajoutez des candidatures pour voir les statistiques."
+  },
+  "status": {
+    "SENT": "Envoyée",
+    "RESPONSE_RECEIVED": "Réponse reçue",
+    "HR_INTERVIEW": "Entretien RH",
+    "TECHNICAL_INTERVIEW": "Entretien technique",
+    "OFFER": "Offre",
+    "REJECTED": "Refusée",
+    "NO_RESPONSE": "Sans réponse"
+  },
+  "channel": {
+    "CAREER_SITE": "Site carrière",
+    "LINKEDIN": "LinkedIn",
+    "WELCOME_TO_THE_JUNGLE": "Welcome to the Jungle",
+    "HELLOWORK": "HelloWork",
+    "APEC": "APEC",
+    "RECRUITMENT_AGENCY": "Cabinet de recrutement",
+    "UNSOLICITED": "Candidature spontanée",
+    "REFERRAL": "Cooptation",
+    "OTHER": "Autre",
+    "UNSPECIFIED": "Non renseigné"
+  },
+  "workMode": {
+    "ONSITE": "Sur site",
+    "HYBRID": "Hybride",
+    "FULL_REMOTE": "Full remote",
+    "UNSPECIFIED": "Non précisé"
+  },
+  "validation": {
+    "required": "Ce champ est obligatoire",
+    "tooLong": "{{max}} caractères maximum",
+    "email": "Saisissez une adresse email valide",
+    "passwordTooShort": "8 caractères minimum",
+    "passwordTooLong": "Ce mot de passe est trop long",
+    "date": "Saisissez une date valide",
+    "invalid": "Valeur invalide"
+  },
+  "errors": {
+    "VALIDATION_FAILED": "Certains champs sont invalides.",
+    "UNAUTHORIZED": "Votre session a expiré. Reconnectez-vous.",
+    "INVALID_CREDENTIALS": "Email ou mot de passe incorrect.",
+    "EMAIL_ALREADY_USED": "Un compte existe déjà avec cet email.",
+    "FORBIDDEN": "Vous n'avez pas le droit de faire cela.",
+    "NOT_FOUND": "Cette page n'existe pas.",
+    "APPLICATION_NOT_FOUND": "Cette candidature n'existe pas ou a été supprimée.",
+    "CONFLICT": "Cette action entre en conflit avec des données existantes.",
+    "BAD_REQUEST": "La requête est invalide.",
+    "PAYLOAD_TOO_LARGE": "Les données envoyées sont trop volumineuses.",
+    "SERVICE_UNAVAILABLE": "Le service est momentanément indisponible.",
+    "INTERNAL_ERROR": "Une erreur est survenue sur le serveur.",
+    "NETWORK_ERROR": "Le serveur est injoignable. L'API est-elle lancée ?",
+    "UNKNOWN": "Une erreur inattendue est survenue."
+  },
+  "common": {
+    "loading": "Chargement…",
+    "retry": "Réessayer",
+    "pageNotFound": "Page introuvable",
+    "goHome": "Aller à mes candidatures"
+  }
+}

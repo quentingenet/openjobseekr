@@ -1,6 +1,6 @@
 import type { INestApplication } from '@nestjs/common';
 import type { NestExpressApplication } from '@nestjs/platform-express';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { DocumentBuilder, type OpenAPIObject, SwaggerModule } from '@nestjs/swagger';
 import { HttpExceptionFilter } from './common/http-exception.filter.js';
 import { createValidationPipe } from './common/validation.js';
 
@@ -14,12 +14,16 @@ export function configureApp(app: NestExpressApplication): NestExpressApplicatio
   return app;
 }
 
-export function setupSwagger(app: INestApplication): void {
+export function createOpenApiDocument(app: INestApplication): OpenAPIObject {
   const config = new DocumentBuilder()
     .setTitle('OpenJobSeekR API')
     .setDescription('Local job application tracker. Errors use { code, message, details? }.')
     .setVersion('0.1.0')
     .addBearerAuth()
     .build();
-  SwaggerModule.setup('docs', app, () => SwaggerModule.createDocument(app, config));
+  return SwaggerModule.createDocument(app, config);
+}
+
+export function setupSwagger(app: INestApplication): void {
+  SwaggerModule.setup('docs', app, () => createOpenApiDocument(app));
 }

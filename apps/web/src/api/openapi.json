@@ -1,0 +1,1254 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/auth/register": {
+      "post": {
+        "operationId": "AuthController_register",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "VALIDATION_FAILED"
+          },
+          "409": {
+            "description": "EMAIL_ALREADY_USED"
+          }
+        },
+        "summary": "Create an account and return an access token",
+        "tags": ["auth"]
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "operationId": "AuthController_login",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "VALIDATION_FAILED"
+          },
+          "401": {
+            "description": "INVALID_CREDENTIALS"
+          }
+        },
+        "summary": "Log in and return an access token",
+        "tags": ["auth"]
+      }
+    },
+    "/auth/me": {
+      "get": {
+        "operationId": "AuthController_me",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UNAUTHORIZED"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Return the authenticated user",
+        "tags": ["auth"]
+      }
+    },
+    "/health": {
+      "get": {
+        "operationId": "HealthController_check",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The Health Check is successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "enum": ["ok", "degraded"],
+                      "example": "ok"
+                    },
+                    "info": {
+                      "type": "object",
+                      "example": {
+                        "database": {
+                          "status": "up",
+                          "responseTime": 12
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": "object",
+                        "required": ["status"],
+                        "properties": {
+                          "status": {
+                            "type": "string",
+                            "enum": ["up", "degraded", "down"]
+                          },
+                          "responseTime": {
+                            "type": "number",
+                            "description": "Time the health indicator took to respond, in ms"
+                          }
+                        },
+                        "additionalProperties": true
+                      },
+                      "nullable": true
+                    },
+                    "error": {
+                      "type": "object",
+                      "example": {},
+                      "additionalProperties": {
+                        "type": "object",
+                        "required": ["status"],
+                        "properties": {
+                          "status": {
+                            "type": "string",
+                            "enum": ["up", "degraded", "down"]
+                          },
+                          "responseTime": {
+                            "type": "number",
+                            "description": "Time the health indicator took to respond, in ms"
+                          }
+                        },
+                        "additionalProperties": true
+                      },
+                      "nullable": true
+                    },
+                    "details": {
+                      "type": "object",
+                      "example": {
+                        "database": {
+                          "status": "up",
+                          "responseTime": 12
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": "object",
+                        "required": ["status"],
+                        "properties": {
+                          "status": {
+                            "type": "string",
+                            "enum": ["up", "degraded", "down"]
+                          },
+                          "responseTime": {
+                            "type": "number",
+                            "description": "Time the health indicator took to respond, in ms"
+                          }
+                        },
+                        "additionalProperties": true
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The Health Check is not successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "enum": ["error", "shutting_down"],
+                      "example": "error"
+                    },
+                    "info": {
+                      "type": "object",
+                      "example": {
+                        "database": {
+                          "status": "up",
+                          "responseTime": 12
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": "object",
+                        "required": ["status"],
+                        "properties": {
+                          "status": {
+                            "type": "string",
+                            "enum": ["up", "degraded", "down"]
+                          },
+                          "responseTime": {
+                            "type": "number",
+                            "description": "Time the health indicator took to respond, in ms"
+                          }
+                        },
+                        "additionalProperties": true
+                      },
+                      "nullable": true
+                    },
+                    "error": {
+                      "type": "object",
+                      "example": {
+                        "redis": {
+                          "status": "down",
+                          "message": "Could not connect",
+                          "responseTime": 3005
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": "object",
+                        "required": ["status"],
+                        "properties": {
+                          "status": {
+                            "type": "string",
+                            "enum": ["up", "degraded", "down"]
+                          },
+                          "responseTime": {
+                            "type": "number",
+                            "description": "Time the health indicator took to respond, in ms"
+                          }
+                        },
+                        "additionalProperties": true
+                      },
+                      "nullable": true
+                    },
+                    "details": {
+                      "type": "object",
+                      "example": {
+                        "database": {
+                          "status": "up",
+                          "responseTime": 12
+                        },
+                        "redis": {
+                          "status": "down",
+                          "message": "Could not connect",
+                          "responseTime": 3005
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": "object",
+                        "required": ["status"],
+                        "properties": {
+                          "status": {
+                            "type": "string",
+                            "enum": ["up", "degraded", "down"]
+                          },
+                          "responseTime": {
+                            "type": "number",
+                            "description": "Time the health indicator took to respond, in ms"
+                          }
+                        },
+                        "additionalProperties": true
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Check that the API and its database are up",
+        "tags": ["health"]
+      }
+    },
+    "/applications": {
+      "post": {
+        "operationId": "ApplicationsController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateApplicationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationDetailDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "VALIDATION_FAILED"
+          },
+          "401": {
+            "description": "UNAUTHORIZED"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create an application",
+        "tags": ["applications"]
+      },
+      "get": {
+        "operationId": "ApplicationsController_list",
+        "parameters": [
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "SENT",
+                "RESPONSE_RECEIVED",
+                "HR_INTERVIEW",
+                "TECHNICAL_INTERVIEW",
+                "OFFER",
+                "REJECTED",
+                "NO_RESPONSE"
+              ]
+            }
+          },
+          {
+            "name": "channel",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "CAREER_SITE",
+                "LINKEDIN",
+                "WELCOME_TO_THE_JUNGLE",
+                "HELLOWORK",
+                "APEC",
+                "RECRUITMENT_AGENCY",
+                "UNSOLICITED",
+                "REFERRAL",
+                "OTHER"
+              ]
+            }
+          },
+          {
+            "name": "overdue",
+            "required": false,
+            "in": "query",
+            "description": "true: only applications whose follow-up date is past. false: no filter.",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "q",
+            "required": false,
+            "in": "query",
+            "description": "Case-insensitive search on company and job title",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 0,
+              "maximum": 2147483647,
+              "default": 0,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationListDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "VALIDATION_FAILED"
+          },
+          "401": {
+            "description": "UNAUTHORIZED"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List applications (without the job posting text), newest first",
+        "tags": ["applications"]
+      }
+    },
+    "/applications/{id}": {
+      "get": {
+        "operationId": "ApplicationsController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationDetailDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UNAUTHORIZED"
+          },
+          "404": {
+            "description": "APPLICATION_NOT_FOUND"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get an application, including the job posting text",
+        "tags": ["applications"]
+      },
+      "patch": {
+        "operationId": "ApplicationsController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateApplicationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationDetailDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "VALIDATION_FAILED"
+          },
+          "401": {
+            "description": "UNAUTHORIZED"
+          },
+          "404": {
+            "description": "APPLICATION_NOT_FOUND"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update some fields of an application",
+        "tags": ["applications"]
+      },
+      "delete": {
+        "operationId": "ApplicationsController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          },
+          "401": {
+            "description": "UNAUTHORIZED"
+          },
+          "404": {
+            "description": "APPLICATION_NOT_FOUND"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Delete an application",
+        "tags": ["applications"]
+      }
+    },
+    "/stats/overview": {
+      "get": {
+        "operationId": "StatsController_overview",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatsOverviewDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UNAUTHORIZED"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Counts by status and channel, and the response rate",
+        "tags": ["stats"]
+      }
+    },
+    "/settings": {
+      "get": {
+        "operationId": "SettingsController_get",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SettingsDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UNAUTHORIZED"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Settings used by the web app",
+        "tags": ["settings"]
+      }
+    }
+  },
+  "info": {
+    "title": "OpenJobSeekR API",
+    "description": "Local job application tracker. Errors use { code, message, details? }.",
+    "version": "0.1.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http"
+      }
+    },
+    "schemas": {
+      "RegisterDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "jane@example.com"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 8,
+            "description": "At most 72 bytes (UTF-8)"
+          }
+        },
+        "required": ["email", "password"]
+      },
+      "UserResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "email": {
+            "type": "string",
+            "example": "jane@example.com"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": ["id", "email", "createdAt"]
+      },
+      "AuthResponseDto": {
+        "type": "object",
+        "properties": {
+          "accessToken": {
+            "type": "string",
+            "description": "JWT access token, sent as `Authorization: Bearer <token>`"
+          },
+          "user": {
+            "$ref": "#/components/schemas/UserResponseDto"
+          }
+        },
+        "required": ["accessToken", "user"]
+      },
+      "LoginDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "jane@example.com"
+          },
+          "password": {
+            "type": "string"
+          }
+        },
+        "required": ["email", "password"]
+      },
+      "CreateApplicationDto": {
+        "type": "object",
+        "properties": {
+          "sentAt": {
+            "type": "string",
+            "example": "2026-10-01",
+            "description": "YYYY-MM-DD"
+          },
+          "company": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "jobTitle": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "location": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 200
+          },
+          "response": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 1000
+          },
+          "resources": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 1000
+          },
+          "channel": {
+            "type": "string",
+            "enum": [
+              "CAREER_SITE",
+              "LINKEDIN",
+              "WELCOME_TO_THE_JUNGLE",
+              "HELLOWORK",
+              "APEC",
+              "RECRUITMENT_AGENCY",
+              "UNSOLICITED",
+              "REFERRAL",
+              "OTHER"
+            ],
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "SENT",
+              "RESPONSE_RECEIVED",
+              "HR_INTERVIEW",
+              "TECHNICAL_INTERVIEW",
+              "OFFER",
+              "REJECTED",
+              "NO_RESPONSE"
+            ],
+            "default": "SENT"
+          },
+          "contact": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 200
+          },
+          "workMode": {
+            "type": "string",
+            "enum": ["ONSITE", "HYBRID", "FULL_REMOTE", "UNSPECIFIED"],
+            "nullable": true
+          },
+          "remoteRhythm": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 200
+          },
+          "salaryRange": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 200
+          },
+          "cvVersion": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 200
+          },
+          "stack": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 1000
+          },
+          "recruitmentProcess": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 10000
+          },
+          "notes": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 10000
+          },
+          "jobPostingText": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 50000
+          }
+        },
+        "required": ["sentAt", "company", "jobTitle"]
+      },
+      "ApplicationDetailDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "sentAt": {
+            "type": "string",
+            "example": "2026-10-01"
+          },
+          "company": {
+            "type": "string"
+          },
+          "jobTitle": {
+            "type": "string"
+          },
+          "location": {
+            "type": "string",
+            "nullable": true
+          },
+          "response": {
+            "type": "string",
+            "nullable": true
+          },
+          "resources": {
+            "type": "string",
+            "nullable": true
+          },
+          "channel": {
+            "type": "string",
+            "enum": [
+              "CAREER_SITE",
+              "LINKEDIN",
+              "WELCOME_TO_THE_JUNGLE",
+              "HELLOWORK",
+              "APEC",
+              "RECRUITMENT_AGENCY",
+              "UNSOLICITED",
+              "REFERRAL",
+              "OTHER"
+            ],
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "SENT",
+              "RESPONSE_RECEIVED",
+              "HR_INTERVIEW",
+              "TECHNICAL_INTERVIEW",
+              "OFFER",
+              "REJECTED",
+              "NO_RESPONSE"
+            ]
+          },
+          "contact": {
+            "type": "string",
+            "nullable": true
+          },
+          "followUpDate": {
+            "type": "string",
+            "nullable": true,
+            "example": "2026-10-08",
+            "description": "Computed: sentAt + follow-up delay while the status is SENT"
+          },
+          "followUpOverdue": {
+            "type": "boolean",
+            "description": "Computed: true when today is after followUpDate"
+          },
+          "workMode": {
+            "type": "string",
+            "enum": ["ONSITE", "HYBRID", "FULL_REMOTE", "UNSPECIFIED"],
+            "nullable": true
+          },
+          "remoteRhythm": {
+            "type": "string",
+            "nullable": true
+          },
+          "salaryRange": {
+            "type": "string",
+            "nullable": true
+          },
+          "cvVersion": {
+            "type": "string",
+            "nullable": true
+          },
+          "stack": {
+            "type": "string",
+            "nullable": true
+          },
+          "recruitmentProcess": {
+            "type": "string",
+            "nullable": true
+          },
+          "notes": {
+            "type": "string",
+            "nullable": true
+          },
+          "jobPostingText": {
+            "type": "string",
+            "nullable": true,
+            "description": "Only in the detail response"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "sentAt",
+          "company",
+          "jobTitle",
+          "location",
+          "response",
+          "resources",
+          "channel",
+          "status",
+          "contact",
+          "followUpDate",
+          "followUpOverdue",
+          "workMode",
+          "remoteRhythm",
+          "salaryRange",
+          "cvVersion",
+          "stack",
+          "recruitmentProcess",
+          "notes",
+          "jobPostingText",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "ApplicationSummaryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "sentAt": {
+            "type": "string",
+            "example": "2026-10-01"
+          },
+          "company": {
+            "type": "string"
+          },
+          "jobTitle": {
+            "type": "string"
+          },
+          "location": {
+            "type": "string",
+            "nullable": true
+          },
+          "response": {
+            "type": "string",
+            "nullable": true
+          },
+          "resources": {
+            "type": "string",
+            "nullable": true
+          },
+          "channel": {
+            "type": "string",
+            "enum": [
+              "CAREER_SITE",
+              "LINKEDIN",
+              "WELCOME_TO_THE_JUNGLE",
+              "HELLOWORK",
+              "APEC",
+              "RECRUITMENT_AGENCY",
+              "UNSOLICITED",
+              "REFERRAL",
+              "OTHER"
+            ],
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "SENT",
+              "RESPONSE_RECEIVED",
+              "HR_INTERVIEW",
+              "TECHNICAL_INTERVIEW",
+              "OFFER",
+              "REJECTED",
+              "NO_RESPONSE"
+            ]
+          },
+          "contact": {
+            "type": "string",
+            "nullable": true
+          },
+          "followUpDate": {
+            "type": "string",
+            "nullable": true,
+            "example": "2026-10-08",
+            "description": "Computed: sentAt + follow-up delay while the status is SENT"
+          },
+          "followUpOverdue": {
+            "type": "boolean",
+            "description": "Computed: true when today is after followUpDate"
+          },
+          "workMode": {
+            "type": "string",
+            "enum": ["ONSITE", "HYBRID", "FULL_REMOTE", "UNSPECIFIED"],
+            "nullable": true
+          },
+          "remoteRhythm": {
+            "type": "string",
+            "nullable": true
+          },
+          "salaryRange": {
+            "type": "string",
+            "nullable": true
+          },
+          "cvVersion": {
+            "type": "string",
+            "nullable": true
+          },
+          "stack": {
+            "type": "string",
+            "nullable": true
+          },
+          "recruitmentProcess": {
+            "type": "string",
+            "nullable": true
+          },
+          "notes": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "sentAt",
+          "company",
+          "jobTitle",
+          "location",
+          "response",
+          "resources",
+          "channel",
+          "status",
+          "contact",
+          "followUpDate",
+          "followUpOverdue",
+          "workMode",
+          "remoteRhythm",
+          "salaryRange",
+          "cvVersion",
+          "stack",
+          "recruitmentProcess",
+          "notes",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "ApplicationListDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ApplicationSummaryDto"
+            }
+          },
+          "total": {
+            "type": "number",
+            "description": "Number of applications matching the filters"
+          },
+          "limit": {
+            "type": "number"
+          },
+          "offset": {
+            "type": "number"
+          }
+        },
+        "required": ["items", "total", "limit", "offset"]
+      },
+      "UpdateApplicationDto": {
+        "type": "object",
+        "properties": {
+          "location": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 200
+          },
+          "response": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 1000
+          },
+          "resources": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 1000
+          },
+          "channel": {
+            "type": "string",
+            "enum": [
+              "CAREER_SITE",
+              "LINKEDIN",
+              "WELCOME_TO_THE_JUNGLE",
+              "HELLOWORK",
+              "APEC",
+              "RECRUITMENT_AGENCY",
+              "UNSOLICITED",
+              "REFERRAL",
+              "OTHER"
+            ],
+            "nullable": true
+          },
+          "contact": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 200
+          },
+          "workMode": {
+            "type": "string",
+            "enum": ["ONSITE", "HYBRID", "FULL_REMOTE", "UNSPECIFIED"],
+            "nullable": true
+          },
+          "remoteRhythm": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 200
+          },
+          "salaryRange": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 200
+          },
+          "cvVersion": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 200
+          },
+          "stack": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 1000
+          },
+          "recruitmentProcess": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 10000
+          },
+          "notes": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 10000
+          },
+          "jobPostingText": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 50000
+          },
+          "sentAt": {
+            "type": "string",
+            "example": "2026-10-01",
+            "description": "YYYY-MM-DD"
+          },
+          "company": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "jobTitle": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "SENT",
+              "RESPONSE_RECEIVED",
+              "HR_INTERVIEW",
+              "TECHNICAL_INTERVIEW",
+              "OFFER",
+              "REJECTED",
+              "NO_RESPONSE"
+            ]
+          }
+        }
+      },
+      "StatsOverviewDto": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "number"
+          },
+          "byStatus": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "number"
+            },
+            "description": "Count per status code; every code is present",
+            "example": {
+              "SENT": 4,
+              "HR_INTERVIEW": 1,
+              "REJECTED": 1
+            }
+          },
+          "byChannel": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "number"
+            },
+            "description": "Count per channel code; UNSPECIFIED counts applications without a channel",
+            "example": {
+              "LINKEDIN": 3,
+              "APEC": 2,
+              "UNSPECIFIED": 1
+            }
+          },
+          "responseRate": {
+            "type": "number",
+            "nullable": true,
+            "description": "Responses / total (not rounded); null without applications"
+          }
+        },
+        "required": ["total", "byStatus", "byChannel", "responseRate"]
+      },
+      "SettingsDto": {
+        "type": "object",
+        "properties": {
+          "followUpDelayDays": {
+            "type": "number",
+            "example": 7,
+            "description": "Days between sending an application and following up"
+          }
+        },
+        "required": ["followUpDelayDays"]
+      }
+    }
+  }
+}

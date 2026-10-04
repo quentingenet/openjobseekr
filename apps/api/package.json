@@ -17,7 +17,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "pretest:e2e": "prisma generate",
-    "test:e2e": "vitest run --config vitest.config.e2e.ts"
+    "test:e2e": "vitest run --config vitest.config.e2e.ts",
+    "openapi:export": "nest build && node dist/export-openapi.js ../web/src/api/openapi.json"
   },
   "dependencies": {
     "@nestjs/common": "^12.1.2",

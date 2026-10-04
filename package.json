@@ -20,7 +20,8 @@
     "typecheck": "npm run typecheck --workspaces --if-present",
     "test": "npm run test --workspaces --if-present",
     "test:e2e": "npm run test:e2e --workspace apps/api --if-present",
-    "check": "npm run lint && npm run typecheck && npm run test"
+    "check": "npm run lint && npm run typecheck && npm run test",
+    "api:types": "npm run api:types --workspace apps/web"
   },
   "lint-staged": {
     "*.{ts,tsx,js,mjs,cjs}": [
@@ -32,6 +33,7 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "eslint": "^10.12.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
     "husky": "^9.1.7",
     "lint-staged": "^17.6.0",
     "prettier": "^3.9.9",
@@ -44,5 +46,10 @@
     "@swc/core@1.16.13": true,
     "bcrypt@6.0.0": true,
     "@scarf/scarf": false
+  },
+  "overrides": {
+    "openapi-typescript": {
+      "typescript": "$typescript"
+    }
   }
 }
