@@ -32,7 +32,8 @@ what a hosted version would need (accounts, a standard error format).
   (e.g. `\bJava\b`, which does not match "JavaScript"). The app counts how many of your saved
   job postings mention each one, and updates as you add postings.
 - **Languages**: English, French and Spanish, switchable at any time.
-- **Accounts**: each user only ever sees their own data, ready for a shared or hosted setup.
+- **Accounts**: each user only ever sees their own data, ready for a shared or hosted setup;
+  login attempts are rate-limited.
 
 ## Tech stack
 
@@ -103,7 +104,7 @@ machine.
 | `npm run test`                            | Unit and component tests                              |
 | `npm run test:e2e`                        | API end-to-end tests on the `_test` database          |
 | `npm run lint` / `npm run format`         | ESLint / Prettier                                     |
-| `npm run api:types`                       | Regenerate the web app's API types from the API       |
+| `npm run api:types`                       | Regenerate the web app's API types after a DTO change |
 | `npm run db:migrate --workspace apps/api` | Create and apply database migrations                  |
 
 The end-to-end tests empty the test database between tests and refuse to run unless its name
@@ -137,7 +138,9 @@ apps/
 - The follow-up date is computed, never stored.
 - Skill patterns use RE2, the regular expression engine of Google Sheets: matching runs in
   linear time, so no pattern can freeze the API.
-- Text lengths are validated by the web app, the API and database constraints.
+- Text lengths are validated by the web app, the API and database constraints, with the
+  limits defined once in `packages/domain`. Tests fail if the database or the web app's API
+  types drift from them.
 
 ## Contributing
 

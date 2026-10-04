@@ -16,4 +16,6 @@ paths:
 - Accessibility: every form field has a label, buttons and icon buttons have an accessible
   name, images have `alt`, interactive elements are keyboard reachable, and errors are
   announced next to their field.
+- Enum lists, text limits, page sizes and date rules come from `@openjobseekr/domain`; never
+  redefine them in the web app.
 - Dates and numbers are formatted with `Intl` in the active language.

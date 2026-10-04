@@ -16,6 +16,10 @@ files, and you only run read-only commands (`git diff`, `git status`, `git log`,
    - no hardcoded user-facing text in the web app; `en`, `fr` and `es` keys in sync;
    - no business logic in controllers, Prisma only in services, queries scoped by user;
    - RFC 9457 problem details with a stable `code`, `jobPostingText` absent from lists;
+   - no business rule, enum list, text limit or date helper copied into an app instead of
+     `@openjobseekr/domain`;
+   - after a DTO change, `apps/web/src/api/openapi.json` and `schema.d.ts` regenerated;
+   - CLAUDE.md, `.claude/` and the README updated in the same change when they describe it;
    - code, comments and identifiers in English.
 4. Run `npm run lint` and report whether it passes.
 

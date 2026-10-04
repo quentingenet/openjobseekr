@@ -1,7 +1,8 @@
 # OpenJobSeekR
 
-Local-first job application tracker, designed to be deployable (technical name: `openjobseekr`). It mirrors the columns
-of the author's Google Sheet; the data model lives in `apps/api/prisma/schema.prisma`.
+Local-first job application tracker, designed to be deployable (technical name:
+`openjobseekr`). It mirrors the columns of the author's Google Sheet; the data model lives in
+`apps/api/prisma/schema.prisma`.
 
 ## Stack
 
@@ -9,10 +10,11 @@ of the author's Google Sheet; the data model lives in `apps/api/prisma/schema.pr
   TanStack Query, React Router (data router), React Hook Form + Zod, react-i18next
 - API (`apps/api`): NestJS 12 (ESM), strict TypeScript, Prisma 7 (`@prisma/adapter-pg`),
   PostgreSQL, RE2 (`re2`) for skill patterns
+- Shared domain (`packages/domain`, `@openjobseekr/domain`): pure TypeScript, no dependencies
 - Tests: Vitest everywhere (NestJS needs `unplugin-swc`), Supertest for e2e API tests
 - Database: the local PostgreSQL service on port 5432 (`openjobseekr` for development,
   `openjobseekr_test` for e2e tests). `docker-compose.yml` remains an alternative (test on 5433).
-- Node 24 (`.nvmrc`). No GitHub CI, no deployment: everything runs locally on `127.0.0.1`
+- Node 24 (`.nvmrc`). No GitHub CI and not deployed yet: everything runs locally on `127.0.0.1`
 
 ## Repository structure
 
@@ -42,8 +44,10 @@ openjobseekr/
     └── web/
         └── src/
             ├── main.tsx, i18n.ts, theme.ts
-            ├── api/          (typed client, hooks, openapi.json + schema.d.ts generated)
+            ├── api/          (typed client, queries/, domain-enums.check.ts,
+            │                 openapi.json + schema.d.ts generated)
             ├── components/   (shared components)
+            ├── lib/          (formatting, error and form helpers)
             ├── features/     (auth/, applications/, stats/, skills/)
             ├── locales/      (en/, fr/, es/ translation.json)
             └── test/
@@ -91,6 +95,10 @@ openjobseekr/
 - Text length limits (`TEXT_LIMITS` per field, `SKILL_LIMITS`) and page sizes are defined once
   in `@openjobseekr/domain`, used by the API DTOs and the web forms. The database CHECK
   constraints (migrations) repeat them, checked by `text-limits.spec.ts`.
+- Enums (statuses, channels, work modes) come from `@openjobseekr/domain`. A
+  `domain-enums.check.ts` file fails the typecheck when they drift from Prisma (API) or from
+  the OpenAPI types (web).
+- Login and registration are rate-limited per IP (`AUTH_RATE_LIMIT`, 5 per minute by default).
 - Skill patterns are matched with RE2 (the engine of Google Sheets): linear time, no
   lookarounds or backreferences.
 - Do not create or commit new Markdown files (docs, notes); existing ones are edited on request.
@@ -107,6 +115,7 @@ openjobseekr/
 
 ## Way of working
 
-- Talk to the user in French; everything in the codebase (code, comments, commits, docs) stays in English.
+- Talk to the user in French; everything in the codebase (code, comments, commits, docs) stays
+  in English.
 - For any non-trivial change, propose a plan before writing code.
 - For business logic, write the test first.

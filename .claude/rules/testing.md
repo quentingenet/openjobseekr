@@ -1,6 +1,7 @@
 # Testing
 
-- Vitest everywhere (API, web). The API uses `unplugin-swc` for decorator metadata.
+- Vitest everywhere (API, web, `packages/domain`). The API uses `unplugin-swc` for decorator
+  metadata.
 - Explicit expected values (`expect(result).toBe('2026-10-08')`); no snapshots for business
   logic.
 - Business logic is written test first: write the failing test, run it, then implement.
