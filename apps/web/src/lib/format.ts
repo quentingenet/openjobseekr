@@ -21,10 +21,3 @@ export function formatPercent(ratio: number, language: string): string {
 export function formatNumber(value: number, language: string): string {
   return new Intl.NumberFormat(language).format(value);
 }
-
-/** `YYYY-MM-DD` + days, computed in UTC like the API. */
-export function addDays(date: string, days: number): string {
-  const result = new Date(`${date}T00:00:00.000Z`);
-  result.setUTCDate(result.getUTCDate() + days);
-  return result.toISOString().slice(0, 10);
-}

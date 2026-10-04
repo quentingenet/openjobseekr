@@ -20,6 +20,7 @@
     "@mui/icons-material": "^9.4.0",
     "@mui/material": "^9.4.0",
     "@mui/x-date-pickers": "^9.14.0",
+    "@openjobseekr/domain": "*",
     "@tanstack/react-query": "^5.104.1",
     "dayjs": "^1.11.23",
     "i18next": "^26.4.2",

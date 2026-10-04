@@ -1,6 +1,8 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
+    // Resolve @openjobseekr/domain to its TypeScript sources: no build needed to typecheck.
+    "customConditions": ["source"],
     "module": "nodenext",
     "moduleResolution": "nodenext",
     "target": "ES2023",

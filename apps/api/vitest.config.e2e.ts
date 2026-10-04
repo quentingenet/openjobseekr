@@ -1,5 +1,6 @@
 import { existsSync } from 'node:fs';
 import swc from 'unplugin-swc';
+import { defaultServerConditions } from 'vite';
 import { defineConfig } from 'vitest/config';
 import { assertSafeTestDatabaseUrl } from './test/helpers/test-database.js';
 
@@ -15,6 +16,8 @@ const testDatabaseUrl = assertSafeTestDatabaseUrl(
 
 export default defineConfig({
   plugins: [swc.vite({ module: { type: 'es6' } })],
+  // Loads @openjobseekr/domain from its TypeScript sources (no build needed).
+  ssr: { resolve: { conditions: ['source', ...defaultServerConditions] } },
   test: {
     include: ['test/**/*.e2e-spec.ts'],
     environment: 'node',

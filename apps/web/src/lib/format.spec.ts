@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { addDays, formatDate, formatPercent } from './format';
+import { formatDate, formatPercent } from './format';
 
 describe('format', () => {
   it('formats a calendar date in the active language without shifting the day', () => {
@@ -11,9 +11,5 @@ describe('format', () => {
     expect(formatPercent(0.5, 'en')).toBe('50%');
     // French puts a no-break space (U+00A0) before %.
     expect(formatPercent(0.4, 'fr')).toBe('40\u00a0%');
-  });
-
-  it('adds days across months', () => {
-    expect(addDays('2026-10-28', 7)).toBe('2026-11-04');
   });
 });

@@ -1,8 +1,11 @@
 import react from '@vitejs/plugin-react';
+import { defaultClientConditions } from 'vite';
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   plugins: [react()],
+  // Bundles @openjobseekr/domain from its TypeScript sources (no build needed).
+  resolve: { conditions: ['source', ...defaultClientConditions] },
   server: {
     // Local-only app, like the API: not reachable from other machines.
     host: '127.0.0.1',

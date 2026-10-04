@@ -7,9 +7,9 @@
     "prisma:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:deploy": "prisma migrate deploy",
-    "prebuild": "prisma generate",
+    "prebuild": "npm run build --workspace @openjobseekr/domain && prisma generate",
     "build": "nest build",
-    "dev": "prisma generate && nest start --watch",
+    "dev": "npm run build --workspace @openjobseekr/domain && prisma generate && nest start --watch",
     "start": "node dist/main.js",
     "pretypecheck": "prisma generate",
     "typecheck": "tsc --noEmit",
@@ -18,7 +18,7 @@
     "test:watch": "vitest",
     "pretest:e2e": "prisma generate",
     "test:e2e": "vitest run --config vitest.config.e2e.ts",
-    "openapi:export": "nest build && node dist/export-openapi.js ../web/src/api/openapi.json"
+    "openapi:export": "npm run build && node dist/export-openapi.js ../web/src/api/openapi.json"
   },
   "dependencies": {
     "@nestjs/common": "^12.1.2",
@@ -29,6 +29,7 @@
     "@nestjs/swagger": "^12.0.2",
     "@nestjs/terminus": "^12.1.0",
     "@nestjs/throttler": "^6.7.1",
+    "@openjobseekr/domain": "*",
     "@prisma/adapter-pg": "^7.10.0",
     "@prisma/client": "^7.10.0",
     "bcrypt": "^6.0.0",

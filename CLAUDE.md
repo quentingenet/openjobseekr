@@ -22,13 +22,15 @@ openjobseekr/
 ├── package.json              (npm workspaces + scripts), tsconfig.base.json, eslint.config.js
 ├── .vscode/                  (extensions.json, settings.json)
 ├── .claude/                  (settings.json, rules/, hooks/, agents/, skills/)
+├── packages/
+│   └── domain/               (@openjobseekr/domain: business rules shared by api and web)
 └── apps/
     ├── api/
     │   ├── prisma/           (schema.prisma, migrations/)
     │   ├── src/
     │   │   ├── main.ts, app.module.ts
     │   │   ├── config/       (environment validation)
-    │   │   ├── common/       (exception filter, decorators, error codes, clock, calendar dates)
+    │   │   ├── common/       (exception filter, decorators, error codes, clock)
     │   │   ├── prisma/       (module and service)
     │   │   ├── auth/, health/, stats/, settings/
     │   │   ├── applications/ (domain/, dto/, mapper, controller, service, module)
@@ -49,7 +51,11 @@ openjobseekr/
 
 - One folder per feature, on both the API and the web side.
 - Pure business logic lives in `<feature>/domain/` (applications, skills): no NestJS or
-  Prisma imports there.
+  Prisma imports there. Rules the web app also needs (calendar dates) live in
+  `packages/domain` (`@openjobseekr/domain`), pure TypeScript without dependencies: never
+  duplicate them in an app.
+- Tools load `@openjobseekr/domain` from its sources (`source` export condition); only the
+  compiled API needs its `dist/`, built by the API `dev` and `build` scripts.
 - Unit tests sit next to the code (`*.spec.ts`); e2e tests live in `apps/api/test/`.
 - Create folders only when a feature needs them.
 

@@ -9,7 +9,8 @@
   },
   "workspaces": [
     "apps/api",
-    "apps/web"
+    "apps/web",
+    "packages/*"
   ],
   "scripts": {
     "prepare": "husky",

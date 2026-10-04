@@ -1,3 +1,4 @@
+import { isCalendarDate } from '@openjobseekr/domain';
 import { z } from 'zod';
 import {
   APPLICATION_CHANNELS,
@@ -8,15 +9,6 @@ import {
   type UpdateApplicationInput,
 } from '../../api/types';
 import { TEXT_LIMITS } from './limits';
-
-const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
-
-/** A real calendar date written YYYY-MM-DD (rejects 2026-02-30), like the API. */
-export function isCalendarDate(value: string): boolean {
-  if (!DATE_PATTERN.test(value)) return false;
-  const date = new Date(`${value}T00:00:00.000Z`);
-  return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value;
-}
 
 // Messages are translation keys, translated when displayed.
 const requiredText = (max: number) =>
@@ -124,13 +116,4 @@ export function toUpdateInput(
   // The API needs the channel alongside its precision.
   if (changed.includes('channelDetail') && !changed.includes('channel')) changed.push('channel');
   return Object.fromEntries(changed.map((field) => [field, full[field]])) as UpdateApplicationInput;
-}
-
-export function todayLocal(): string {
-  const now = new Date();
-  return [
-    now.getFullYear(),
-    String(now.getMonth() + 1).padStart(2, '0'),
-    String(now.getDate()).padStart(2, '0'),
-  ].join('-');
 }

@@ -112,6 +112,8 @@ ends with `_test` and differs from the development database.
 ### Architecture
 
 ```text
+packages/
+└── domain/                 business rules shared by the API and the web app (pure TypeScript)
 apps/
 ├── api/                    NestJS API
 │   ├── prisma/             schema and migrations
@@ -120,7 +122,7 @@ apps/
 │   │   ├── skills/         skills and their frequency in job postings
 │   │   ├── stats/          statistics by status and channel
 │   │   ├── auth/           registration, login, JWT guard
-│   │   └── common/         error format, validation, shared decorators, calendar dates
+│   │   └── common/         error format, validation, shared decorators
 │   └── test/               end-to-end tests
 └── web/                    React app
     └── src/

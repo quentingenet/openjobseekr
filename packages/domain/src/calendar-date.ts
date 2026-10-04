@@ -22,3 +22,10 @@ export function addDays(date: string, days: number): string {
   result.setUTCDate(result.getUTCDate() + days);
   return result.toISOString().slice(0, 10);
 }
+
+/** The local calendar day of `date` (the user's day, not the UTC one), as `YYYY-MM-DD`. */
+export function toCalendarDate(date: Date): string {
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${date.getFullYear()}-${month}-${day}`;
+}

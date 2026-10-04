@@ -1,4 +1,5 @@
 import { Stack } from '@mui/material';
+import { toCalendarDate } from '@openjobseekr/domain';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router';
 import {
@@ -12,7 +13,6 @@ import { ErrorState, LoadingState } from '../../components/PageStates';
 import {
   applicationToForm,
   emptyApplicationForm,
-  todayLocal,
   toCreateInput,
   toUpdateInput,
 } from './application-form.schema';
@@ -28,7 +28,7 @@ export function NewApplicationPage() {
     <Stack spacing={3}>
       <PageTitle fallback="/applications">{t('form.newTitle')}</PageTitle>
       <ApplicationForm
-        defaultValues={emptyApplicationForm(todayLocal())}
+        defaultValues={emptyApplicationForm(toCalendarDate(new Date()))}
         followUpDelayDays={settings.data?.followUpDelayDays}
         onCancel={() => void navigate('/applications')}
         onSubmit={async (values) => {

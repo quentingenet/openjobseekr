@@ -11,6 +11,7 @@ import {
   Typography,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { addDays, isCalendarDate } from '@openjobseekr/domain';
 import dayjs from 'dayjs';
 import type { ReactNode } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
@@ -19,13 +20,12 @@ import { APPLICATION_CHANNELS, APPLICATION_STATUSES, WORK_MODES } from '../../ap
 import { FormErrorAlert } from '../../components/FormErrorAlert';
 import { UnsavedChangesGuard } from '../../components/UnsavedChangesGuard';
 import { translateFieldError } from '../../lib/field-error';
-import { addDays, formatDate } from '../../lib/format';
+import { formatDate } from '../../lib/format';
 import { applyServerErrors } from '../../lib/server-errors';
 import {
   type ApplicationFormField,
   type ApplicationFormValues,
   applicationFormSchema,
-  isCalendarDate,
 } from './application-form.schema';
 import { TEXT_LIMITS, type TextField as LimitedField } from './limits';
 

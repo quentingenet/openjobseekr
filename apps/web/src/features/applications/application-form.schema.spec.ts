@@ -4,7 +4,6 @@ import {
   applicationFormSchema,
   applicationToForm,
   emptyApplicationForm,
-  isCalendarDate,
   toCreateInput,
   toUpdateInput,
 } from './application-form.schema';
@@ -34,16 +33,6 @@ const application: Application = {
   createdAt: '2026-10-01T09:00:00.000Z',
   updatedAt: '2026-10-01T09:00:00.000Z',
 };
-
-describe('isCalendarDate', () => {
-  it.each(['2026-10-01', '2028-02-29'])('accepts %s', (value) => {
-    expect(isCalendarDate(value)).toBe(true);
-  });
-
-  it.each(['', '2026-02-30', '2026-13-01', '01/10/2026'])('rejects "%s"', (value) => {
-    expect(isCalendarDate(value)).toBe(false);
-  });
-});
 
 describe('applicationFormSchema', () => {
   it('requires company and job title, and trims text', () => {

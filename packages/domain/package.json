@@ -1,0 +1,23 @@
+{
+  "name": "@openjobseekr/domain",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Business rules shared by the API and the web app: pure TypeScript, no dependencies",
+  "type": "module",
+  "exports": {
+    ".": {
+      "source": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "vitest": "^5.0.3"
+  }
+}
