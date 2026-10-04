@@ -1,8 +1,7 @@
 # OpenJobSeekR
 
-Local-first job application tracker, designed to be deployable (technical name:
-`openjobseekr`). It mirrors the columns of the author's Google Sheet; the data model lives in
-`apps/api/prisma/schema.prisma`.
+Local-first job application tracker (technical name: `openjobseekr`). It mirrors the columns of the
+author's Google Sheet; the data model lives in `apps/api/prisma/schema.prisma`.
 
 ## Stack
 
@@ -59,7 +58,9 @@ openjobseekr/
   enums, limits) live in `packages/domain` (`@openjobseekr/domain`), pure TypeScript without
   dependencies: never duplicate them in an app.
 - Tools load `@openjobseekr/domain` from its sources (`source` export condition); only the
-  compiled API needs its `dist/`, built by the API `dev` and `build` scripts.
+  compiled API needs its `dist/`, built once by the API `dev` and `build` scripts. After
+  changing `packages/domain`, restart `npm run dev:api`: its watch mode only covers
+  `apps/api/src`.
 - Unit tests sit next to the code (`*.spec.ts`); e2e tests live in `apps/api/test/`.
 - Create folders only when a feature needs them.
 

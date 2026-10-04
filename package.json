@@ -1,7 +1,7 @@
 {
   "name": "openjobseekr",
   "private": true,
-  "description": "Local-first job application tracker, designed to be deployable",
+  "description": "Local-first job application tracker",
   "license": "SEE LICENSE IN LICENSE",
   "type": "module",
   "engines": {

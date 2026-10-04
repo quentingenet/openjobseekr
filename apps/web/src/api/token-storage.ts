@@ -1,6 +1,6 @@
 // localStorage is readable by any script on the page: acceptable here because the app is
-// local-only and loads no third-party scripts. Switch to an HttpOnly cookie if it is ever
-// deployed. Storage can be unavailable (private mode), so every access is guarded.
+// local-only and loads no third-party scripts; a hosted version should use an HttpOnly
+// cookie. Storage can be unavailable (private mode), so every access is guarded.
 const TOKEN_KEY = 'openjobseekr.accessToken';
 
 export const tokenStorage = {
@@ -15,7 +15,7 @@ export const tokenStorage = {
     try {
       localStorage.setItem(TOKEN_KEY, token);
     } catch {
-      // Ignored: the session then only lasts until the page is reloaded.
+      // Ignored: the token is then lost, so the next API call answers 401 and logs out.
     }
   },
   clear(): void {

@@ -20,8 +20,9 @@ Follow these steps in order. Read `.claude/rules/backend-nestjs.md` and
    `common/error-codes.ts`, and the matching `errors.<CODE>` key in every web locale file.
 5. **Service**: Prisma access scoped by `userId`, throws `AppException` with stable codes, no
    try/catch for Prisma errors (translated globally), no HTTP concerns.
-6. **Controller**: route, guard (`JwtAuthGuard` unless public), current-user decorator, DTO
-   validation, calls the service only. Swagger decorators: `@ApiTags`, `@ApiBearerAuth`,
+6. **Controller**: route, current-user decorator, DTO validation, calls the service only.
+   `JwtAuthGuard` is global: mark public routes with `@Public()`, never add
+   `@UseGuards(JwtAuthGuard)`. Swagger decorators: `@ApiTags`, `@ApiBearerAuth`,
    `@ApiOperation`, `@ApiOkResponse`/`@ApiCreatedResponse` and the error responses.
 7. **Tests**: service unit tests (`*.spec.ts`) and an e2e test (`apps/api/test/*.e2e-spec.ts`)
    covering success, validation error format, 401 without a token, 404 and ownership

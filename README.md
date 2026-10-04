@@ -10,8 +10,9 @@ It is free software (GPL-3.0), runs entirely on your own machine, and your data 
 it. It was born from a real job search spreadsheet and is meant to grow with the people who
 use it: ideas, translations, bug reports and pull requests are all welcome.
 
-**Local-first, designed to be deployable**: it runs on `127.0.0.1` today, and is built with
-what a hosted version would need (accounts, a standard error format).
+**Local-first**: it runs on `127.0.0.1`. Accounts, a standard error format and rate-limited
+login prepare a future hosted version, which would still need configurable hosts, proxy
+settings and a shared rate-limit store.
 
 > Status: work in progress, usable day to day.
 
@@ -32,8 +33,7 @@ what a hosted version would need (accounts, a standard error format).
   (e.g. `\bJava\b`, which does not match "JavaScript"). The app counts how many of your saved
   job postings mention each one, and updates as you add postings.
 - **Languages**: English, French and Spanish, switchable at any time.
-- **Accounts**: each user only ever sees their own data, ready for a shared or hosted setup;
-  login attempts are rate-limited.
+- **Accounts**: each user only ever sees their own data; login attempts are rate-limited.
 
 ## Tech stack
 
@@ -107,6 +107,9 @@ machine.
 | `npm run api:types`                       | Regenerate the web app's API types after a DTO change |
 | `npm run db:migrate --workspace apps/api` | Create and apply database migrations                  |
 
+`npm run dev:api` compiles `packages/domain` once at startup: restart it after changing the
+shared rules (tests and the web app pick up changes immediately).
+
 The end-to-end tests empty the test database between tests and refuse to run unless its name
 ends with `_test` and differs from the development database.
 
@@ -119,10 +122,14 @@ apps/
 ├── api/                    NestJS API
 │   ├── prisma/             schema and migrations
 │   ├── src/
-│   │   ├── applications/   CRUD, filters, statistics (pure functions in domain/)
+│   │   ├── applications/   CRUD, filters, overview figures (pure functions in domain/)
 │   │   ├── skills/         skills and their frequency in job postings
 │   │   ├── stats/          statistics by status and channel
-│   │   ├── auth/           registration, login, JWT guard
+│   │   ├── auth/           registration, login, JWT guard, rate limiting
+│   │   ├── settings/       settings the web app needs (follow-up delay)
+│   │   ├── health/         health check (database included)
+│   │   ├── config/         environment validation
+│   │   ├── prisma/         Prisma service and error translation
 │   │   └── common/         error format, validation, shared decorators
 │   └── test/               end-to-end tests
 └── web/                    React app
