@@ -113,7 +113,7 @@ ends with `_test` and differs from the development database.
 
 ```text
 packages/
-└── domain/                 rules shared by the API and the web app: dates, follow-up, statuses
+└── domain/                 rules shared by the API and the web app: dates, follow-up, enums
 apps/
 ├── api/                    NestJS API
 │   ├── prisma/             schema and migrations

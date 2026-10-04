@@ -9,9 +9,9 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
+import { APPLICATION_CHANNELS, APPLICATION_STATUSES } from '@openjobseekr/domain';
 import { useTranslation } from 'react-i18next';
 import { useStatsOverview } from '../../api/queries/stats';
-import { APPLICATION_CHANNELS, APPLICATION_STATUSES } from '../../api/types';
 import { ErrorState, LoadingState } from '../../components/PageStates';
 import { ShareBar } from '../../components/ShareBar';
 import { formatNumber, formatPercent } from '../../lib/format';

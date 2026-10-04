@@ -1,13 +1,11 @@
-import { isCalendarDate } from '@openjobseekr/domain';
-import { z } from 'zod';
 import {
   APPLICATION_CHANNELS,
   APPLICATION_STATUSES,
+  isCalendarDate,
   WORK_MODES,
-  type Application,
-  type CreateApplicationInput,
-  type UpdateApplicationInput,
-} from '../../api/types';
+} from '@openjobseekr/domain';
+import { z } from 'zod';
+import type { Application, CreateApplicationInput, UpdateApplicationInput } from '../../api/types';
 import { TEXT_LIMITS } from './limits';
 
 // Messages are translation keys, translated when displayed.

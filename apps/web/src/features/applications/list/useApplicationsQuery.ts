@@ -1,10 +1,7 @@
+import { APPLICATION_CHANNELS, APPLICATION_STATUSES } from '@openjobseekr/domain';
 import { useCallback, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router';
-import {
-  APPLICATION_CHANNELS,
-  APPLICATION_STATUSES,
-  type ListApplicationsQuery,
-} from '../../../api/types';
+import type { ListApplicationsQuery } from '../../../api/types';
 
 export const PAGE_SIZES = [10, 20, 50];
 const DEFAULT_PAGE_SIZE = 20;

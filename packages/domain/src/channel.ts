@@ -1,4 +1,7 @@
-/** Application channels, mirrored from the Prisma `Channel` enum (see `domain-enums.check.ts`). */
+/**
+ * Application channels, mirrored from the Prisma `Channel` enum (see `domain-enums.check.ts` in
+ * the API and the web app).
+ */
 export const APPLICATION_CHANNELS = [
   'CAREER_SITE',
   'LINKEDIN',

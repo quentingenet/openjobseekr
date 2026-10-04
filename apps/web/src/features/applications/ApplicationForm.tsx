@@ -11,12 +11,17 @@ import {
   Typography,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { computeFollowUpDate, isCalendarDate } from '@openjobseekr/domain';
+import {
+  APPLICATION_CHANNELS,
+  APPLICATION_STATUSES,
+  computeFollowUpDate,
+  isCalendarDate,
+  WORK_MODES,
+} from '@openjobseekr/domain';
 import dayjs from 'dayjs';
 import type { ReactNode } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { APPLICATION_CHANNELS, APPLICATION_STATUSES, WORK_MODES } from '../../api/types';
 import { FormErrorAlert } from '../../components/FormErrorAlert';
 import { UnsavedChangesGuard } from '../../components/UnsavedChangesGuard';
 import { translateFieldError } from '../../lib/field-error';

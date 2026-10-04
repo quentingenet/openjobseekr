@@ -8,12 +8,9 @@ import {
   Switch,
   TextField,
 } from '@mui/material';
+import { APPLICATION_CHANNELS, APPLICATION_STATUSES } from '@openjobseekr/domain';
 import { useTranslation } from 'react-i18next';
-import {
-  APPLICATION_CHANNELS,
-  APPLICATION_STATUSES,
-  type ListApplicationsQuery,
-} from '../../../api/types';
+import type { ListApplicationsQuery } from '../../../api/types';
 import type { QueryChanges } from './useApplicationsQuery';
 
 interface ApplicationsFiltersProps {

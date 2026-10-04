@@ -21,35 +21,7 @@ export type ApplicationStatus = Application['status'];
 export type ApplicationChannel = NonNullable<Application['channel']>;
 export type WorkMode = NonNullable<Application['workMode']>;
 
-// Enum values in the API order, for selects and statistics.
-export const APPLICATION_STATUSES = [
-  'SENT',
-  'RESPONSE_RECEIVED',
-  'HR_INTERVIEW',
-  'TECHNICAL_INTERVIEW',
-  'OFFER',
-  'REJECTED',
-  'NO_RESPONSE',
-] as const satisfies readonly ApplicationStatus[];
-
-export const APPLICATION_CHANNELS = [
-  'CAREER_SITE',
-  'LINKEDIN',
-  'WELCOME_TO_THE_JUNGLE',
-  'HELLOWORK',
-  'APEC',
-  'RECRUITMENT_AGENCY',
-  'UNSOLICITED',
-  'REFERRAL',
-  'OTHER',
-] as const satisfies readonly ApplicationChannel[];
-
-export const WORK_MODES = [
-  'ONSITE',
-  'HYBRID',
-  'FULL_REMOTE',
-  'UNSPECIFIED',
-] as const satisfies readonly WorkMode[];
+// The value lists (for selects and statistics) come from @openjobseekr/domain.
 
 export interface ListApplicationsQuery {
   status?: ApplicationStatus;
