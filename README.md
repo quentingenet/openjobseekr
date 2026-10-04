@@ -12,8 +12,6 @@ use it: ideas, translations, bug reports and pull requests are all welcome.
 
 > Status: work in progress, usable day to day.
 
-<!-- TODO: add screenshots of the applications table, the form and the skills page. -->
-
 ## Features
 
 - **Applications**: company, job title, location, channel, status, contact, work mode,
