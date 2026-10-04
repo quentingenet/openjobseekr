@@ -24,6 +24,19 @@ export type ApplicationTextField = keyof typeof TEXT_LIMITS;
 /** Maximum lengths of a skill (also database CHECK constraints). */
 export const SKILL_LIMITS = { name: 100, pattern: 200 } as const;
 
+/** Optional self-assessed skill level (also a database CHECK constraint). */
+export const SKILL_LEVEL = { min: 0, max: 5 } as const;
+
+/** Maximum length of the company / job title search. */
+export const SEARCH_MAX_LENGTH = 100;
+
+/** bcrypt only uses the first 72 bytes of a password: longer ones are rejected, not truncated. */
+export const CREDENTIAL_LIMITS = {
+  emailMaxLength: 254,
+  passwordMinLength: 8,
+  passwordMaxBytes: 72,
+} as const;
+
 export const DEFAULT_PAGE_SIZE = 20;
 /** The largest page the API accepts. */
 export const MAX_PAGE_SIZE = 100;

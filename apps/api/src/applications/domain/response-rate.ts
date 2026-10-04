@@ -1,6 +1,10 @@
-import type { ApplicationStatus } from '@openjobseekr/domain';
+import { type ApplicationStatus, FOLLOW_UP_STATUS } from '@openjobseekr/domain';
 
-const NO_ANSWER_STATUSES: ReadonlySet<ApplicationStatus> = new Set(['SENT', 'NO_RESPONSE']);
+// Still waiting for an answer, or given up on: neither counts as a response.
+const NO_ANSWER_STATUSES: ReadonlySet<ApplicationStatus> = new Set([
+  FOLLOW_UP_STATUS,
+  'NO_RESPONSE',
+]);
 
 /** Share of applications that got any answer. `null` when there are no applications. */
 export function computeResponseRate(statuses: readonly ApplicationStatus[]): number | null {

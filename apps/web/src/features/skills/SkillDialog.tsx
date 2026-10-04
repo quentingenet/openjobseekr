@@ -9,7 +9,7 @@ import {
   Stack,
   TextField,
 } from '@mui/material';
-import { SKILL_LIMITS } from '@openjobseekr/domain';
+import { SKILL_LEVEL, SKILL_LIMITS } from '@openjobseekr/domain';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import type { Skill } from '../../api/types';
@@ -31,6 +31,11 @@ const LEVEL_CONSTRAINTS: [string, string][] = [
   ['min', 'validation.level'],
   ['max', 'validation.level'],
 ];
+
+const SKILL_LEVELS = Array.from(
+  { length: SKILL_LEVEL.max - SKILL_LEVEL.min + 1 },
+  (_, index) => SKILL_LEVEL.min + index,
+);
 
 interface SkillDialogProps {
   /** Skill to edit; undefined to create one. */
@@ -111,7 +116,7 @@ export function SkillDialog({ skill, onClose, onSubmit }: SkillDialogProps) {
                   <MenuItem value="">
                     <em>{t('skills.form.noLevel')}</em>
                   </MenuItem>
-                  {[0, 1, 2, 3, 4, 5].map((level) => (
+                  {SKILL_LEVELS.map((level) => (
                     <MenuItem key={level} value={level}>
                       {level}
                     </MenuItem>

@@ -8,7 +8,11 @@ import {
   Switch,
   TextField,
 } from '@mui/material';
-import { APPLICATION_CHANNELS, APPLICATION_STATUSES } from '@openjobseekr/domain';
+import {
+  APPLICATION_CHANNELS,
+  APPLICATION_STATUSES,
+  SEARCH_MAX_LENGTH,
+} from '@openjobseekr/domain';
 import { useTranslation } from 'react-i18next';
 import type { ListApplicationsQuery } from '../../../api/types';
 import type { QueryChanges } from './useApplicationsQuery';
@@ -47,7 +51,7 @@ export function ApplicationsFilters({
                 </InputAdornment>
               ),
             },
-            htmlInput: { maxLength: 100 },
+            htmlInput: { maxLength: SEARCH_MAX_LENGTH },
           }}
           sx={{ flex: 2 }}
         />

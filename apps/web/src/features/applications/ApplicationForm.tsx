@@ -213,7 +213,7 @@ export function ApplicationForm({
           <Grid size={{ xs: 12, md: 4 }}>{textField('contact')}</Grid>
           {followUpPreview && (
             <Grid size={12}>
-              <Alert severity={status === 'SENT' ? 'info' : 'success'} role="status">
+              <Alert severity={followUpDate ? 'info' : 'success'} role="status">
                 {followUpPreview}
               </Alert>
             </Grid>

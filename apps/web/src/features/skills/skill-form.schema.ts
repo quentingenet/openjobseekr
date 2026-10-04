@@ -1,4 +1,4 @@
-import { SKILL_LIMITS } from '@openjobseekr/domain';
+import { SKILL_LEVEL, SKILL_LIMITS } from '@openjobseekr/domain';
 import { z } from 'zod';
 import type { Skill } from '../../api/types';
 
@@ -27,7 +27,7 @@ export const skillFormSchema = z.object({
     .max(SKILL_LIMITS.pattern, 'validation.tooLong')
     .refine(isValidRegex, 'validation.regex'),
   /** '' = not rated. */
-  level: z.union([z.literal(''), z.number().int().min(0).max(5)]),
+  level: z.union([z.literal(''), z.number().int().min(SKILL_LEVEL.min).max(SKILL_LEVEL.max)]),
 });
 
 export type SkillFormValues = z.input<typeof skillFormSchema>;

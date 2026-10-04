@@ -10,6 +10,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import { CREDENTIAL_LIMITS } from '@openjobseekr/domain';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router';
@@ -75,7 +76,8 @@ export function AuthPage({ mode }: { mode: 'login' | 'register' }) {
                 autoFocus
                 required
                 error={Boolean(errors.email)}
-                helperText={translateFieldError(t, errors.email)}
+                helperText={translateFieldError(t, errors.email, CREDENTIAL_LIMITS.emailMaxLength)}
+                slotProps={{ htmlInput: { maxLength: CREDENTIAL_LIMITS.emailMaxLength } }}
               />
               <TextField
                 {...form.register('password')}

@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional, OmitType, PartialType } from '@nestjs/swagger';
-import { SKILL_LIMITS } from '@openjobseekr/domain';
+import { SKILL_LEVEL, SKILL_LIMITS } from '@openjobseekr/domain';
 import { Type } from 'class-transformer';
 import {
   IsInt,
@@ -45,12 +45,17 @@ export class CreateSkillDto {
   @IsRegex()
   pattern: string;
 
-  @ApiPropertyOptional({ type: Number, nullable: true, minimum: 0, maximum: 5 })
+  @ApiPropertyOptional({
+    type: Number,
+    nullable: true,
+    minimum: SKILL_LEVEL.min,
+    maximum: SKILL_LEVEL.max,
+  })
   @Type(() => Number)
   @IsOptional()
   @IsInt()
-  @Min(0)
-  @Max(5)
+  @Min(SKILL_LEVEL.min)
+  @Max(SKILL_LEVEL.max)
   level?: number | null;
 }
 

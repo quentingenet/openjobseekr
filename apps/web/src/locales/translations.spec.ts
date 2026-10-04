@@ -1,3 +1,4 @@
+import { APPLICATION_CHANNELS, APPLICATION_STATUSES, WORK_MODES } from '@openjobseekr/domain';
 import { describe, expect, it } from 'vitest';
 import en from './en/translation.json';
 import es from './es/translation.json';
@@ -47,16 +48,9 @@ describe('translations: en', () => {
   });
 
   it('translates every status, channel and work mode code', () => {
-    expect(Object.keys(en.status)).toEqual([
-      'SENT',
-      'RESPONSE_RECEIVED',
-      'HR_INTERVIEW',
-      'TECHNICAL_INTERVIEW',
-      'OFFER',
-      'REJECTED',
-      'NO_RESPONSE',
-    ]);
-    expect(Object.keys(en.channel)).toHaveLength(10);
-    expect(Object.keys(en.workMode)).toEqual(['ONSITE', 'HYBRID', 'FULL_REMOTE', 'UNSPECIFIED']);
+    expect(Object.keys(en.status).sort()).toEqual([...APPLICATION_STATUSES].sort());
+    // UNSPECIFIED labels applications without a channel in the statistics.
+    expect(Object.keys(en.channel).sort()).toEqual([...APPLICATION_CHANNELS, 'UNSPECIFIED'].sort());
+    expect(Object.keys(en.workMode).sort()).toEqual([...WORK_MODES].sort());
   });
 });

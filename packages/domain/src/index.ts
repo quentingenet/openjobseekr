@@ -1,11 +1,19 @@
 export { addDays, isCalendarDate, toCalendarDate } from './calendar-date.js';
 export { APPLICATION_CHANNELS, type ApplicationChannel } from './channel.js';
-export { computeFollowUpDate, isFollowUpOverdue, overdueSentBefore } from './follow-up.js';
+export {
+  computeFollowUpDate,
+  FOLLOW_UP_STATUS,
+  isFollowUpOverdue,
+  overdueSentBefore,
+} from './follow-up.js';
 export {
   type ApplicationTextField,
+  CREDENTIAL_LIMITS,
   DEFAULT_PAGE_SIZE,
   MAX_PAGE_SIZE,
   PAGE_SIZES,
+  SEARCH_MAX_LENGTH,
+  SKILL_LEVEL,
   SKILL_LIMITS,
   TEXT_LIMITS,
 } from './limits.js';

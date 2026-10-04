@@ -93,9 +93,12 @@ openjobseekr/
 - Tests: explicit expected values, no snapshots for business logic.
   In e2e tests, use the default import: `import request from 'supertest'`.
 - A Vitest test checks that every translation key exists in `en`, `fr` and `es`.
-- Text length limits (`TEXT_LIMITS` per field, `SKILL_LIMITS`) and page sizes are defined once
-  in `@openjobseekr/domain`, used by the API DTOs and the web forms. The database CHECK
-  constraints (migrations) repeat them, checked by `text-limits.spec.ts`.
+- Limits are defined once in `@openjobseekr/domain` (`TEXT_LIMITS` per field, `SKILL_LIMITS`,
+  `SKILL_LEVEL`, `SEARCH_MAX_LENGTH`, `CREDENTIAL_LIMITS`, page sizes) and used by the API
+  DTOs and the web forms. The database CHECK constraints (migrations) repeat the text limits
+  and the skill level range, checked by `text-limits.spec.ts`.
+- The status waiting for an answer (`FOLLOW_UP_STATUS`) drives the follow-up date, the
+  overdue filter and the response rate: never compare with `'SENT'` directly.
 - Enums (statuses, channels, work modes) come from `@openjobseekr/domain`. A
   `domain-enums.check.ts` file fails the typecheck when they drift from Prisma (API) or from
   the OpenAPI types (web).

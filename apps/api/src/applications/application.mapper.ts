@@ -1,4 +1,9 @@
-import { computeFollowUpDate, isFollowUpOverdue, overdueSentBefore } from '@openjobseekr/domain';
+import {
+  computeFollowUpDate,
+  FOLLOW_UP_STATUS,
+  isFollowUpOverdue,
+  overdueSentBefore,
+} from '@openjobseekr/domain';
 import type { Application, Prisma } from '../generated/prisma/client.js';
 import type {
   ApplicationDetailDto,
@@ -101,7 +106,7 @@ export function buildListWhere(
   if (query.channel) conditions.push({ channel: query.channel });
   if (query.overdue === true) {
     conditions.push({
-      status: 'SENT',
+      status: FOLLOW_UP_STATUS,
       sentAt: { lt: toDbDate(overdueSentBefore(context.today, context.delayDays)) },
     });
   }

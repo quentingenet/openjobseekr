@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { SKILL_LEVEL } from '@openjobseekr/domain';
 
 export class SkillDto {
   @ApiProperty({ format: 'uuid' })
@@ -10,7 +11,12 @@ export class SkillDto {
   @ApiProperty({ example: '\\bTypeScript\\b' })
   pattern: string;
 
-  @ApiProperty({ type: Number, nullable: true, minimum: 0, maximum: 5 })
+  @ApiProperty({
+    type: Number,
+    nullable: true,
+    minimum: SKILL_LEVEL.min,
+    maximum: SKILL_LEVEL.max,
+  })
   level: number | null;
 }
 
