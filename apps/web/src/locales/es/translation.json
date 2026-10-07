@@ -76,6 +76,7 @@
       "channelDetail": "¿Qué canal?",
       "status": "Estado",
       "contact": "Contacto (nombre / correo)",
+      "followUpOverride": "Fecha de seguimiento",
       "workMode": "Modalidad",
       "remoteRhythm": "Ritmo de teletrabajo",
       "salaryRange": "Rango salarial",
@@ -86,7 +87,9 @@
       "jobPostingText": "Texto del anuncio"
     },
     "notSpecified": "Sin indicar",
-    "followUpPreview": "Seguimiento previsto el {{date}}",
+    "followUpComputed": "Calculada: fecha de envío + {{days}} días",
+    "followUpSetByHand": "Elegida manualmente",
+    "followUpReset": "Volver al cálculo automático",
     "noFollowUp": "Sin seguimiento: la candidatura ya ha recibido respuesta.",
     "save": "Guardar",
     "cancel": "Cancelar",
@@ -136,6 +139,9 @@
     "WELCOME_TO_THE_JUNGLE": "Welcome to the Jungle",
     "HELLOWORK": "HelloWork",
     "APEC": "APEC",
+    "INDEED": "Indeed",
+    "FREE_WORK": "Free-Work",
+    "LICORNE_SOCIETY": "Licorne Society",
     "RECRUITMENT_AGENCY": "Agencia de selección",
     "UNSOLICITED": "Candidatura espontánea",
     "REFERRAL": "Recomendación",
@@ -176,7 +182,11 @@
     "NETWORK_ERROR": "No se puede contactar con el servidor. ¿Está la API en marcha?",
     "UNKNOWN": "Se ha producido un error inesperado.",
     "SKILL_NOT_FOUND": "Esta competencia no existe o ha sido eliminada.",
-    "SKILL_NAME_ALREADY_USED": "Ya existe una competencia con este nombre."
+    "SKILL_NAME_ALREADY_USED": "Ya existe una competencia con este nombre.",
+    "IMPORT_UNSUPPORTED_FILE": "Este archivo no es una hoja de cálculo .xlsx u .ods válida.",
+    "IMPORT_INVALID_STRUCTURE": "La estructura de este archivo no coincide con la plantilla. No se ha modificado nada.",
+    "IMPORT_INVALID_DATA": "Algunas celdas no son válidas. No se ha modificado nada: corrígelas y vuelve a importar el archivo.",
+    "IMPORT_TOO_MANY_ROWS": "Este archivo tiene demasiadas filas para importarlo."
   },
   "common": {
     "loading": "Cargando…",
@@ -221,5 +231,34 @@
     "subtitle_other": "Frecuencia de cada competencia en tus {{count}} anuncios guardados.",
     "postingCountShort_one": "{{formatted}} anuncio",
     "postingCountShort_other": "{{formatted}} anuncios"
+  },
+  "import": {
+    "button": "Importar",
+    "title": "Importar una hoja de cálculo",
+    "warningTitle": "Tus candidaturas serán reemplazadas",
+    "warningApplications": "Si haces clic en OK, todas tus candidaturas actuales se eliminan definitivamente y se reemplazan por las del archivo.",
+    "warningSkills": "Las competencias se añaden: las tuyas se conservan y las del archivo que ya tienes se ignoran.",
+    "format": "Un archivo .xlsx u .ods de {{size}} MB como máximo, con exactamente las columnas de la plantilla: las candidaturas en la primera hoja y las competencias en la hoja «Compétences».",
+    "templates": "Descargar la plantilla vacía:",
+    "chooseFile": "Elegir un archivo",
+    "confirm": "OK, importar",
+    "wrongExtension": "Elige un archivo .xlsx u .ods.",
+    "tooLarge": "Este archivo supera los {{size}} MB.",
+    "success": "Candidaturas importadas: {{applications}} · Competencias añadidas: {{skills}} · Competencias ya presentes: {{ignored}}",
+    "sheet": "Hoja «{{sheet}}»",
+    "cell": "Hoja «{{sheet}}», celda {{cell}}",
+    "cellErrorsLabel": "Celdas por corregir",
+    "constraints": {
+      "missingSheet": "falta la hoja",
+      "expectedHeader": "título de columna distinto de la plantilla",
+      "unexpectedColumn": "columna que no está en la plantilla",
+      "isNotEmpty": "falta un valor obligatorio",
+      "maxLength": "texto demasiado largo",
+      "isCalendarDate": "fecha no válida (DD/MM/AAAA)",
+      "isIn": "valor que no está en la lista de la plantilla",
+      "isRegex": "expresión regular no válida",
+      "isSkillLevel": "el nivel debe ser un número entero de 0 a 5",
+      "formulaError": "error de fórmula (#N/A, #REF!…)"
+    }
   }
 }

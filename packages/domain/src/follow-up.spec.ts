@@ -40,6 +40,20 @@ describe('computeFollowUpDate', () => {
   });
 });
 
+describe('computeFollowUpDate with a date set by the user', () => {
+  it('uses the date set by the user instead of the computed one', () => {
+    expect(computeFollowUpDate('2026-10-01', 'SENT', 7, '2026-10-20')).toBe('2026-10-20');
+  });
+
+  it('computes the date when the user has not set one', () => {
+    expect(computeFollowUpDate('2026-10-01', 'SENT', 7, null)).toBe('2026-10-08');
+  });
+
+  it('has no follow-up once an answer is received, even with a date set', () => {
+    expect(computeFollowUpDate('2026-10-01', 'REJECTED', 7, '2026-10-20')).toBeNull();
+  });
+});
+
 describe('isFollowUpOverdue', () => {
   it('is overdue when today is after the follow-up date', () => {
     expect(isFollowUpOverdue('2026-10-08', '2026-10-09')).toBe(true);

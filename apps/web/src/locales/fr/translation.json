@@ -76,6 +76,7 @@
       "channelDetail": "Quel canal ?",
       "status": "Statut",
       "contact": "Contact (nom / email)",
+      "followUpOverride": "Date de relance",
       "workMode": "Mode de travail",
       "remoteRhythm": "Rythme de télétravail",
       "salaryRange": "Fourchette de salaire",
@@ -86,7 +87,9 @@
       "jobPostingText": "Texte de l'annonce"
     },
     "notSpecified": "Non renseigné",
-    "followUpPreview": "Relance prévue le {{date}}",
+    "followUpComputed": "Calculée : date d'envoi + {{days}} jours",
+    "followUpSetByHand": "Choisie manuellement",
+    "followUpReset": "Revenir au calcul automatique",
     "noFollowUp": "Pas de relance : la candidature a déjà reçu une réponse.",
     "save": "Enregistrer",
     "cancel": "Annuler",
@@ -136,6 +139,9 @@
     "WELCOME_TO_THE_JUNGLE": "Welcome to the Jungle",
     "HELLOWORK": "HelloWork",
     "APEC": "APEC",
+    "INDEED": "Indeed",
+    "FREE_WORK": "Free-Work",
+    "LICORNE_SOCIETY": "Licorne Society",
     "RECRUITMENT_AGENCY": "Cabinet de recrutement",
     "UNSOLICITED": "Candidature spontanée",
     "REFERRAL": "Cooptation",
@@ -176,7 +182,11 @@
     "NETWORK_ERROR": "Le serveur est injoignable. L'API est-elle lancée ?",
     "UNKNOWN": "Une erreur inattendue est survenue.",
     "SKILL_NOT_FOUND": "Cette compétence n'existe pas ou a été supprimée.",
-    "SKILL_NAME_ALREADY_USED": "Une compétence porte déjà ce nom."
+    "SKILL_NAME_ALREADY_USED": "Une compétence porte déjà ce nom.",
+    "IMPORT_UNSUPPORTED_FILE": "Ce fichier n'est pas un tableur .xlsx ou .ods valide.",
+    "IMPORT_INVALID_STRUCTURE": "La structure de ce fichier ne correspond pas au modèle. Rien n'a été modifié.",
+    "IMPORT_INVALID_DATA": "Certaines cellules sont invalides. Rien n'a été modifié : corrigez-les puis importez à nouveau le fichier.",
+    "IMPORT_TOO_MANY_ROWS": "Ce fichier contient trop de lignes pour être importé."
   },
   "common": {
     "loading": "Chargement…",
@@ -221,5 +231,34 @@
     "subtitle_other": "Fréquence de chaque compétence dans vos {{count}} annonces enregistrées.",
     "postingCountShort_one": "{{formatted}} annonce",
     "postingCountShort_other": "{{formatted}} annonces"
+  },
+  "import": {
+    "button": "Importer",
+    "title": "Importer un fichier",
+    "warningTitle": "Vos candidatures vont être remplacées",
+    "warningApplications": "Si vous cliquez sur OK, toutes vos candidatures actuelles sont définitivement supprimées et remplacées par celles du fichier.",
+    "warningSkills": "Les compétences s'ajoutent : les vôtres sont conservées, et celles du fichier que vous avez déjà sont ignorées.",
+    "format": "Un fichier .xlsx ou .ods de {{size}} Mo maximum, avec exactement les colonnes du modèle : les candidatures dans le premier onglet, les compétences dans l'onglet « Compétences ».",
+    "templates": "Télécharger le modèle vide :",
+    "chooseFile": "Choisir un fichier",
+    "confirm": "OK, importer",
+    "wrongExtension": "Choisissez un fichier .xlsx ou .ods.",
+    "tooLarge": "Ce fichier dépasse {{size}} Mo.",
+    "success": "Candidatures importées : {{applications}} · Compétences ajoutées : {{skills}} · Compétences déjà présentes : {{ignored}}",
+    "sheet": "Onglet « {{sheet}} »",
+    "cell": "Onglet « {{sheet}} », cellule {{cell}}",
+    "cellErrorsLabel": "Cellules à corriger",
+    "constraints": {
+      "missingSheet": "onglet manquant",
+      "expectedHeader": "titre de colonne différent du modèle",
+      "unexpectedColumn": "colonne absente du modèle",
+      "isNotEmpty": "valeur obligatoire manquante",
+      "maxLength": "texte trop long",
+      "isCalendarDate": "date invalide (JJ/MM/AAAA)",
+      "isIn": "valeur absente de la liste du modèle",
+      "isRegex": "expression régulière invalide",
+      "isSkillLevel": "le niveau doit être un nombre entier de 0 à 5",
+      "formulaError": "erreur de formule (#N/A, #REF!…)"
+    }
   }
 }

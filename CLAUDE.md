@@ -9,7 +9,9 @@ job search spreadsheet (Google Sheets); the data model lives in `apps/api/prisma
   TanStack Query, React Router (data router), React Hook Form + Zod, react-i18next,
   openapi-fetch (typed API client on the generated `schema.d.ts`)
 - API (`apps/api`): NestJS 12 (ESM), strict TypeScript, Prisma 7 (`@prisma/adapter-pg`),
-  PostgreSQL, RE2 (`re2`) for skill patterns
+  PostgreSQL, RE2 (`re2`) for skill patterns, SheetJS (`xlsx`) to read imported spreadsheets:
+  installed from `cdn.sheetjs.com`, as SheetJS recommends (the npm `xlsx` package is
+  unmaintained and has known vulnerabilities)
 - Shared domain (`packages/domain`, `@openjobseekr/domain`): pure TypeScript, no dependencies
 - Tests: Vitest everywhere (NestJS needs `unplugin-swc`), Supertest for e2e API tests
 - Database: the local PostgreSQL service on port 5432 (`openjobseekr` for development,
@@ -39,6 +41,7 @@ openjobseekr/
     │   │   ├── applications/ (dto/, mapper, controller, service, module)
     │   │   ├── stats/        (domain/, dto/, controller, service, module)
     │   │   ├── skills/       (domain/, dto/, controller, service, module)
+    │   │   ├── import/       (.xlsx/.ods import: domain/ parsing rules, SheetJS reader, service)
     │   │   ├── generated/    (Prisma client, generated, not versioned)
     │   │   └── export-openapi.ts (writes the OpenAPI document used by the web app)
     │   ├── test/             (e2e tests and helpers)
@@ -50,7 +53,7 @@ openjobseekr/
             │                 openapi.json + schema.d.ts generated)
             ├── components/   (shared components)
             ├── lib/          (formatting, error and form helpers)
-            ├── features/     (auth/, applications/, stats/, skills/)
+            ├── features/     (auth/, applications/, stats/, skills/, import/)
             ├── locales/      (en/, fr/, es/ translation.json)
             └── test/
 ```
@@ -93,8 +96,11 @@ openjobseekr/
 
 - `Application` fields follow the spreadsheet columns: do not rename or reorder them. The only
   addition is `channelDetail`, the channel name when `channel` is `OTHER` (cleared otherwise,
-  by `channelDetailFor` in `@openjobseekr/domain`).
-- The follow-up date is not stored: it is computed (sent date + delay) while the status is `SENT`.
+  by `channelDetailFor` in `@openjobseekr/domain`). `followUpOverride` holds the "DATE DE
+  RELANCE" column only when the user set it by hand.
+- The follow-up date exists only while the status is `SENT`: the date the user picked
+  (`followUpOverride`, the only stored part) or else sent date + delay, computed by
+  `computeFollowUpDate` in `@openjobseekr/domain`. The overdue filter applies the same rule.
 - `jobPostingText` is excluded from list responses and only returned in the detail response.
 - ESLint runs typescript-eslint `strictTypeChecked` (type-aware). The few relaxed rules are
   in `eslint.config.js`, each with its reason; fix the code rather than adding exceptions.
@@ -107,13 +113,21 @@ openjobseekr/
   `SKILL_LEVEL`, `SEARCH_MAX_LENGTH`, `CREDENTIAL_LIMITS`, page sizes, `MAX_OFFSET`) and used by
   the API DTOs and the web forms. The database CHECK constraints (migrations) repeat them,
   checked against the migrations by `text-limits.spec.ts` and against the real database by
-  `database-constraints.e2e-spec.ts`.
+  `database-constraints.e2e-spec.ts`. `IMPORT_LIMITS` (file size, rows) bound the spreadsheet
+  import.
 - The status waiting for an answer (`FOLLOW_UP_STATUS`) drives the follow-up date, the
   overdue filter and the response rate: never compare with `'SENT'` directly.
 - Enum lists (statuses, channels, work modes) come from `@openjobseekr/domain` in the web app
   and the shared rules; the API DTOs use the Prisma enums (for validation and Swagger). Two
   `domain-enums.check.ts` files fail the typecheck when the domain drifts from Prisma (API)
   or from the OpenAPI types (web).
+- Spreadsheet import: column titles and list labels (French, as in the original sheet) live in
+  `import/domain/import-format.ts`. The empty templates in `apps/web/public/templates/` must
+  match them (`templates.spec.ts`): regenerate both templates when a column or a label changes
+  (e.g. a new channel). An import replaces the user's applications and adds skills; the whole
+  file is validated before anything is written.
+- Skill names are unique per user ignoring case and a ".js" suffix (`skillNameKey`): checked
+  on create, update and import.
 - Login and registration are rate-limited per IP (`AUTH_RATE_LIMIT`, 5 per minute by default).
 - Skill patterns are matched with RE2 (the engine of Google Sheets): linear time, no
   lookarounds or backreferences.

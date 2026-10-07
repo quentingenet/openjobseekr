@@ -71,7 +71,7 @@ export class CreateApplicationDto {
     type: String,
     nullable: true,
     maxLength: TEXT_LIMITS.channelDetail,
-    description: 'Channel name when channel is OTHER (e.g. "Indeed"); requires channel OTHER',
+    description: 'Channel name when channel is OTHER (e.g. "Monster"); requires channel OTHER',
   })
   @TrimToNull()
   @IsOptional()
@@ -91,6 +91,17 @@ export class CreateApplicationDto {
   @IsString()
   @MaxLength(TEXT_LIMITS.contact)
   contact?: string | null;
+
+  @ApiPropertyOptional({
+    type: String,
+    nullable: true,
+    example: '2026-10-20',
+    description:
+      'Follow-up date set by the user (YYYY-MM-DD), used instead of sentAt + delay while the status is SENT; null goes back to the computed date',
+  })
+  @IsOptional()
+  @IsCalendarDate()
+  followUpOverride?: string | null;
 
   @ApiPropertyOptional({ enum: WorkMode, nullable: true })
   @IsOptional()

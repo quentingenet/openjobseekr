@@ -26,6 +26,7 @@ const record: Application = {
   channelDetail: null,
   status: 'SENT',
   contact: null,
+  followUpOverride: null,
   workMode: 'HYBRID',
   remoteRhythm: '2 days',
   salaryRange: null,
@@ -62,6 +63,7 @@ describe('toApplicationSummary', () => {
       status: 'SENT',
       contact: null,
       followUpDate: '2026-10-08',
+      followUpOverride: null,
       followUpOverdue: true,
       workMode: 'HYBRID',
       remoteRhythm: '2 days',
@@ -86,6 +88,19 @@ describe('toApplicationSummary', () => {
     expect(toApplicationSummary(record, { ...context, today: '2026-10-08' }).followUpOverdue).toBe(
       false,
     );
+  });
+
+  it('uses the follow-up date set by the user', () => {
+    const summary = toApplicationSummary(
+      { ...record, followUpOverride: new Date('2026-10-20T00:00:00.000Z') },
+      context,
+    );
+
+    expect(summary).toMatchObject({
+      followUpDate: '2026-10-20',
+      followUpOverride: '2026-10-20',
+      followUpOverdue: false,
+    });
   });
 });
 
@@ -112,10 +127,19 @@ describe('toApplicationCreateData', () => {
     const base = { sentAt: '2026-10-01', company: 'Acme', jobTitle: 'Dev' };
 
     expect(
-      toApplicationCreateData({ ...base, channel: 'OTHER', channelDetail: 'Indeed' }, 'u')
+      toApplicationCreateData({ ...base, channel: 'OTHER', channelDetail: 'Monster' }, 'u')
         .channelDetail,
-    ).toBe('Indeed');
+    ).toBe('Monster');
     expect(toApplicationCreateData({ ...base, channel: 'APEC' }, 'u').channelDetail).toBeNull();
+  });
+
+  it('stores the follow-up date set by the user as a calendar date', () => {
+    const base = { sentAt: '2026-10-01', company: 'Acme', jobTitle: 'Dev' };
+
+    expect(
+      toApplicationCreateData({ ...base, followUpOverride: '2026-10-20' }, 'u').followUpOverride,
+    ).toEqual(new Date('2026-10-20T00:00:00.000Z'));
+    expect(toApplicationCreateData(base, 'u').followUpOverride).toBeUndefined();
   });
 });
 
@@ -126,6 +150,13 @@ describe('toApplicationData', () => {
       notes: null,
     });
     expect(toApplicationData({ status: 'REJECTED' })).toEqual({ status: 'REJECTED' });
+  });
+
+  it('sets or clears the follow-up date set by the user', () => {
+    expect(toApplicationData({ followUpOverride: '2026-10-20' })).toEqual({
+      followUpOverride: new Date('2026-10-20T00:00:00.000Z'),
+    });
+    expect(toApplicationData({ followUpOverride: null })).toEqual({ followUpOverride: null });
   });
 
   it('clears the channel precision when the channel changes to anything but OTHER', () => {
@@ -158,7 +189,13 @@ describe('buildListWhere', () => {
         { userId: 'user-1' },
         { status: 'SENT' },
         { channel: 'APEC' },
-        { status: 'SENT', sentAt: { lt: new Date('2026-10-02T00:00:00.000Z') } },
+        {
+          status: 'SENT',
+          OR: [
+            { followUpOverride: null, sentAt: { lt: new Date('2026-10-02T00:00:00.000Z') } },
+            { followUpOverride: { lt: new Date('2026-10-09T00:00:00.000Z') } },
+          ],
+        },
         {
           OR: [
             { company: { contains: 'acme', mode: 'insensitive' } },

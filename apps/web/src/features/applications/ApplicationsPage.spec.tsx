@@ -2,7 +2,7 @@ import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import type { ApplicationList } from '../../api/types';
-import { type FetchStub, requestedUrls } from '../../test/api-mock';
+import { type FetchStub, mockApi, requestedUrls } from '../../test/api-mock';
 import { jsonResponse, renderWithProviders } from '../../test/render';
 import { mockMobileViewport } from '../../test/viewport';
 import { ApplicationsPage } from './ApplicationsPage';
@@ -22,6 +22,7 @@ const list: ApplicationList = {
       status: 'SENT',
       contact: null,
       followUpDate: '2026-10-08',
+      followUpOverride: null,
       followUpOverdue: true,
       workMode: 'HYBRID',
       remoteRhythm: null,
@@ -216,12 +217,49 @@ describe('ApplicationsPage', () => {
     const [item] = list.items;
     fetchMock.mockImplementation(() =>
       Promise.resolve(
-        jsonResponse({ ...list, items: [{ ...item, channel: 'OTHER', channelDetail: 'Indeed' }] }),
+        jsonResponse({ ...list, items: [{ ...item, channel: 'OTHER', channelDetail: 'Monster' }] }),
       ),
     );
     await renderWithProviders(<ApplicationsPage />, { path: '/applications', language: 'fr' });
 
-    expect(await screen.findByText('Autre (Indeed)')).toBeInTheDocument();
+    expect(await screen.findByText('Autre (Monster)')).toBeInTheDocument();
+  });
+
+  it('imports a spreadsheet after the warning, then reloads the list and reports the result', async () => {
+    const user = userEvent.setup();
+    const { requests } = mockApi({
+      'GET /api/applications': { body: list },
+      'POST /api/import': {
+        body: {
+          deletedApplications: 3,
+          importedApplications: 12,
+          addedSkills: 2,
+          ignoredSkills: [{ row: 6, name: 'TYPESCRIPT', keptName: 'TypeScript' }],
+        },
+      },
+    });
+    await renderWithProviders(<ApplicationsPage />, { path: '/applications', language: 'fr' });
+    await screen.findByText('Acme');
+
+    await user.click(screen.getByRole('button', { name: 'Importer' }));
+    const dialog = screen.getByRole('dialog', { name: 'Importer un fichier' });
+    await user.upload(
+      within(dialog).getByLabelText('Choisir un fichier'),
+      new File([new Uint8Array(10)], 'suivi.ods'),
+    );
+    await user.click(within(dialog).getByRole('button', { name: 'OK, importer' }));
+
+    expect(
+      await screen.findByText(
+        'Candidatures importées : 12 · Compétences ajoutées : 2 · Compétences déjà présentes : 1',
+      ),
+    ).toBeInTheDocument();
+    await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+    expect(requests.map((request) => `${request.method} ${request.url}`)).toEqual([
+      'GET /api/applications?order=desc&limit=20&offset=0',
+      'POST /api/import',
+      'GET /api/applications?order=desc&limit=20&offset=0',
+    ]);
   });
 
   describe('on a phone', () => {

@@ -8,6 +8,9 @@ export const APPLICATION_CHANNELS = [
   'WELCOME_TO_THE_JUNGLE',
   'HELLOWORK',
   'APEC',
+  'INDEED',
+  'FREE_WORK',
+  'LICORNE_SOCIETY',
   'RECRUITMENT_AGENCY',
   'UNSOLICITED',
   'REFERRAL',
@@ -16,7 +19,7 @@ export const APPLICATION_CHANNELS = [
 
 export type ApplicationChannel = (typeof APPLICATION_CHANNELS)[number];
 
-/** The channel whose name the user types as a precision (`channelDetail`, e.g. "Indeed"). */
+/** The channel whose name the user types as a precision (`channelDetail`, e.g. "Monster"). */
 export const OTHER_CHANNEL = 'OTHER' satisfies ApplicationChannel;
 
 /** Only the OTHER channel takes a precision. */

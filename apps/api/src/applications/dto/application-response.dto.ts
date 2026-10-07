@@ -39,9 +39,18 @@ export class ApplicationDetailDto {
     type: String,
     nullable: true,
     example: '2026-10-08',
-    description: 'Computed: sentAt + follow-up delay while the status is SENT',
+    description:
+      'Computed while the status is SENT: followUpOverride if set, otherwise sentAt + follow-up delay',
   })
   followUpDate: string | null;
+
+  @ApiProperty({
+    type: String,
+    nullable: true,
+    example: null,
+    description: 'Follow-up date set by the user, null when computed',
+  })
+  followUpOverride: string | null;
 
   @ApiProperty({ description: 'Computed: true when today is after followUpDate' })
   followUpOverdue: boolean;

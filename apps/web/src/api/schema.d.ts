@@ -196,6 +196,26 @@ export interface paths {
         patch: operations["SkillsController_update"];
         trace?: never;
     };
+    "/import": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Import the job search spreadsheet (.xlsx or .ods)
+         * @description Replaces all the applications with those of the first sheet, and adds the skills of the "Compétences" sheet that do not exist yet. Nothing changes if the file is rejected.
+         */
+        post: operations["ImportController_importSpreadsheet"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -236,8 +256,8 @@ export interface components {
             response?: string | null;
             resources?: string | null;
             /** @enum {string|null} */
-            channel?: "CAREER_SITE" | "LINKEDIN" | "WELCOME_TO_THE_JUNGLE" | "HELLOWORK" | "APEC" | "RECRUITMENT_AGENCY" | "UNSOLICITED" | "REFERRAL" | "OTHER" | null;
-            /** @description Channel name when channel is OTHER (e.g. "Indeed"); requires channel OTHER */
+            channel?: "CAREER_SITE" | "LINKEDIN" | "WELCOME_TO_THE_JUNGLE" | "HELLOWORK" | "APEC" | "INDEED" | "FREE_WORK" | "LICORNE_SOCIETY" | "RECRUITMENT_AGENCY" | "UNSOLICITED" | "REFERRAL" | "OTHER" | null;
+            /** @description Channel name when channel is OTHER (e.g. "Monster"); requires channel OTHER */
             channelDetail?: string | null;
             /**
              * @default SENT
@@ -245,6 +265,11 @@ export interface components {
              */
             status: "SENT" | "RESPONSE_RECEIVED" | "HR_INTERVIEW" | "TECHNICAL_INTERVIEW" | "OFFER" | "REJECTED" | "NO_RESPONSE";
             contact?: string | null;
+            /**
+             * @description Follow-up date set by the user (YYYY-MM-DD), used instead of sentAt + delay while the status is SENT; null goes back to the computed date
+             * @example 2026-10-20
+             */
+            followUpOverride?: string | null;
             /** @enum {string|null} */
             workMode?: "ONSITE" | "HYBRID" | "FULL_REMOTE" | "UNSPECIFIED" | null;
             remoteRhythm?: string | null;
@@ -266,17 +291,22 @@ export interface components {
             response: string | null;
             resources: string | null;
             /** @enum {string|null} */
-            channel: "CAREER_SITE" | "LINKEDIN" | "WELCOME_TO_THE_JUNGLE" | "HELLOWORK" | "APEC" | "RECRUITMENT_AGENCY" | "UNSOLICITED" | "REFERRAL" | "OTHER" | null;
+            channel: "CAREER_SITE" | "LINKEDIN" | "WELCOME_TO_THE_JUNGLE" | "HELLOWORK" | "APEC" | "INDEED" | "FREE_WORK" | "LICORNE_SOCIETY" | "RECRUITMENT_AGENCY" | "UNSOLICITED" | "REFERRAL" | "OTHER" | null;
             /** @description Precision for the OTHER channel */
             channelDetail: string | null;
             /** @enum {string} */
             status: "SENT" | "RESPONSE_RECEIVED" | "HR_INTERVIEW" | "TECHNICAL_INTERVIEW" | "OFFER" | "REJECTED" | "NO_RESPONSE";
             contact: string | null;
             /**
-             * @description Computed: sentAt + follow-up delay while the status is SENT
+             * @description Computed while the status is SENT: followUpOverride if set, otherwise sentAt + follow-up delay
              * @example 2026-10-08
              */
             followUpDate: string | null;
+            /**
+             * @description Follow-up date set by the user, null when computed
+             * @example null
+             */
+            followUpOverride: string | null;
             /** @description Computed: true when today is after followUpDate */
             followUpOverdue: boolean;
             /** @enum {string|null} */
@@ -305,17 +335,22 @@ export interface components {
             response: string | null;
             resources: string | null;
             /** @enum {string|null} */
-            channel: "CAREER_SITE" | "LINKEDIN" | "WELCOME_TO_THE_JUNGLE" | "HELLOWORK" | "APEC" | "RECRUITMENT_AGENCY" | "UNSOLICITED" | "REFERRAL" | "OTHER" | null;
+            channel: "CAREER_SITE" | "LINKEDIN" | "WELCOME_TO_THE_JUNGLE" | "HELLOWORK" | "APEC" | "INDEED" | "FREE_WORK" | "LICORNE_SOCIETY" | "RECRUITMENT_AGENCY" | "UNSOLICITED" | "REFERRAL" | "OTHER" | null;
             /** @description Precision for the OTHER channel */
             channelDetail: string | null;
             /** @enum {string} */
             status: "SENT" | "RESPONSE_RECEIVED" | "HR_INTERVIEW" | "TECHNICAL_INTERVIEW" | "OFFER" | "REJECTED" | "NO_RESPONSE";
             contact: string | null;
             /**
-             * @description Computed: sentAt + follow-up delay while the status is SENT
+             * @description Computed while the status is SENT: followUpOverride if set, otherwise sentAt + follow-up delay
              * @example 2026-10-08
              */
             followUpDate: string | null;
+            /**
+             * @description Follow-up date set by the user, null when computed
+             * @example null
+             */
+            followUpOverride: string | null;
             /** @description Computed: true when today is after followUpDate */
             followUpOverdue: boolean;
             /** @enum {string|null} */
@@ -343,10 +378,15 @@ export interface components {
             response?: string | null;
             resources?: string | null;
             /** @enum {string|null} */
-            channel?: "CAREER_SITE" | "LINKEDIN" | "WELCOME_TO_THE_JUNGLE" | "HELLOWORK" | "APEC" | "RECRUITMENT_AGENCY" | "UNSOLICITED" | "REFERRAL" | "OTHER" | null;
-            /** @description Channel name when channel is OTHER (e.g. "Indeed"); requires channel OTHER */
+            channel?: "CAREER_SITE" | "LINKEDIN" | "WELCOME_TO_THE_JUNGLE" | "HELLOWORK" | "APEC" | "INDEED" | "FREE_WORK" | "LICORNE_SOCIETY" | "RECRUITMENT_AGENCY" | "UNSOLICITED" | "REFERRAL" | "OTHER" | null;
+            /** @description Channel name when channel is OTHER (e.g. "Monster"); requires channel OTHER */
             channelDetail?: string | null;
             contact?: string | null;
+            /**
+             * @description Follow-up date set by the user (YYYY-MM-DD), used instead of sentAt + delay while the status is SENT; null goes back to the computed date
+             * @example 2026-10-20
+             */
+            followUpOverride?: string | null;
             /** @enum {string|null} */
             workMode?: "ONSITE" | "HYBRID" | "FULL_REMOTE" | "UNSPECIFIED" | null;
             remoteRhythm?: string | null;
@@ -443,6 +483,36 @@ export interface components {
             name?: string;
             pattern?: string;
         };
+        IgnoredSkillDto: {
+            /**
+             * @description Row in the "Compétences" sheet
+             * @example 6
+             */
+            row: number;
+            /** @example TYPESCRIPT */
+            name: string;
+            /**
+             * @description The skill kept under this name
+             * @example TypeScript
+             */
+            keptName: string;
+        };
+        ImportResultDto: {
+            /**
+             * @description Applications deleted and replaced by the file
+             * @example 12
+             */
+            deletedApplications: number;
+            /** @example 42 */
+            importedApplications: number;
+            /**
+             * @description Skills added; existing skills are kept
+             * @example 3
+             */
+            addedSkills: number;
+            /** @description Skills of the file already present, under the same name or an earlier row */
+            ignoredSkills: components["schemas"]["IgnoredSkillDto"][];
+        };
         FieldErrorDto: {
             /** @example company */
             field: string;
@@ -469,8 +539,8 @@ export interface components {
              * @description Stable code, translated by the web app
              * @enum {string}
              */
-            code: "VALIDATION_FAILED" | "BAD_REQUEST" | "UNAUTHORIZED" | "INVALID_CREDENTIALS" | "FORBIDDEN" | "NOT_FOUND" | "APPLICATION_NOT_FOUND" | "SKILL_NOT_FOUND" | "CONFLICT" | "EMAIL_ALREADY_USED" | "SKILL_NAME_ALREADY_USED" | "PAYLOAD_TOO_LARGE" | "TOO_MANY_REQUESTS" | "INTERNAL_ERROR" | "SERVICE_UNAVAILABLE";
-            /** @description Invalid fields (VALIDATION_FAILED) */
+            code: "VALIDATION_FAILED" | "BAD_REQUEST" | "UNAUTHORIZED" | "INVALID_CREDENTIALS" | "FORBIDDEN" | "NOT_FOUND" | "APPLICATION_NOT_FOUND" | "SKILL_NOT_FOUND" | "CONFLICT" | "EMAIL_ALREADY_USED" | "SKILL_NAME_ALREADY_USED" | "PAYLOAD_TOO_LARGE" | "IMPORT_UNSUPPORTED_FILE" | "IMPORT_INVALID_STRUCTURE" | "IMPORT_INVALID_DATA" | "IMPORT_TOO_MANY_ROWS" | "TOO_MANY_REQUESTS" | "INTERNAL_ERROR" | "SERVICE_UNAVAILABLE";
+            /** @description Invalid fields (VALIDATION_FAILED), or spreadsheet cells (IMPORT_*) */
             errors?: components["schemas"]["FieldErrorDto"][];
         };
     };
@@ -762,7 +832,7 @@ export interface operations {
         parameters: {
             query?: {
                 status?: "SENT" | "RESPONSE_RECEIVED" | "HR_INTERVIEW" | "TECHNICAL_INTERVIEW" | "OFFER" | "REJECTED" | "NO_RESPONSE";
-                channel?: "CAREER_SITE" | "LINKEDIN" | "WELCOME_TO_THE_JUNGLE" | "HELLOWORK" | "APEC" | "RECRUITMENT_AGENCY" | "UNSOLICITED" | "REFERRAL" | "OTHER";
+                channel?: "CAREER_SITE" | "LINKEDIN" | "WELCOME_TO_THE_JUNGLE" | "HELLOWORK" | "APEC" | "INDEED" | "FREE_WORK" | "LICORNE_SOCIETY" | "RECRUITMENT_AGENCY" | "UNSOLICITED" | "REFERRAL" | "OTHER";
                 /** @description true: only applications whose follow-up date is past. false: no filter. */
                 overdue?: boolean;
                 /** @description Case-insensitive search on company and job title */
@@ -1226,6 +1296,77 @@ export interface operations {
             };
             /** @description SKILL_NAME_ALREADY_USED */
             409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetailsDto"];
+                };
+            };
+        };
+    };
+    ImportController_importSpreadsheet: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": {
+                    /** Format: binary */
+                    file: string;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ImportResultDto"];
+                };
+            };
+            /** @description VALIDATION_FAILED, BAD_REQUEST */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetailsDto"];
+                };
+            };
+            /** @description UNAUTHORIZED */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetailsDto"];
+                };
+            };
+            /** @description PAYLOAD_TOO_LARGE */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetailsDto"];
+                };
+            };
+            /** @description IMPORT_UNSUPPORTED_FILE */
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetailsDto"];
+                };
+            };
+            /** @description IMPORT_INVALID_STRUCTURE, IMPORT_INVALID_DATA, IMPORT_TOO_MANY_ROWS */
+            422: {
                 headers: {
                     [name: string]: unknown;
                 };

@@ -31,6 +31,15 @@ export function lastRequest(fetchMock: Mock<FetchStub>): Request {
   return call[0];
 }
 
+/** JSON bodies parsed; multipart bodies (file uploads) as their entries. */
+async function requestBody(request: Request): Promise<unknown> {
+  if (request.headers.get('Content-Type')?.startsWith('multipart/form-data')) {
+    return Object.fromEntries(await request.formData());
+  }
+  const text = await request.text();
+  return text ? JSON.parse(text) : undefined;
+}
+
 /**
  * Stubs `fetch` with handlers keyed by "METHOD /api/path" (query string ignored).
  * Unknown routes answer 404 so that unexpected calls are visible in tests.
@@ -39,12 +48,7 @@ export function mockApi(handlers: Record<string, Handler>) {
   const requests: RecordedRequest[] = [];
   const fetchMock = vi.fn<FetchStub>(async (sent) => {
     const url = requestUrl(sent);
-    const text = await sent.text();
-    const request: RecordedRequest = {
-      method: sent.method,
-      url,
-      body: text ? JSON.parse(text) : undefined,
-    };
+    const request: RecordedRequest = { method: sent.method, url, body: await requestBody(sent) };
     requests.push(request);
     const handler = handlers[`${sent.method} ${url.split('?')[0]}`];
     if (!handler) {

@@ -21,6 +21,7 @@ const application: Application = {
   status: 'SENT',
   contact: 'Marie',
   followUpDate: '2026-10-08',
+  followUpOverride: null,
   followUpOverdue: false,
   workMode: null,
   remoteRhythm: null,
@@ -83,6 +84,7 @@ describe('toCreateInput', () => {
       channelDetail: null,
       status: 'SENT',
       contact: null,
+      followUpOverride: null,
       workMode: null,
       remoteRhythm: null,
       salaryRange: null,
@@ -102,17 +104,17 @@ describe('channel precision', () => {
     const values = applicationFormSchema.parse({
       ...base,
       channel: 'OTHER',
-      channelDetail: ' Indeed ',
+      channelDetail: ' Monster ',
     });
 
-    expect(toCreateInput(values)).toMatchObject({ channel: 'OTHER', channelDetail: 'Indeed' });
+    expect(toCreateInput(values)).toMatchObject({ channel: 'OTHER', channelDetail: 'Monster' });
   });
 
   it('is dropped with any other channel, even if it was typed before', () => {
     const values = applicationFormSchema.parse({
       ...base,
       channel: 'APEC',
-      channelDetail: 'Indeed',
+      channelDetail: 'Monster',
     });
 
     expect(toCreateInput(values)).toMatchObject({ channel: 'APEC', channelDetail: null });
@@ -129,6 +131,34 @@ describe('channel precision', () => {
       channelDetail: 'Malt',
       channel: 'OTHER',
     });
+  });
+});
+
+describe('follow-up date set by the user', () => {
+  const base = { ...emptyApplicationForm('2026-10-01'), company: 'Acme', jobTitle: 'Dev' };
+
+  it('is sent as typed, or as null to go back to the computed date', () => {
+    const set = applicationFormSchema.parse({ ...base, followUpOverride: '2026-10-20' });
+    const computed = applicationFormSchema.parse(base);
+
+    expect(toCreateInput(set).followUpOverride).toBe('2026-10-20');
+    expect(toCreateInput(computed).followUpOverride).toBeNull();
+  });
+
+  it('rejects an invalid date', () => {
+    const result = applicationFormSchema.safeParse({ ...base, followUpOverride: '2026-02-30' });
+
+    expect(result.success).toBe(false);
+    expect(result.error?.issues.map((issue) => [issue.path, issue.message])).toEqual([
+      [['followUpOverride'], 'validation.date'],
+    ]);
+  });
+
+  it('is loaded from the application', () => {
+    expect(applicationToForm({ ...application, followUpOverride: '2026-10-20' })).toMatchObject({
+      followUpOverride: '2026-10-20',
+    });
+    expect(applicationToForm(application).followUpOverride).toBe('');
   });
 });
 

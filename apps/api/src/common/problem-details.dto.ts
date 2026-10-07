@@ -30,6 +30,9 @@ export class ProblemDetailsDto implements ProblemDetails {
   @ApiProperty({ enum: ErrorCode, description: 'Stable code, translated by the web app' })
   code: ErrorCode;
 
-  @ApiPropertyOptional({ type: [FieldErrorDto], description: 'Invalid fields (VALIDATION_FAILED)' })
+  @ApiPropertyOptional({
+    type: [FieldErrorDto],
+    description: 'Invalid fields (VALIDATION_FAILED), or spreadsheet cells (IMPORT_*)',
+  })
   errors?: FieldErrorDto[];
 }

@@ -13,12 +13,12 @@ describe('acceptsChannelDetail', () => {
 
 describe('channelDetailFor', () => {
   it('keeps the precision of the OTHER channel', () => {
-    expect(channelDetailFor('OTHER', 'Indeed')).toBe('Indeed');
+    expect(channelDetailFor('OTHER', 'Monster')).toBe('Monster');
   });
 
   it('drops the precision of any other channel, or without a channel', () => {
-    expect(channelDetailFor('APEC', 'Indeed')).toBeNull();
-    expect(channelDetailFor(null, 'Indeed')).toBeNull();
+    expect(channelDetailFor('APEC', 'Monster')).toBeNull();
+    expect(channelDetailFor(null, 'Monster')).toBeNull();
   });
 
   it('turns an empty or missing precision into null', () => {

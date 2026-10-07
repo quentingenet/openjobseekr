@@ -24,12 +24,31 @@ export function fromDbDate(date: Date): string {
   return date.toISOString().slice(0, 10);
 }
 
+/**
+ * The follow-up date set by the user as Prisma data: left out when absent from the input,
+ * `null` to go back to the computed date.
+ */
+function followUpOverrideData(followUpOverride: string | null | undefined): {
+  followUpOverride?: Date | null;
+} {
+  if (followUpOverride === undefined) return {};
+  return { followUpOverride: followUpOverride === null ? null : toDbDate(followUpOverride) };
+}
+
 export function toApplicationSummary(
   application: Omit<Application, 'jobPostingText'>,
   context: FollowUpContext,
 ): ApplicationSummaryDto {
   const sentAt = fromDbDate(application.sentAt);
-  const followUpDate = computeFollowUpDate(sentAt, application.status, context.delayDays);
+  const followUpOverride = application.followUpOverride
+    ? fromDbDate(application.followUpOverride)
+    : null;
+  const followUpDate = computeFollowUpDate(
+    sentAt,
+    application.status,
+    context.delayDays,
+    followUpOverride,
+  );
   return {
     id: application.id,
     sentAt,
@@ -43,6 +62,7 @@ export function toApplicationSummary(
     status: application.status,
     contact: application.contact,
     followUpDate,
+    followUpOverride,
     followUpOverdue: isFollowUpOverdue(followUpDate, context.today),
     workMode: application.workMode,
     remoteRhythm: application.remoteRhythm,
@@ -70,10 +90,11 @@ export function toApplicationCreateData(
   dto: CreateApplicationDto,
   userId: string,
 ): Prisma.ApplicationUncheckedCreateInput {
-  const { sentAt, ...rest } = dto;
+  const { sentAt, followUpOverride, ...rest } = dto;
   return {
     ...rest,
     sentAt: toDbDate(sentAt),
+    ...followUpOverrideData(followUpOverride),
     channelDetail: channelDetailFor(dto.channel, dto.channelDetail),
     userId,
   };
@@ -83,10 +104,11 @@ export function toApplicationCreateData(
 export function toApplicationData(
   dto: UpdateApplicationDto,
 ): Prisma.ApplicationUncheckedUpdateInput {
-  const { sentAt, ...rest } = dto;
+  const { sentAt, followUpOverride, ...rest } = dto;
   return {
     ...rest,
     ...(sentAt === undefined ? {} : { sentAt: toDbDate(sentAt) }),
+    ...followUpOverrideData(followUpOverride),
     // Leaving the OTHER channel drops its precision.
     ...(dto.channel !== undefined && !acceptsChannelDetail(dto.channel)
       ? { channelDetail: null }
@@ -104,9 +126,16 @@ export function buildListWhere(
   if (query.status) conditions.push({ status: query.status });
   if (query.channel) conditions.push({ channel: query.channel });
   if (query.overdue === true) {
+    // Same rule as `isFollowUpOverdue(computeFollowUpDate(...))`, in the database.
     conditions.push({
       status: FOLLOW_UP_STATUS,
-      sentAt: { lt: toDbDate(overdueSentBefore(context.today, context.delayDays)) },
+      OR: [
+        {
+          followUpOverride: null,
+          sentAt: { lt: toDbDate(overdueSentBefore(context.today, context.delayDays)) },
+        },
+        { followUpOverride: { lt: toDbDate(context.today) } },
+      ],
     });
   }
   if (query.q) {

@@ -4,6 +4,7 @@ import { AuthModule } from './auth/auth.module.js';
 import { ClockModule } from './common/clock.module.js';
 import { ConfigModule } from './config/config.module.js';
 import { HealthModule } from './health/health.module.js';
+import { ImportModule } from './import/import.module.js';
 import { PrismaModule } from './prisma/prisma.module.js';
 import { SettingsModule } from './settings/settings.module.js';
 import { SkillsModule } from './skills/skills.module.js';
@@ -20,6 +21,7 @@ import { StatsModule } from './stats/stats.module.js';
     StatsModule,
     SettingsModule,
     SkillsModule,
+    ImportModule,
   ],
 })
 export class AppModule {}

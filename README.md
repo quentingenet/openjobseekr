@@ -55,23 +55,98 @@ decisions, the review and what gets merged. The configuration is part of the rep
 - **Applications table**: filters by status and channel, "follow-ups due" filter, search on
   company and job title, sort by sent date, pagination. Filters live in the URL, so the back
   button and bookmarks keep them.
-- **Automatic follow-up date**: sent date + a configurable delay (7 days by default) while the
-  application is waiting for an answer, with overdue follow-ups highlighted.
-- **Channels**: LinkedIn, Welcome to the Jungle, APEC, HelloWork, recruitment agency, career
-  site, referral, unsolicited, or "Other" with your own channel name (e.g. Indeed).
+- **Follow-up date**: sent date + a configurable delay (7 days by default) while the
+  application is waiting for an answer, or a date you pick with the date picker; overdue
+  follow-ups are highlighted.
+- **Channels**: LinkedIn, Welcome to the Jungle, APEC, HelloWork, Indeed, Free-Work,
+  Licorne Society, recruitment agency, career site, referral, unsolicited, or "Other" with your
+  own channel name (e.g. Monster).
 - **Statistics**: counts by status and by channel, and your response rate.
 - **Skills analysis**: define the skills you want to track with a search pattern
   (e.g. `\bJava\b`, which does not match "JavaScript"). The app counts how many of your saved
-  job postings mention each one, and updates as you add postings.
+  job postings mention each one, and updates as you add postings. Each skill appears once:
+  names are compared ignoring case and a ".js" suffix.
+- **Spreadsheet import**: bring an existing job search spreadsheet (.xlsx or .ods) into the app,
+  see [Importing a spreadsheet](#importing-a-spreadsheet).
 - **Languages**: English, French and Spanish, switchable at any time.
 - **Accounts**: each user only ever sees their own data; login attempts are rate-limited.
+
+## Importing a spreadsheet
+
+The **Import** button of the applications page loads a spreadsheet kept in Excel, LibreOffice or
+Google Sheets (downloaded as .xlsx or .ods). A confirmation dialog explains what happens before
+anything is sent:
+
+- **Applications are replaced**: all your current applications are permanently deleted and
+  replaced by the rows of the file.
+- **Skills are added**: your skills (and their levels) are kept; a skill of the file is added
+  only if you do not have it yet. Names are compared ignoring case and a ".js" suffix, so
+  "TypeScript", "TYPESCRIPT" and "typescript" are one skill, and so are "React" and "React.js".
+- **All or nothing**: the whole file is checked first. If a cell is invalid, nothing changes and
+  the app lists the cells to fix (e.g. sheet "Candidatures", cell A3: invalid date). Formula
+  errors (`#N/A`, `#REF!`...) are reported too, never imported as text.
+
+Start from the empty template, which has the exact layout, the drop-down lists and the
+follow-up date formula:
+[`suivi_candidatures_modele.xlsx`](apps/web/public/templates/suivi_candidatures_modele.xlsx) or
+[`suivi_candidatures_modele.ods`](apps/web/public/templates/suivi_candidatures_modele.ods)
+(also downloadable from the import dialog).
+
+The file must follow this layout. Column titles stay in French, as in the original spreadsheet;
+case and extra spaces do not matter, but titles and their order do.
+
+- **Format**: .xlsx or .ods only (CSV and legacy .xls are rejected), 5 MB at most, up to 2,000
+  applications and 500 skills.
+- **First sheet** (any name, "Candidatures" in the template): titles on row 1, one application
+  per row from row 2, exactly these 18 columns:
+
+  | Column | Title                    | Content                                                    |
+  | ------ | ------------------------ | ---------------------------------------------------------- |
+  | A      | `DATE ENVOI CANDIDATURE` | Required: a date cell, or text `DD/MM/YYYY`                |
+  | B      | `ENTREPRISE`             | Required                                                   |
+  | C      | `INTITULÉ OFFRE`         | Required                                                   |
+  | D      | `LOCALISATION`           |                                                            |
+  | E      | `RÉPONSE`                |                                                            |
+  | F      | `RESSOURCES`             |                                                            |
+  | G      | `CANAL`                  | A value of the channel list (see below)                    |
+  | H      | `STATUT`                 | A value of the status list; empty means `Envoyée`          |
+  | I      | `CONTACT (NOM / EMAIL)`  |                                                            |
+  | J      | `DATE DE RELANCE`        | Kept only if it differs from sent date + delay (see below) |
+  | K      | `REMOTE / HYBRIDE`       | A value of the work mode list                              |
+  | L      | `RYTHME TÉLÉTRAVAIL`     |                                                            |
+  | M      | `FOURCHETTE SALAIRE`     |                                                            |
+  | N      | `VERSION CV / LETTRE`    |                                                            |
+  | O      | `STACK / MOTS-CLÉS`      |                                                            |
+  | P      | `PROCESS DE RECRUTEMENT` |                                                            |
+  | Q      | `NOTES`                  |                                                            |
+  | R      | `TEXTE DE L'ANNONCE`     | Used by the skills analysis                                |
+
+- **"Compétences" sheet**: titles on row 3 (`COMPÉTENCE`, `TERME RECHERCHÉ`, `NB D'ANNONCES`,
+  `FRÉQUENCE`, `NIVEAU ACTUEL (0-5)`, `SCORE DE PRIORITÉ`, `RANG`), one skill per row from
+  row 4. Only the name (A), the pattern (B, an RE2 regular expression) and the level (E, a whole
+  number from 0 to 5 or empty) are read; the other columns are computed by the spreadsheet.
+- **Allowed values** (the "Listes" sheet of the template):
+  - Status: Envoyée, Réponse reçue, Entretien RH, Entretien technique, Offre, Refus,
+    Sans réponse
+  - Channel: Site carrière, LinkedIn, Welcome to the Jungle, Hellowork, Apec, Indeed,
+    Free-Work, Licorne Society, Cabinet de recrutement, Candidature spontanée, Cooptation,
+    Autre
+  - Work mode: Présentiel, Hybride, Full remote, Non précisé
+
+The follow-up date of column J is compared with the sent date + the app's follow-up delay
+(`FOLLOW_UP_DELAY_DAYS`, 7 days by default, like the template's formula): an equal date stays
+computed, a different one is kept as a date you picked. If your sheet uses another delay, set
+the same one in `.env` before importing.
+
+Other sheets (dashboard, notes...) are ignored. Your own spreadsheet is never committed: the
+repository ignores spreadsheet files, except these empty templates.
 
 ## Tech stack
 
 - **Web** (`apps/web`): React, TypeScript, Vite, Material UI, TanStack Query, React Router,
   React Hook Form + Zod, i18next, openapi-fetch (API client typed from the OpenAPI document)
 - **API** (`apps/api`): NestJS, TypeScript, Prisma, PostgreSQL, JWT authentication,
-  OpenAPI documentation
+  OpenAPI documentation, SheetJS (reads imported .xlsx and .ods files)
 - **Tests**: Vitest everywhere, Testing Library for the web app, Supertest for the API
   end-to-end tests
 - **Tooling**: npm workspaces, ESLint (typescript-eslint `strictTypeChecked`), Prettier, Husky
@@ -155,6 +230,7 @@ apps/
 │   ├── src/
 │   │   ├── applications/   CRUD, filters, sort and pagination
 │   │   ├── skills/         skills and their frequency in job postings
+│   │   ├── import/         spreadsheet import (.xlsx, .ods), parsing rules in domain/
 │   │   ├── stats/          statistics by status and channel (pure functions in domain/)
 │   │   ├── follow-up/      today's date and follow-up delay, shared by two modules
 │   │   ├── auth/           registration, login, JWT guard, rate limiting
@@ -167,7 +243,7 @@ apps/
 └── web/                    React app
     └── src/
         ├── api/            typed client (types generated from the OpenAPI document)
-        ├── features/       applications, skills, stats, auth
+        ├── features/       applications, skills, stats, import, auth
         └── locales/        en, fr, es
 ```
 
@@ -180,7 +256,8 @@ apps/
 - **Defense in depth**: lengths are checked by the forms, the API and database constraints;
   tests compare the API documentation and the real constraints with the shared limits.
 - **Language-neutral API**: stable codes (`SENT`, `APPLICATION_NOT_FOUND`) and RFC 9457
-  errors, translated by the web app. The follow-up date is computed, never stored.
+  errors, translated by the web app. The follow-up date is computed, unless the user picked one:
+  only that choice is stored.
 - **Safe patterns**: skill patterns use RE2 (linear time, as in Google Sheets): none can hang.
 - **AI-assisted, test-guarded**: generated code passes the same lint and tests as my own code.
 

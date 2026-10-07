@@ -51,6 +51,9 @@ CLAUDE.local.md
 *.ods
 *.csv
 !**/fixtures/**/*.csv
+# Empty import templates (column titles and lists only, no personal data)
+!apps/web/public/templates/*.xlsx
+!apps/web/public/templates/*.ods
 *.dump
 *.backup
 

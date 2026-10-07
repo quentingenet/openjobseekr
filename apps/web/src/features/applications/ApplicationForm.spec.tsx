@@ -1,4 +1,4 @@
-import { screen, waitFor } from '@testing-library/react';
+import { fireEvent, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import { ApiError } from '../../api/client';
@@ -17,6 +17,12 @@ function renderForm(language: 'en' | 'fr', onSubmit = vi.fn().mockResolvedValue(
     { language },
   );
 }
+
+/** The hidden input of the follow-up date picker, which holds the displayed date. */
+const followUpInput = () =>
+  document.querySelector<HTMLInputElement>('input[name="followUpOverride"]');
+/** The visible field of the follow-up date picker, with its month, day and year sections. */
+const followUpField = () => followUpInput()?.parentElement as HTMLElement;
 
 describe('ApplicationForm', () => {
   it('shows the validation messages in English', async () => {
@@ -91,10 +97,91 @@ describe('ApplicationForm', () => {
     expect(screen.getByText('200 caractères maximum')).toBeInTheDocument();
   });
 
-  it('previews the follow-up date while the status is SENT', async () => {
+  it('shows the computed follow-up date while the status is SENT', async () => {
     await renderForm('en');
 
-    expect(screen.getByRole('status')).toHaveTextContent('Follow-up planned on Oct 8, 2026');
+    expect(followUpInput()).toHaveValue('10/08/2026');
+    expect(screen.getByText('Computed: sent date + 7 days')).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Use the computed date' })).toBeNull();
+  });
+
+  it('keeps a follow-up date picked by hand, but not the computed one', async () => {
+    const onSubmit = vi.fn<(values: ApplicationFormOutput) => Promise<void>>().mockResolvedValue();
+    await renderForm('en', onSubmit);
+    await userEvent.type(screen.getByRole('textbox', { name: /Company/ }), 'Acme');
+    await userEvent.type(screen.getByRole('textbox', { name: /Job title/ }), 'Dev');
+
+    fireEvent.change(followUpInput() as HTMLInputElement, { target: { value: '10/20/2026' } });
+    expect(await screen.findByText('Set by hand')).toBeInTheDocument();
+    await userEvent.click(screen.getByRole('button', { name: 'Save' }));
+    await waitFor(() => expect(onSubmit).toHaveBeenCalledTimes(1));
+    expect(onSubmit.mock.calls[0]?.[0]).toMatchObject({ followUpOverride: '2026-10-20' });
+
+    fireEvent.change(followUpInput() as HTMLInputElement, { target: { value: '10/08/2026' } });
+    expect(await screen.findByText('Computed: sent date + 7 days')).toBeInTheDocument();
+  });
+
+  it('flags an impossible follow-up date instead of replacing it', async () => {
+    const onSubmit = vi.fn();
+    await renderForm('en', onSubmit);
+    await userEvent.type(screen.getByRole('textbox', { name: /Company/ }), 'Acme');
+    await userEvent.type(screen.getByRole('textbox', { name: /Job title/ }), 'Dev');
+
+    // Typed section by section, like a user: February 31st does not exist.
+    const [month, day] = within(followUpField()).getAllByRole('spinbutton');
+    await userEvent.click(month as HTMLElement);
+    await userEvent.keyboard('02');
+    await userEvent.click(day as HTMLElement);
+    await userEvent.keyboard('31');
+    await userEvent.click(screen.getByRole('button', { name: 'Save' }));
+
+    expect(await screen.findByText('Enter a valid date')).toBeInTheDocument();
+    expect(onSubmit).not.toHaveBeenCalled();
+  });
+
+  it('goes back to the computed follow-up date after one was set by hand', async () => {
+    const onSubmit = vi.fn<(values: ApplicationFormOutput) => Promise<void>>().mockResolvedValue();
+    await renderWithProviders(
+      <ApplicationForm
+        defaultValues={{
+          ...emptyApplicationForm('2026-10-01'),
+          company: 'Acme',
+          jobTitle: 'Dev',
+          followUpOverride: '2026-10-20',
+        }}
+        followUpDelayDays={7}
+        onSubmit={onSubmit}
+        onCancel={vi.fn()}
+      />,
+      { language: 'fr' },
+    );
+    expect(followUpInput()).toHaveValue('20/10/2026');
+    expect(screen.getByText('Choisie manuellement')).toBeInTheDocument();
+
+    await userEvent.click(screen.getByRole('button', { name: 'Revenir au calcul automatique' }));
+
+    expect(followUpInput()).toHaveValue('08/10/2026');
+    expect(screen.getByText("Calculée : date d'envoi + 7 jours")).toBeInTheDocument();
+    await userEvent.click(screen.getByRole('button', { name: 'Enregistrer' }));
+    await waitFor(() => expect(onSubmit).toHaveBeenCalledTimes(1));
+    expect(onSubmit.mock.calls[0]?.[0]).toMatchObject({ followUpOverride: '' });
+  });
+
+  it('has no follow-up date once the application received an answer', async () => {
+    await renderWithProviders(
+      <ApplicationForm
+        defaultValues={{ ...emptyApplicationForm('2026-10-01'), status: 'REJECTED' }}
+        followUpDelayDays={7}
+        onSubmit={vi.fn()}
+        onCancel={vi.fn()}
+      />,
+      { language: 'en' },
+    );
+
+    expect(followUpInput()).toBeNull();
+    expect(screen.getByRole('status')).toHaveTextContent(
+      'No follow-up: the application already got an answer.',
+    );
   });
 
   it('asks which channel only when "Other" is chosen', async () => {

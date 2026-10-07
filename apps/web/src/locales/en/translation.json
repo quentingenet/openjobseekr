@@ -76,6 +76,7 @@
       "channelDetail": "Which channel?",
       "status": "Status",
       "contact": "Contact (name / email)",
+      "followUpOverride": "Follow-up date",
       "workMode": "Work mode",
       "remoteRhythm": "Remote work rhythm",
       "salaryRange": "Salary range",
@@ -86,7 +87,9 @@
       "jobPostingText": "Job posting text"
     },
     "notSpecified": "Not specified",
-    "followUpPreview": "Follow-up planned on {{date}}",
+    "followUpComputed": "Computed: sent date + {{days}} days",
+    "followUpSetByHand": "Set by hand",
+    "followUpReset": "Use the computed date",
     "noFollowUp": "No follow-up: the application already got an answer.",
     "save": "Save",
     "cancel": "Cancel",
@@ -136,6 +139,9 @@
     "WELCOME_TO_THE_JUNGLE": "Welcome to the Jungle",
     "HELLOWORK": "HelloWork",
     "APEC": "APEC",
+    "INDEED": "Indeed",
+    "FREE_WORK": "Free-Work",
+    "LICORNE_SOCIETY": "Licorne Society",
     "RECRUITMENT_AGENCY": "Recruitment agency",
     "UNSOLICITED": "Unsolicited",
     "REFERRAL": "Referral",
@@ -176,7 +182,11 @@
     "NETWORK_ERROR": "The server cannot be reached. Is the API running?",
     "UNKNOWN": "An unexpected error occurred.",
     "SKILL_NOT_FOUND": "This skill does not exist or was deleted.",
-    "SKILL_NAME_ALREADY_USED": "A skill with this name already exists."
+    "SKILL_NAME_ALREADY_USED": "A skill with this name already exists.",
+    "IMPORT_UNSUPPORTED_FILE": "This file is not a valid .xlsx or .ods spreadsheet.",
+    "IMPORT_INVALID_STRUCTURE": "The layout of this file does not match the template. Nothing was changed.",
+    "IMPORT_INVALID_DATA": "Some cells are invalid. Nothing was changed: fix them and import the file again.",
+    "IMPORT_TOO_MANY_ROWS": "This file has too many rows to be imported."
   },
   "common": {
     "loading": "Loading…",
@@ -221,5 +231,34 @@
     "subtitle_other": "How often each skill appears in your {{count}} saved job postings.",
     "postingCountShort_one": "{{formatted}} posting",
     "postingCountShort_other": "{{formatted}} postings"
+  },
+  "import": {
+    "button": "Import",
+    "title": "Import a spreadsheet",
+    "warningTitle": "Your applications will be replaced",
+    "warningApplications": "If you click OK, all your current applications are permanently deleted and replaced by those of the file.",
+    "warningSkills": "Skills are added: yours are kept, and the skills of the file you already have are ignored.",
+    "format": "An .xlsx or .ods file of {{size}} MB maximum, with exactly the columns of the template: applications in the first sheet, skills in the \"Compétences\" sheet.",
+    "templates": "Download the empty template:",
+    "chooseFile": "Choose a file",
+    "confirm": "OK, import",
+    "wrongExtension": "Choose an .xlsx or .ods file.",
+    "tooLarge": "This file is larger than {{size}} MB.",
+    "success": "Imported applications: {{applications}} · Added skills: {{skills}} · Skills already present: {{ignored}}",
+    "sheet": "Sheet \"{{sheet}}\"",
+    "cell": "Sheet \"{{sheet}}\", cell {{cell}}",
+    "cellErrorsLabel": "Cells to fix",
+    "constraints": {
+      "missingSheet": "missing sheet",
+      "expectedHeader": "column title different from the template",
+      "unexpectedColumn": "column not in the template",
+      "isNotEmpty": "required value missing",
+      "maxLength": "text too long",
+      "isCalendarDate": "invalid date (DD/MM/YYYY)",
+      "isIn": "value not in the list of the template",
+      "isRegex": "invalid regular expression",
+      "isSkillLevel": "level must be a whole number from 0 to 5",
+      "formulaError": "formula error (#N/A, #REF!…)"
+    }
   }
 }

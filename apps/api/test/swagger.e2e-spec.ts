@@ -31,6 +31,7 @@ describe('Swagger (e2e)', () => {
       '/auth/me',
       '/auth/register',
       '/health',
+      '/import',
       '/settings',
       '/skills',
       '/skills/stats',

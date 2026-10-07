@@ -1,4 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { ErrorCode } from '../common/error-codes.js';
+import { appError } from '../common/testing/app-error.js';
 import { Prisma } from '../generated/prisma/client.js';
 import type { PrismaService } from '../prisma/prisma.service.js';
 import { SkillsService } from './skills.service.js';
@@ -10,7 +12,12 @@ const prismaError = (code: string) =>
 
 function setup() {
   const prisma = {
-    skill: { findMany: vi.fn(), create: vi.fn(), update: vi.fn(), delete: vi.fn() },
+    skill: {
+      findMany: vi.fn().mockResolvedValue([]),
+      create: vi.fn(),
+      update: vi.fn(),
+      delete: vi.fn(),
+    },
     application: { findMany: vi.fn() },
   };
   return { prisma, service: new SkillsService(prisma as unknown as PrismaService) };
@@ -50,6 +57,35 @@ describe('SkillsService', () => {
       select: { id: true, name: true, pattern: true, level: true },
     });
     expect(ctx.prisma.skill.delete).toHaveBeenCalledWith({ where: { id: ID, userId: 'user-1' } });
+  });
+
+  it('rejects a name the user already has, ignoring case and a ".js" suffix', async () => {
+    ctx.prisma.skill.findMany.mockResolvedValue([{ name: 'TypeScript' }, { name: 'React' }]);
+
+    for (const name of ['typescript', 'REACT', 'React.JS']) {
+      const error = await ctx.service.create('user-1', { name, pattern: name }).catch(appError);
+      expect(error).toMatchObject({ code: ErrorCode.SKILL_NAME_ALREADY_USED, status: 409 });
+    }
+    expect(ctx.prisma.skill.findMany).toHaveBeenCalledWith({
+      where: { userId: 'user-1' },
+      select: { name: true },
+    });
+    expect(ctx.prisma.skill.create).not.toHaveBeenCalled();
+  });
+
+  it('renames a skill unless another skill has the name', async () => {
+    ctx.prisma.skill.findMany.mockResolvedValue([{ name: 'Java' }]);
+    ctx.prisma.skill.update.mockResolvedValue({ id: ID, name: 'TS', pattern: 'TS', level: null });
+
+    const error = await ctx.service.update('user-1', ID, { name: 'JAVA' }).catch(appError);
+    await ctx.service.update('user-1', ID, { name: 'TypeScript' });
+
+    expect(error).toMatchObject({ code: ErrorCode.SKILL_NAME_ALREADY_USED });
+    expect(ctx.prisma.skill.findMany).toHaveBeenCalledWith({
+      where: { userId: 'user-1', id: { not: ID } },
+      select: { name: true },
+    });
+    expect(ctx.prisma.skill.update).toHaveBeenCalledTimes(1);
   });
 
   it('stores a missing level as null', async () => {

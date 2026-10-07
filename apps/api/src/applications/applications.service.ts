@@ -38,7 +38,9 @@ export class ApplicationsService {
       this.prisma.application.findMany({
         where,
         omit: { jobPostingText: true },
-        orderBy: [{ sentAt: query.order }, { createdAt: query.order }],
+        // The id breaks ties: an import creates many rows with the same sent and creation dates,
+        // and pages must not overlap.
+        orderBy: [{ sentAt: query.order }, { createdAt: query.order }, { id: query.order }],
         skip: query.offset,
         take: query.limit,
       }),

@@ -16,6 +16,7 @@ export type SkillStats = Schemas['SkillStatsDto'];
 export type SkillStat = Schemas['SkillStatDto'];
 export type CreateSkillInput = Schemas['CreateSkillDto'];
 export type UpdateSkillInput = Schemas['UpdateSkillDto'];
+export type ImportResult = Schemas['ImportResultDto'];
 
 export type ApplicationStatus = Application['status'];
 export type ApplicationChannel = NonNullable<Application['channel']>;

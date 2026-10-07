@@ -15,6 +15,7 @@ export const application: Application = {
   status: 'SENT',
   contact: 'Marie Martin',
   followUpDate: '2026-10-08',
+  followUpOverride: null,
   followUpOverdue: true,
   workMode: 'HYBRID',
   remoteRhythm: null,

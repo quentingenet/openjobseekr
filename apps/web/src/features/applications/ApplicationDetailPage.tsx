@@ -22,6 +22,7 @@ type DetailField = Exclude<
   | 'jobTitle'
   | 'status'
   | 'followUpDate'
+  | 'followUpOverride'
   | 'followUpOverdue'
   | 'jobPostingText'
   | 'createdAt'

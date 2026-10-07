@@ -9,6 +9,7 @@
 - Enum values are English codes (`SENT`, `HR_INTERVIEW`); the API never returns translated
   labels.
 - `jobPostingText` is returned only by the detail endpoint, never in list responses.
-- Dates without a time (e.g. `sentAt`, `followUpDate`) are `YYYY-MM-DD` strings, in requests
+- Dates without a time (e.g. `sentAt`, `followUpDate`, `followUpOverride`) are `YYYY-MM-DD` strings, in requests
   and responses.
-- The follow-up date is computed, never stored.
+- The follow-up date (`followUpDate`) is computed while the status is `SENT`: the date set by
+  the user (`followUpOverride`, `null` to go back to the computed date), or sent date + delay.

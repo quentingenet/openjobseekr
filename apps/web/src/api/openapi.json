@@ -487,6 +487,9 @@
                 "WELCOME_TO_THE_JUNGLE",
                 "HELLOWORK",
                 "APEC",
+                "INDEED",
+                "FREE_WORK",
+                "LICORNE_SOCIETY",
                 "RECRUITMENT_AGENCY",
                 "UNSOLICITED",
                 "REFERRAL",
@@ -1117,6 +1120,103 @@
           "skills"
         ]
       }
+    },
+    "/import": {
+      "post": {
+        "description": "Replaces all the applications with those of the first sheet, and adds the skills of the \"Compétences\" sheet that do not exist yet. Nothing changes if the file is rejected.",
+        "operationId": "ImportController_importSpreadsheet",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "file"
+                ],
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImportResultDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "VALIDATION_FAILED, BAD_REQUEST",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UNAUTHORIZED",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "PAYLOAD_TOO_LARGE",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "IMPORT_UNSUPPORTED_FILE",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "IMPORT_INVALID_STRUCTURE, IMPORT_INVALID_DATA, IMPORT_TOO_MANY_ROWS",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Import the job search spreadsheet (.xlsx or .ods)",
+        "tags": [
+          "import"
+        ]
+      }
     }
   },
   "info": {
@@ -1247,6 +1347,9 @@
               "WELCOME_TO_THE_JUNGLE",
               "HELLOWORK",
               "APEC",
+              "INDEED",
+              "FREE_WORK",
+              "LICORNE_SOCIETY",
               "RECRUITMENT_AGENCY",
               "UNSOLICITED",
               "REFERRAL",
@@ -1258,7 +1361,7 @@
             "type": "string",
             "nullable": true,
             "maxLength": 200,
-            "description": "Channel name when channel is OTHER (e.g. \"Indeed\"); requires channel OTHER"
+            "description": "Channel name when channel is OTHER (e.g. \"Monster\"); requires channel OTHER"
           },
           "status": {
             "type": "string",
@@ -1277,6 +1380,12 @@
             "type": "string",
             "nullable": true,
             "maxLength": 200
+          },
+          "followUpOverride": {
+            "type": "string",
+            "nullable": true,
+            "example": "2026-10-20",
+            "description": "Follow-up date set by the user (YYYY-MM-DD), used instead of sentAt + delay while the status is SENT; null goes back to the computed date"
           },
           "workMode": {
             "type": "string",
@@ -1367,6 +1476,9 @@
               "WELCOME_TO_THE_JUNGLE",
               "HELLOWORK",
               "APEC",
+              "INDEED",
+              "FREE_WORK",
+              "LICORNE_SOCIETY",
               "RECRUITMENT_AGENCY",
               "UNSOLICITED",
               "REFERRAL",
@@ -1399,7 +1511,13 @@
             "type": "string",
             "nullable": true,
             "example": "2026-10-08",
-            "description": "Computed: sentAt + follow-up delay while the status is SENT"
+            "description": "Computed while the status is SENT: followUpOverride if set, otherwise sentAt + follow-up delay"
+          },
+          "followUpOverride": {
+            "type": "string",
+            "nullable": true,
+            "example": null,
+            "description": "Follow-up date set by the user, null when computed"
           },
           "followUpOverdue": {
             "type": "boolean",
@@ -1466,6 +1584,7 @@
           "status",
           "contact",
           "followUpDate",
+          "followUpOverride",
           "followUpOverdue",
           "workMode",
           "remoteRhythm",
@@ -1516,6 +1635,9 @@
               "WELCOME_TO_THE_JUNGLE",
               "HELLOWORK",
               "APEC",
+              "INDEED",
+              "FREE_WORK",
+              "LICORNE_SOCIETY",
               "RECRUITMENT_AGENCY",
               "UNSOLICITED",
               "REFERRAL",
@@ -1548,7 +1670,13 @@
             "type": "string",
             "nullable": true,
             "example": "2026-10-08",
-            "description": "Computed: sentAt + follow-up delay while the status is SENT"
+            "description": "Computed while the status is SENT: followUpOverride if set, otherwise sentAt + follow-up delay"
+          },
+          "followUpOverride": {
+            "type": "string",
+            "nullable": true,
+            "example": null,
+            "description": "Follow-up date set by the user, null when computed"
           },
           "followUpOverdue": {
             "type": "boolean",
@@ -1610,6 +1738,7 @@
           "status",
           "contact",
           "followUpDate",
+          "followUpOverride",
           "followUpOverdue",
           "workMode",
           "remoteRhythm",
@@ -1675,6 +1804,9 @@
               "WELCOME_TO_THE_JUNGLE",
               "HELLOWORK",
               "APEC",
+              "INDEED",
+              "FREE_WORK",
+              "LICORNE_SOCIETY",
               "RECRUITMENT_AGENCY",
               "UNSOLICITED",
               "REFERRAL",
@@ -1686,12 +1818,18 @@
             "type": "string",
             "nullable": true,
             "maxLength": 200,
-            "description": "Channel name when channel is OTHER (e.g. \"Indeed\"); requires channel OTHER"
+            "description": "Channel name when channel is OTHER (e.g. \"Monster\"); requires channel OTHER"
           },
           "contact": {
             "type": "string",
             "nullable": true,
             "maxLength": 200
+          },
+          "followUpOverride": {
+            "type": "string",
+            "nullable": true,
+            "example": "2026-10-20",
+            "description": "Follow-up date set by the user (YYYY-MM-DD), used instead of sentAt + delay while the status is SENT; null goes back to the computed date"
           },
           "workMode": {
             "type": "string",
@@ -1955,6 +2093,62 @@
           }
         }
       },
+      "IgnoredSkillDto": {
+        "type": "object",
+        "properties": {
+          "row": {
+            "type": "number",
+            "example": 6,
+            "description": "Row in the \"Compétences\" sheet"
+          },
+          "name": {
+            "type": "string",
+            "example": "TYPESCRIPT"
+          },
+          "keptName": {
+            "type": "string",
+            "example": "TypeScript",
+            "description": "The skill kept under this name"
+          }
+        },
+        "required": [
+          "row",
+          "name",
+          "keptName"
+        ]
+      },
+      "ImportResultDto": {
+        "type": "object",
+        "properties": {
+          "deletedApplications": {
+            "type": "number",
+            "example": 12,
+            "description": "Applications deleted and replaced by the file"
+          },
+          "importedApplications": {
+            "type": "number",
+            "example": 42
+          },
+          "addedSkills": {
+            "type": "number",
+            "example": 3,
+            "description": "Skills added; existing skills are kept"
+          },
+          "ignoredSkills": {
+            "description": "Skills of the file already present, under the same name or an earlier row",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IgnoredSkillDto"
+            }
+          }
+        },
+        "required": [
+          "deletedApplications",
+          "importedApplications",
+          "addedSkills",
+          "ignoredSkills"
+        ]
+      },
       "FieldErrorDto": {
         "type": "object",
         "properties": {
@@ -2016,6 +2210,10 @@
               "EMAIL_ALREADY_USED",
               "SKILL_NAME_ALREADY_USED",
               "PAYLOAD_TOO_LARGE",
+              "IMPORT_UNSUPPORTED_FILE",
+              "IMPORT_INVALID_STRUCTURE",
+              "IMPORT_INVALID_DATA",
+              "IMPORT_TOO_MANY_ROWS",
               "TOO_MANY_REQUESTS",
               "INTERNAL_ERROR",
               "SERVICE_UNAVAILABLE"
@@ -2023,7 +2221,7 @@
             "description": "Stable code, translated by the web app"
           },
           "errors": {
-            "description": "Invalid fields (VALIDATION_FAILED)",
+            "description": "Invalid fields (VALIDATION_FAILED), or spreadsheet cells (IMPORT_*)",
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/FieldErrorDto"

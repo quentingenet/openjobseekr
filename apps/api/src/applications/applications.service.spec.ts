@@ -19,6 +19,7 @@ const record: Application = {
   channelDetail: null,
   status: 'SENT',
   contact: null,
+  followUpOverride: null,
   workMode: null,
   remoteRhythm: null,
   salaryRange: null,
@@ -110,7 +111,7 @@ describe('ApplicationsService', () => {
     expect(ctx.prisma.application.findMany).toHaveBeenCalledWith({
       where: { AND: [{ userId: 'user-1' }] },
       omit: { jobPostingText: true },
-      orderBy: [{ sentAt: 'desc' }, { createdAt: 'desc' }],
+      orderBy: [{ sentAt: 'desc' }, { createdAt: 'desc' }, { id: 'desc' }],
       skip: 40,
       take: 20,
     });
@@ -123,7 +124,9 @@ describe('ApplicationsService', () => {
     await ctx.service.list('user-1', { limit: 20, offset: 0, order: 'asc' });
 
     expect(ctx.prisma.application.findMany).toHaveBeenCalledWith(
-      expect.objectContaining({ orderBy: [{ sentAt: 'asc' }, { createdAt: 'asc' }] }),
+      expect.objectContaining({
+        orderBy: [{ sentAt: 'asc' }, { createdAt: 'asc' }, { id: 'asc' }],
+      }),
     );
   });
 

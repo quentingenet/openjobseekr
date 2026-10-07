@@ -17,6 +17,7 @@ import {
   APPLICATION_STATUSES,
   type ApplicationTextField as LimitedField,
   computeFollowUpDate,
+  FOLLOW_UP_STATUS,
   isCalendarDate,
   TEXT_LIMITS,
   WORK_MODES,
@@ -28,7 +29,6 @@ import { useTranslation } from 'react-i18next';
 import { FormErrorAlert } from '../../components/FormErrorAlert';
 import { UnsavedChangesGuard } from '../../components/UnsavedChangesGuard';
 import { translateFieldError } from '../../lib/field-error';
-import { formatDate } from '../../lib/format';
 import { applyServerErrors } from '../../lib/server-errors';
 import {
   type ApplicationFormField,
@@ -37,6 +37,9 @@ import {
 } from './application-form.schema';
 
 export type ApplicationFormOutput = ReturnType<typeof applicationFormSchema.parse>;
+
+/** Form value of a date the picker cannot parse: fails the `isCalendarDate` validation. */
+const INVALID_DATE = 'invalid';
 
 const FORM_FIELDS = Object.keys(applicationFormSchema.shape) as ApplicationFormField[];
 
@@ -71,12 +74,13 @@ export function ApplicationForm({
   onCancel,
   followUpDelayDays,
 }: ApplicationFormProps) {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const {
     control,
     register,
     handleSubmit,
     setError,
+    setValue,
     formState: { errors, isDirty, isSubmitting, isSubmitSuccessful, dirtyFields },
   } = useForm<ApplicationFormValues, unknown, ApplicationFormOutput>({
     resolver: zodResolver(applicationFormSchema),
@@ -100,6 +104,52 @@ export function ApplicationForm({
       error={Boolean(errors[name])}
       helperText={translateFieldError(t, errors[name], TEXT_LIMITS[name])}
       slotProps={{ htmlInput: { maxLength: TEXT_LIMITS[name] } }}
+    />
+  );
+
+  /**
+   * Date field: the form holds `YYYY-MM-DD` ('' when empty), the picker a dayjs date. `shown`
+   * and `stored` translate between the two when the field has a computed default.
+   */
+  const dateField = (
+    name: 'sentAt' | 'followUpOverride',
+    options: {
+      required?: boolean;
+      helperText?: string;
+      shown?: (value: string) => string;
+      stored?: (date: string) => string;
+    } = {},
+  ) => (
+    <Controller
+      control={control}
+      name={name}
+      render={({ field, fieldState }) => {
+        const shown = options.shown?.(field.value) ?? field.value;
+        return (
+          <DatePicker
+            label={t(`form.fields.${name}`)}
+            value={isCalendarDate(shown) ? dayjs(shown) : null}
+            onChange={(date) => {
+              if (date === null) return field.onChange('');
+              // An impossible date stays invalid (and flagged), instead of being replaced.
+              if (!date.isValid()) return field.onChange(INVALID_DATE);
+              const value = date.format('YYYY-MM-DD');
+              field.onChange(options.stored ? options.stored(value) : value);
+            }}
+            inputRef={field.ref}
+            slotProps={{
+              textField: {
+                name: field.name,
+                required: options.required,
+                fullWidth: true,
+                onBlur: field.onBlur,
+                error: Boolean(fieldState.error),
+                helperText: translateFieldError(t, fieldState.error) ?? options.helperText,
+              },
+            }}
+          />
+        );
+      }}
     />
   );
 
@@ -141,18 +191,21 @@ export function ApplicationForm({
     />
   );
 
-  // Live preview of the follow-up date, like the spreadsheet column.
-  const [sentAt, status, channel] = useWatch({ control, name: ['sentAt', 'status', 'channel'] });
-  const followUpDate =
+  // The follow-up date, like the spreadsheet column: computed from the sent date unless the
+  // user picks another one. Picking the computed date keeps it computed.
+  const [sentAt, status, channel, followUpOverride] = useWatch({
+    control,
+    name: ['sentAt', 'status', 'channel', 'followUpOverride'],
+  });
+  const computedFollowUp =
     followUpDelayDays === undefined || !isCalendarDate(sentAt)
-      ? undefined
-      : computeFollowUpDate(sentAt, status, followUpDelayDays);
-  const followUpPreview =
-    followUpDate === undefined
       ? null
-      : followUpDate === null
-        ? t('form.noFollowUp')
-        : t('form.followUpPreview', { date: formatDate(followUpDate, i18n.language) });
+      : computeFollowUpDate(sentAt, FOLLOW_UP_STATUS, followUpDelayDays);
+  const followUpHelp = followUpOverride
+    ? t('form.followUpSetByHand')
+    : followUpDelayDays === undefined
+      ? undefined
+      : t('form.followUpComputed', { days: followUpDelayDays });
 
   const submit = handleSubmit(async (values) => {
     try {
@@ -168,32 +221,7 @@ export function ApplicationForm({
         <FormErrorAlert error={errors.root?.server} />
 
         <Section title={t('form.sections.offer')}>
-          <Grid size={{ xs: 12, md: 4 }}>
-            <Controller
-              control={control}
-              name="sentAt"
-              render={({ field, fieldState }) => (
-                <DatePicker
-                  label={t('form.fields.sentAt')}
-                  value={isCalendarDate(field.value) ? dayjs(field.value) : null}
-                  onChange={(date) =>
-                    field.onChange(date?.isValid() ? date.format('YYYY-MM-DD') : '')
-                  }
-                  inputRef={field.ref}
-                  slotProps={{
-                    textField: {
-                      name: field.name,
-                      required: true,
-                      fullWidth: true,
-                      onBlur: field.onBlur,
-                      error: Boolean(fieldState.error),
-                      helperText: translateFieldError(t, fieldState.error),
-                    },
-                  }}
-                />
-              )}
-            />
-          </Grid>
+          <Grid size={{ xs: 12, md: 4 }}>{dateField('sentAt', { required: true })}</Grid>
           <Grid size={{ xs: 12, md: 4 }}>
             {textField('company', { required: true, autoComplete: 'organization' })}
           </Grid>
@@ -212,10 +240,28 @@ export function ApplicationForm({
             <Grid size={{ xs: 12, md: 4 }}>{textField('channelDetail')}</Grid>
           )}
           <Grid size={{ xs: 12, md: 4 }}>{textField('contact')}</Grid>
-          {followUpPreview && (
+          {status === FOLLOW_UP_STATUS ? (
+            <Grid size={{ xs: 12, md: 4 }}>
+              {dateField('followUpOverride', {
+                helperText: followUpHelp,
+                shown: (value) => value || (computedFollowUp ?? ''),
+                stored: (date) => (date === computedFollowUp ? '' : date),
+              })}
+              {followUpOverride && (
+                <Button
+                  size="small"
+                  onClick={() =>
+                    setValue('followUpOverride', '', { shouldDirty: true, shouldValidate: true })
+                  }
+                >
+                  {t('form.followUpReset')}
+                </Button>
+              )}
+            </Grid>
+          ) : (
             <Grid size={12}>
-              <Alert severity={followUpDate ? 'info' : 'success'} role="status">
-                {followUpPreview}
+              <Alert severity="success" role="status">
+                {t('form.noFollowUp')}
               </Alert>
             </Grid>
           )}

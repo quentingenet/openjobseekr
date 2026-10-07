@@ -67,6 +67,7 @@ describe('Applications (e2e)', () => {
         status: 'SENT',
         contact: null,
         followUpDate: '2026-10-08',
+        followUpOverride: null,
         followUpOverdue: true,
         workMode: null,
         remoteRhythm: null,
@@ -165,6 +166,69 @@ describe('Applications (e2e)', () => {
     });
   });
 
+  describe('follow-up date set by the user', () => {
+    it('replaces the computed date until it is cleared', async () => {
+      const { id } = await create({
+        sentAt: '2026-10-01',
+        company: 'Acme',
+        jobTitle: 'Dev',
+        followUpOverride: '2026-10-20',
+      });
+
+      const detail = await api().get(`/applications/${id}`).set(auth()).expect(200);
+      expect(detail.body).toMatchObject({
+        followUpDate: '2026-10-20',
+        followUpOverride: '2026-10-20',
+        followUpOverdue: false,
+      });
+
+      const cleared = await api()
+        .patch(`/applications/${id}`)
+        .set(auth())
+        .send({ followUpOverride: null })
+        .expect(200);
+      expect(cleared.body).toMatchObject({
+        followUpDate: '2026-10-08',
+        followUpOverride: null,
+        followUpOverdue: true,
+      });
+    });
+
+    it('is kept but unused once an answer is received', async () => {
+      const { id } = await create({
+        sentAt: '2026-10-01',
+        company: 'Acme',
+        jobTitle: 'Dev',
+        status: 'REJECTED',
+        followUpOverride: '2026-10-20',
+      });
+
+      const detail = await api().get(`/applications/${id}`).set(auth()).expect(200);
+      expect(detail.body).toMatchObject({
+        followUpDate: null,
+        followUpOverride: '2026-10-20',
+        followUpOverdue: false,
+      });
+    });
+
+    it('rejects an impossible date', async () => {
+      const response = await api()
+        .post('/applications')
+        .set(auth())
+        .send({
+          sentAt: '2026-10-01',
+          company: 'Acme',
+          jobTitle: 'Dev',
+          followUpOverride: '2026-02-30',
+        })
+        .expect(400);
+
+      expect(response.body.errors).toEqual([
+        { field: 'followUpOverride', constraints: ['isCalendarDate'] },
+      ]);
+    });
+  });
+
   describe('channel precision for OTHER', () => {
     it('stores a precision with the OTHER channel and clears it when the channel changes', async () => {
       const { id } = await create({
@@ -172,10 +236,10 @@ describe('Applications (e2e)', () => {
         company: 'Acme',
         jobTitle: 'Dev',
         channel: 'OTHER',
-        channelDetail: '  Indeed ',
+        channelDetail: '  Monster ',
       });
       const detail = await api().get(`/applications/${id}`).set(auth()).expect(200);
-      expect(detail.body).toMatchObject({ channel: 'OTHER', channelDetail: 'Indeed' });
+      expect(detail.body).toMatchObject({ channel: 'OTHER', channelDetail: 'Monster' });
 
       const updated = await api()
         .patch(`/applications/${id}`)
@@ -195,7 +259,7 @@ describe('Applications (e2e)', () => {
           company: 'Acme',
           jobTitle: 'Dev',
           channel: 'APEC',
-          channelDetail: 'Indeed',
+          channelDetail: 'Monster',
         })
         .expect(400);
 
@@ -353,6 +417,27 @@ describe('Applications (e2e)', () => {
 
       expect(companies(byStatus.body)).toEqual(['Initech']);
       expect(companies(byChannel.body)).toEqual(['Initech', 'Acme']);
+    });
+
+    it('uses the follow-up date set by the user in the overdue filter', async () => {
+      // Hoops would be overdue with the computed date (09-18), not with the user's (10-15);
+      // Wayne is overdue only because of the user's date (10-05 instead of 10-12).
+      await create({
+        sentAt: '2026-09-11',
+        company: 'Hoops',
+        jobTitle: 'Dev',
+        followUpOverride: '2026-10-15',
+      });
+      await create({
+        sentAt: '2026-10-05',
+        company: 'Wayne',
+        jobTitle: 'Dev',
+        followUpOverride: '2026-10-05',
+      });
+
+      const response = await api().get('/applications?overdue=true').set(auth()).expect(200);
+
+      expect(companies(response.body)).toEqual(['Wayne', 'Acme', 'Umbrella']);
     });
 
     it('filters overdue follow-ups (follow-up date before today, status SENT)', async () => {
