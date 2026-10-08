@@ -216,6 +216,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/export": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Export the applications and skills as a spreadsheet (.xlsx or .ods)
+         * @description Same sheets and columns as the import: exporting then importing gives back the same data.
+         */
+        get: operations["ExportController_exportSpreadsheet"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -512,6 +532,11 @@ export interface components {
             addedSkills: number;
             /** @description Skills of the file already present, under the same name or an earlier row */
             ignoredSkills: components["schemas"]["IgnoredSkillDto"][];
+            /**
+             * @description Follow-up dates picked in the app and kept: same sent date, company and job title, and no date typed by hand in the file
+             * @example 2
+             */
+            keptFollowUpDates: number;
         };
         FieldErrorDto: {
             /** @example company */
@@ -1367,6 +1392,46 @@ export interface operations {
             };
             /** @description IMPORT_INVALID_STRUCTURE, IMPORT_INVALID_DATA, IMPORT_TOO_MANY_ROWS */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetailsDto"];
+                };
+            };
+        };
+    };
+    ExportController_exportSpreadsheet: {
+        parameters: {
+            query: {
+                format: "xlsx" | "ods";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": string;
+                    "application/vnd.oasis.opendocument.spreadsheet": string;
+                };
+            };
+            /** @description VALIDATION_FAILED */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetailsDto"];
+                };
+            };
+            /** @description UNAUTHORIZED */
+            401: {
                 headers: {
                     [name: string]: unknown;
                 };

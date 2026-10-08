@@ -1,8 +1,11 @@
 /**
- * Spreadsheet import: the file replaces all the user's applications and skills. Only Excel and
- * OpenDocument workbooks are accepted (CSV has no sheets, so no skills tab).
+ * Spreadsheet import and export: Excel and OpenDocument workbooks only (CSV has no sheets, so
+ * no skills tab).
  */
-export const IMPORT_FILE_EXTENSIONS = ['.xlsx', '.ods'] as const;
+export const SPREADSHEET_FORMATS = ['xlsx', 'ods'] as const;
+export type SpreadsheetFormat = (typeof SPREADSHEET_FORMATS)[number];
+
+export const IMPORT_FILE_EXTENSIONS = SPREADSHEET_FORMATS.map((format) => `.${format}` as const);
 
 export const IMPORT_LIMITS = {
   /** Upload size, checked by the web app before sending and enforced by the API. */

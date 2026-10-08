@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { toCalendarDateCell } from './spreadsheet-date.js';
+import { toCalendarDateCell, toDateSerial } from './spreadsheet-date.js';
 
 describe('toCalendarDateCell', () => {
   it('converts a date serial number of the 1900 date system', () => {
@@ -29,5 +29,16 @@ describe('toCalendarDateCell', () => {
     expect(toCalendarDateCell(-1, false)).toBeNull();
     expect(toCalendarDateCell(true, false)).toBeNull();
     expect(toCalendarDateCell(null, false)).toBeNull();
+  });
+});
+
+describe('toDateSerial', () => {
+  it('writes a calendar date as a day number of the 1900 date system', () => {
+    expect(toDateSerial('2026-10-01')).toBe(46296);
+    expect(toDateSerial('1900-03-01')).toBe(61);
+  });
+
+  it('reads back as the same date', () => {
+    expect(toCalendarDateCell(toDateSerial('2028-02-29'), false)).toBe('2028-02-29');
   });
 });

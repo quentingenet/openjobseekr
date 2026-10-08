@@ -1,6 +1,12 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { CHANNEL_LABELS, STATUS_LABELS, WORK_MODE_LABELS } from './domain/import-format.js';
+import {
+  CHANNEL_LABELS,
+  LISTS_HEADER_ROW,
+  LISTS_SHEET_NAME,
+  STATUS_LABELS,
+  WORK_MODE_LABELS,
+} from './domain/spreadsheet-format.js';
 import { parseWorkbook } from './domain/parse-workbook.js';
 import { readSpreadsheet } from './spreadsheet-reader.js';
 
@@ -23,9 +29,11 @@ describe.each(templates)('template $name', ({ name, file }) => {
   });
 
   it('offers exactly the labels the import understands in its lists', () => {
-    const lists = workbook?.sheets.find((sheet) => sheet.name === 'Listes');
+    const lists = workbook?.sheets.find((sheet) => sheet.name === LISTS_SHEET_NAME);
     const column = (index: number) =>
-      (lists?.rows ?? []).slice(5).flatMap((row) => (row[index] ? [row[index]] : []));
+      (lists?.rows ?? [])
+        .slice(LISTS_HEADER_ROW)
+        .flatMap((row) => (row[index] ? [row[index]] : []));
 
     expect(column(0)).toEqual(Object.values(STATUS_LABELS));
     expect(column(1)).toEqual(Object.values(CHANNEL_LABELS));

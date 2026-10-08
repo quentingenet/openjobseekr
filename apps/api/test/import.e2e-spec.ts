@@ -2,7 +2,7 @@ import type { INestApplication } from '@nestjs/common';
 import { IMPORT_LIMITS } from '@openjobseekr/domain';
 import request from 'supertest';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
-import { applicationRow, spreadsheetFile } from '../src/import/testing/spreadsheet-file.js';
+import { applicationRow, spreadsheetFile } from '../src/spreadsheet/testing/spreadsheet-file.js';
 import type { PrismaService } from '../src/prisma/prisma.service.js';
 import { registerUser } from './helpers/auth.js';
 import { createTestApp, resetDatabase } from './helpers/create-app.js';
@@ -87,6 +87,7 @@ describe('Import (e2e)', () => {
       importedApplications: 2,
       addedSkills: 1,
       ignoredSkills: [{ row: 4, name: 'typescript', keptName: 'TypeScript' }],
+      keptFollowUpDates: 0,
     });
     expect(await companies()).toEqual(['Globex', 'Acme']);
     expect(await skills()).toEqual([
@@ -137,6 +138,31 @@ describe('Import (e2e)', () => {
         ['Globex', '2026-10-08', null],
       ]),
     );
+  });
+
+  it('keeps a follow-up date picked in the app when the same file is imported again', async () => {
+    await upload(file, 'suivi.xlsx').expect(200);
+    const list = await api().get('/applications?status=SENT').set(auth()).expect(200);
+    const acme = (list.body.items as { id: string; company: string }[]).find(
+      (item) => item.company === 'Acme',
+    );
+    await api()
+      .patch(`/applications/${acme?.id ?? ''}`)
+      .set(auth())
+      .send({ followUpOverride: '2026-10-22' })
+      .expect(200);
+
+    const again = await upload(file, 'suivi.xlsx').expect(200);
+
+    expect(again.body.keptFollowUpDates).toBe(1);
+    const after = await api().get('/applications?status=SENT').set(auth()).expect(200);
+    expect(after.body.items).toEqual([
+      expect.objectContaining({
+        company: 'Acme',
+        followUpDate: '2026-10-22',
+        followUpOverride: '2026-10-22',
+      }),
+    ]);
   });
 
   it('imports an OpenDocument spreadsheet', async () => {

@@ -18,6 +18,8 @@ export {
   IMPORT_FILE_EXTENSIONS,
   IMPORT_LIMITS,
   type ImportCellConstraint,
+  SPREADSHEET_FORMATS,
+  type SpreadsheetFormat,
 } from './import.js';
 export {
   type ApplicationTextField,

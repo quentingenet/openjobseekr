@@ -8,7 +8,8 @@ import { useApplications } from '../../api/queries/applications';
 import type { ImportResult } from '../../api/types';
 import { ErrorState } from '../../components/PageStates';
 import { PageTitle } from '../../components/PageTitle';
-import { ImportDialog } from '../import/ImportDialog';
+import { ExportButton } from '../spreadsheet/ExportButton';
+import { ImportDialog } from '../spreadsheet/ImportDialog';
 import { ApplicationsFilters } from './list/ApplicationsFilters';
 import { ApplicationsTable } from './list/ApplicationsTable';
 import { useApplicationsQuery } from './list/useApplicationsQuery';
@@ -45,6 +46,7 @@ export function ApplicationsPage() {
           >
             {t('import.button')}
           </Button>
+          <ExportButton />
           <Button
             component={RouterLink}
             to="/applications/new"
@@ -77,6 +79,7 @@ export function ApplicationsPage() {
             applications: imported.importedApplications,
             skills: imported.addedSkills,
             ignored: imported.ignoredSkills.length,
+            followUps: imported.keptFollowUpDates,
           })
         }
       />

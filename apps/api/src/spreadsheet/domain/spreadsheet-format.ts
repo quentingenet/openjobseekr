@@ -1,8 +1,9 @@
-import type {
-  ApplicationChannel,
-  ApplicationStatus,
-  ApplicationTextField,
-  WorkMode,
+import {
+  type ApplicationChannel,
+  type ApplicationStatus,
+  type ApplicationTextField,
+  OTHER_CHANNEL,
+  type WorkMode,
 } from '@openjobseekr/domain';
 
 /**
@@ -62,7 +63,28 @@ export const SKILL_HEADERS = [
   'RANG',
 ] as const;
 
+/** Columns the import reads. */
 export const SKILL_COLUMN = { name: 0, pattern: 1, level: 4 } as const;
+/** Columns computed by the sheet: written by the export, ignored by the import. */
+export const SKILL_COMPUTED_COLUMN = { postingCount: 2, frequency: 3, score: 5, rank: 6 } as const;
+
+/**
+ * "Listes" sheet: the follow-up delay read by the follow-up formula, then the labels of the
+ * drop-down lists (statuses, channels, work modes in columns A to C) from row 6.
+ */
+export const LISTS_SHEET_NAME = 'Listes';
+/** Row 3: the label in A, the delay in B. */
+export const FOLLOW_UP_DELAY_ROW = 3;
+export const LISTS_HEADER_ROW = 5;
+
+/** `0` -> `A`, `25` -> `Z`, `26` -> `AA`. */
+export function columnLetter(index: number): string {
+  let letters = '';
+  for (let n = index + 1; n > 0; n = Math.floor((n - 1) / 26)) {
+    letters = String.fromCharCode(65 + ((n - 1) % 26)) + letters;
+  }
+  return letters;
+}
 
 /** Labels of the sheet's drop-down lists (tab "Listes"). */
 export const STATUS_LABELS: Record<ApplicationStatus, string> = {
@@ -103,4 +125,40 @@ export const WORK_MODE_LABELS: Record<WorkMode, string> = {
  */
 export function normalizeLabel(value: string): string {
   return value.normalize('NFC').replaceAll('’', "'").trim().replace(/\s+/g, ' ').toLowerCase();
+}
+
+const CHANNEL_BY_LABEL = new Map(
+  (Object.entries(CHANNEL_LABELS) as [ApplicationChannel, string][]).map(([code, label]) => [
+    normalizeLabel(label),
+    code,
+  ]),
+);
+
+/** "Autre (Monster)": a label followed by a precision in parentheses. */
+const WITH_PRECISION = /^(.*?)\s*\((.*)\)$/s;
+
+/**
+ * The CANAL cell: the channel label, and for the OTHER channel its precision in parentheses
+ * ("Autre (Monster)"), since the sheet has no column for it.
+ */
+export function formatChannelCell(
+  channel: ApplicationChannel | null,
+  channelDetail: string | null,
+): string | null {
+  if (channel === null) return null;
+  const label = CHANNEL_LABELS[channel];
+  return channel === OTHER_CHANNEL && channelDetail ? `${label} (${channelDetail})` : label;
+}
+
+/** Reads a CANAL cell written by `formatChannelCell`; null for an unknown label. */
+export function parseChannelCell(
+  text: string,
+): { channel: ApplicationChannel; channelDetail: string | null } | null {
+  const channel = CHANNEL_BY_LABEL.get(normalizeLabel(text));
+  if (channel) return { channel, channelDetail: null };
+  const [, label = '', precision = ''] = WITH_PRECISION.exec(text.trim()) ?? [];
+  const detail = precision.trim();
+  return CHANNEL_BY_LABEL.get(normalizeLabel(label)) === OTHER_CHANNEL && detail !== ''
+    ? { channel: OTHER_CHANNEL, channelDetail: detail }
+    : null;
 }

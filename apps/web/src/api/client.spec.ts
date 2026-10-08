@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { type FetchStub, lastRequest } from '../test/api-mock';
 import { jsonResponse } from '../test/render';
-import { api, ApiError, unwrap } from './client';
+import { api, ApiError, unwrap, unwrapFile } from './client';
 import { tokenStorage } from './token-storage';
 
 describe('API client', () => {
@@ -110,5 +110,57 @@ describe('API client', () => {
     await expect(
       unwrap(api.DELETE('/applications/{id}', { params: { path: { id: '1' } } })),
     ).resolves.toBeUndefined();
+  });
+
+  describe('unwrapFile', () => {
+    const fileResponse = (disposition: string | null) =>
+      new Response('file content', {
+        headers: {
+          'Content-Type': 'application/vnd.oasis.opendocument.spreadsheet',
+          ...(disposition ? { 'Content-Disposition': disposition } : {}),
+        },
+      });
+
+    it('returns the downloaded file and the name the API gives it', async () => {
+      vi.stubGlobal(
+        'fetch',
+        vi
+          .fn<FetchStub>()
+          .mockResolvedValue(
+            fileResponse('attachment; filename="suivi_candidatures_2026-10-08.ods"'),
+          ),
+      );
+
+      const file = await unwrapFile(
+        api.GET('/export', { params: { query: { format: 'ods' } }, parseAs: 'blob' }),
+      );
+
+      expect(file.fileName).toBe('suivi_candidatures_2026-10-08.ods');
+      expect(await file.blob.text()).toBe('file content');
+    });
+
+    it('has no name when the API gives none', async () => {
+      vi.stubGlobal('fetch', vi.fn<FetchStub>().mockResolvedValue(fileResponse(null)));
+
+      const file = await unwrapFile(
+        api.GET('/export', { params: { query: { format: 'ods' } }, parseAs: 'blob' }),
+      );
+
+      expect(file.fileName).toBeNull();
+    });
+
+    it('turns a problem into an ApiError, like unwrap', async () => {
+      vi.stubGlobal(
+        'fetch',
+        vi.fn<FetchStub>().mockResolvedValue(jsonResponse({ code: 'UNAUTHORIZED' }, 401)),
+      );
+
+      const error = await unwrapFile(
+        api.GET('/export', { params: { query: { format: 'ods' } }, parseAs: 'blob' }),
+      ).catch((e: unknown) => e);
+
+      expect(error).toBeInstanceOf(ApiError);
+      expect((error as ApiError).code).toBe('UNAUTHORIZED');
+    });
   });
 });

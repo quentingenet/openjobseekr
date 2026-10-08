@@ -58,10 +58,10 @@ type ClientResult =
 /** The data type of the success branch only (inferring it from both would add `undefined`). */
 type SuccessData<Result> = Result extends { data: infer Data; error?: never } ? Data : never;
 
-/** The data of a successful call; otherwise an ApiError (RFC 9457 problem or network failure). */
-export async function unwrap<Result extends ClientResult>(
+/** The successful result of a call; otherwise an ApiError (RFC 9457 problem or network failure). */
+async function succeeded<Result extends ClientResult>(
   call: Promise<Result>,
-): Promise<SuccessData<Result>> {
+): Promise<{ data: SuccessData<Result>; response: Response }> {
   let result: Result;
   try {
     result = await call;
@@ -72,5 +72,27 @@ export async function unwrap<Result extends ClientResult>(
   // openapi-fetch only sets `error` on failed responses.
   if ('error' in result) throw ApiError.fromProblem(result.response.status, result.error);
   // TypeScript cannot narrow a generic union: this is the success branch, checked just above.
-  return result.data as SuccessData<Result>;
+  return { data: result.data as SuccessData<Result>, response: result.response };
+}
+
+/** The data of a successful call; otherwise an ApiError (RFC 9457 problem or network failure). */
+export async function unwrap<Result extends ClientResult>(
+  call: Promise<Result>,
+): Promise<SuccessData<Result>> {
+  return (await succeeded(call)).data;
+}
+
+/**
+ * A downloaded file (a call with `parseAs: 'blob'`) and the name the API gives it in its
+ * `Content-Disposition` header; errors are thrown as by `unwrap`.
+ */
+export async function unwrapFile<Result extends ClientResult>(
+  call: Promise<Result>,
+): Promise<{ blob: Blob; fileName: string | null }> {
+  const { data, response } = await succeeded(call);
+  const disposition = response.headers.get('Content-Disposition') ?? '';
+  return {
+    blob: data as Blob,
+    fileName: /filename="([^"]+)"/.exec(disposition)?.[1] ?? null,
+  };
 }

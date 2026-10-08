@@ -25,3 +25,8 @@ export function toCalendarDateCell(value: unknown, date1904: boolean): string | 
     day && month && year ? `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}` : text;
   return isCalendarDate(iso) ? iso : null;
 }
+
+/** A `YYYY-MM-DD` date as the day number spreadsheets store (1900 date system). */
+export function toDateSerial(date: string): number {
+  return (Date.parse(`${date}T00:00:00.000Z`) - EPOCH_1900) / DAY_MS;
+}

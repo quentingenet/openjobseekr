@@ -11,6 +11,7 @@ const result: ImportResult = {
   importedApplications: 12,
   addedSkills: 2,
   ignoredSkills: [{ row: 6, name: 'TYPESCRIPT', keptName: 'TypeScript' }],
+  keptFollowUpDates: 1,
 };
 
 const xlsx = (name = 'suivi.xlsx', size = 1_000) =>
@@ -41,6 +42,11 @@ describe('ImportDialog', () => {
     expect(
       within(dialog).getByText(
         'Si vous cliquez sur OK, toutes vos candidatures actuelles sont définitivement supprimées et remplacées par celles du fichier.',
+      ),
+    ).toBeInTheDocument();
+    expect(
+      within(dialog).getByText(
+        "Les dates de relance choisies dans l'app sont conservées pour les candidatures retrouvées dans le fichier (même date d'envoi, entreprise et intitulé), sauf si le fichier contient une date tapée à la main.",
       ),
     ).toBeInTheDocument();
     expect(

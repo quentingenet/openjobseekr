@@ -19,7 +19,7 @@ import { IMPORT_FILE_EXTENSIONS } from '@openjobseekr/domain';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ApiError } from '../../api/client';
-import { useImportSpreadsheet } from '../../api/queries/import';
+import { useImportSpreadsheet } from '../../api/queries/spreadsheet';
 import type { ImportResult } from '../../api/types';
 import { errorMessage } from '../../lib/errors';
 import { formatNumber } from '../../lib/format';
@@ -108,6 +108,9 @@ export function ImportDialog({ open, onClose, onImported }: ImportDialogProps) {
             <AlertTitle>{t('import.warningTitle')}</AlertTitle>
             <Typography variant="body2" sx={{ mb: 1 }}>
               {t('import.warningApplications')}
+            </Typography>
+            <Typography variant="body2" sx={{ mb: 1 }}>
+              {t('import.warningFollowUps')}
             </Typography>
             <Typography variant="body2">{t('import.warningSkills')}</Typography>
           </Alert>

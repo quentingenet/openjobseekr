@@ -41,7 +41,8 @@ openjobseekr/
     │   │   ├── applications/ (dto/, mapper, controller, service, module)
     │   │   ├── stats/        (domain/, dto/, controller, service, module)
     │   │   ├── skills/       (domain/, dto/, controller, service, module)
-    │   │   ├── import/       (.xlsx/.ods import: domain/ parsing rules, SheetJS reader, service)
+    │   │   ├── spreadsheet/  (.xlsx/.ods import and export: domain/ format rules, SheetJS reader
+    │   │   │                 and writer, services)
     │   │   ├── generated/    (Prisma client, generated, not versioned)
     │   │   └── export-openapi.ts (writes the OpenAPI document used by the web app)
     │   ├── test/             (e2e tests and helpers)
@@ -53,7 +54,7 @@ openjobseekr/
             │                 openapi.json + schema.d.ts generated)
             ├── components/   (shared components)
             ├── lib/          (formatting, error and form helpers)
-            ├── features/     (auth/, applications/, stats/, skills/, import/)
+            ├── features/     (auth/, applications/, stats/, skills/, spreadsheet/)
             ├── locales/      (en/, fr/, es/ translation.json)
             └── test/
 ```
@@ -121,11 +122,15 @@ openjobseekr/
   and the shared rules; the API DTOs use the Prisma enums (for validation and Swagger). Two
   `domain-enums.check.ts` files fail the typecheck when the domain drifts from Prisma (API)
   or from the OpenAPI types (web).
-- Spreadsheet import: column titles and list labels (French, as in the original sheet) live in
-  `import/domain/import-format.ts`. The empty templates in `apps/web/public/templates/` must
+- Spreadsheet import and export: column titles, list labels (French, as in the original sheet)
+  and the "Autre (precision)" channel cell live once in `spreadsheet/domain/spreadsheet-format.ts`,
+  for both directions; a test checks that export then import gives back the same data. The
+  export writes formulas in Excel syntax: references to another sheet are converted for .ods
+  by the writer (SheetJS does not). The empty templates in `apps/web/public/templates/` must
   match them (`templates.spec.ts`): regenerate both templates when a column or a label changes
-  (e.g. a new channel). An import replaces the user's applications and adds skills; the whole
-  file is validated before anything is written.
+  (e.g. a new channel). An import replaces the user's applications, adds skills and keeps the
+  follow-up dates picked in the app for the applications found again (`keepFollowUpDates`); the
+  whole file is validated before anything is written.
 - Skill names are unique per user ignoring case and a ".js" suffix (`skillNameKey`): checked
   on create, update and import.
 - Login and registration are rate-limited per IP (`AUTH_RATE_LIMIT`, 5 per minute by default).

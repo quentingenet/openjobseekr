@@ -66,8 +66,10 @@ decisions, the review and what gets merged. The configuration is part of the rep
   (e.g. `\bJava\b`, which does not match "JavaScript"). The app counts how many of your saved
   job postings mention each one, and updates as you add postings. Each skill appears once:
   names are compared ignoring case and a ".js" suffix.
-- **Spreadsheet import**: bring an existing job search spreadsheet (.xlsx or .ods) into the app,
-  see [Importing a spreadsheet](#importing-a-spreadsheet).
+- **Spreadsheet import and export**: bring an existing job search spreadsheet (.xlsx or .ods)
+  into the app, and download your data back in the same layout, see
+  [Importing a spreadsheet](#importing-a-spreadsheet) and
+  [Exporting a spreadsheet](#exporting-a-spreadsheet).
 - **Languages**: English, French and Spanish, switchable at any time.
 - **Accounts**: each user only ever sees their own data; login attempts are rate-limited.
 
@@ -79,6 +81,10 @@ anything is sent:
 
 - **Applications are replaced**: all your current applications are permanently deleted and
   replaced by the rows of the file.
+- **Follow-up dates are kept**: a follow-up date you picked in the app stays when the same
+  application is found again in the file (same sent date, company and job title, ignoring case
+  and spaces), so importing the sheet again never resets it. A date typed by hand in column J
+  of the file wins; the formula's date never erases yours.
 - **Skills are added**: your skills (and their levels) are kept; a skill of the file is added
   only if you do not have it yet. Names are compared ignoring case and a ".js" suffix, so
   "TypeScript", "TYPESCRIPT" and "typescript" are one skill, and so are "React" and "React.js".
@@ -135,18 +141,38 @@ case and extra spaces do not matter, but titles and their order do.
 
 The follow-up date of column J is compared with the sent date + the app's follow-up delay
 (`FOLLOW_UP_DELAY_DAYS`, 7 days by default, like the template's formula): an equal date stays
-computed, a different one is kept as a date you picked. If your sheet uses another delay, set
+computed (or keeps the date you picked in the app), a different one is kept as a date you
+picked. If your sheet uses another delay, set
 the same one in `.env` before importing.
 
 Other sheets (dashboard, notes...) are ignored. Your own spreadsheet is never committed: the
 repository ignores spreadsheet files, except these empty templates.
+
+## Exporting a spreadsheet
+
+The **Export** button of the applications page downloads your applications and skills as an
+.xlsx (Excel, Google Sheets) or .ods (LibreOffice) file named `suivi_candidatures_<date>`. It
+has exactly the layout the import reads, so you can edit it and import it again: exporting then
+importing gives back the same data.
+
+- **"Candidatures"**: the 18 columns, oldest application first, with the list labels of the
+  spreadsheet. A precision of the "Autre" channel is written in parentheses
+  (`Autre (Monster)`), which the import reads back.
+- **Follow-up date (column J)**: the spreadsheet formula (sent date + the delay of the "Listes"
+  sheet, while the status is `Envoyée`), or the date you picked as a plain date.
+- **"Compétences"**: name, pattern and level, the number of job postings and the frequency
+  computed by the app, and the priority score and rank as formulas.
+- **"Listes"**: the follow-up delay and the allowed values.
+
+Drop-down lists and colors are not written (SheetJS does not support them): start from the
+template if you want them, and paste the exported rows into it.
 
 ## Tech stack
 
 - **Web** (`apps/web`): React, TypeScript, Vite, Material UI, TanStack Query, React Router,
   React Hook Form + Zod, i18next, openapi-fetch (API client typed from the OpenAPI document)
 - **API** (`apps/api`): NestJS, TypeScript, Prisma, PostgreSQL, JWT authentication,
-  OpenAPI documentation, SheetJS (reads imported .xlsx and .ods files)
+  OpenAPI documentation, SheetJS (reads and writes .xlsx and .ods files)
 - **Tests**: Vitest everywhere, Testing Library for the web app, Supertest for the API
   end-to-end tests
 - **Tooling**: npm workspaces, ESLint (typescript-eslint `strictTypeChecked`), Prettier, Husky
@@ -230,7 +256,7 @@ apps/
 │   ├── src/
 │   │   ├── applications/   CRUD, filters, sort and pagination
 │   │   ├── skills/         skills and their frequency in job postings
-│   │   ├── import/         spreadsheet import (.xlsx, .ods), parsing rules in domain/
+│   │   ├── spreadsheet/    spreadsheet import and export (.xlsx, .ods), format rules in domain/
 │   │   ├── stats/          statistics by status and channel (pure functions in domain/)
 │   │   ├── follow-up/      today's date and follow-up delay, shared by two modules
 │   │   ├── auth/           registration, login, JWT guard, rate limiting
@@ -243,7 +269,7 @@ apps/
 └── web/                    React app
     └── src/
         ├── api/            typed client (types generated from the OpenAPI document)
-        ├── features/       applications, skills, stats, import, auth
+        ├── features/       applications, skills, stats, spreadsheet (import, export), auth
         └── locales/        en, fr, es
 ```
 

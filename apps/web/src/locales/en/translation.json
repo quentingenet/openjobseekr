@@ -237,6 +237,7 @@
     "title": "Import a spreadsheet",
     "warningTitle": "Your applications will be replaced",
     "warningApplications": "If you click OK, all your current applications are permanently deleted and replaced by those of the file.",
+    "warningFollowUps": "Follow-up dates you picked in the app are kept for the applications found again in the file (same sent date, company and job title), unless the file has a date typed by hand.",
     "warningSkills": "Skills are added: yours are kept, and the skills of the file you already have are ignored.",
     "format": "An .xlsx or .ods file of {{size}} MB maximum, with exactly the columns of the template: applications in the first sheet, skills in the \"Compétences\" sheet.",
     "templates": "Download the empty template:",
@@ -244,7 +245,7 @@
     "confirm": "OK, import",
     "wrongExtension": "Choose an .xlsx or .ods file.",
     "tooLarge": "This file is larger than {{size}} MB.",
-    "success": "Imported applications: {{applications}} · Added skills: {{skills}} · Skills already present: {{ignored}}",
+    "success": "Imported applications: {{applications}} · Added skills: {{skills}} · Skills already present: {{ignored}} · Follow-up dates kept: {{followUps}}",
     "sheet": "Sheet \"{{sheet}}\"",
     "cell": "Sheet \"{{sheet}}\", cell {{cell}}",
     "cellErrorsLabel": "Cells to fix",
@@ -259,6 +260,13 @@
       "isRegex": "invalid regular expression",
       "isSkillLevel": "level must be a whole number from 0 to 5",
       "formulaError": "formula error (#N/A, #REF!…)"
+    }
+  },
+  "export": {
+    "button": "Export",
+    "formats": {
+      "xlsx": "Excel (.xlsx)",
+      "ods": "OpenDocument (.ods)"
     }
   }
 }

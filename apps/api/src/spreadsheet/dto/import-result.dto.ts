@@ -27,4 +27,11 @@ export class ImportResultDto {
     description: 'Skills of the file already present, under the same name or an earlier row',
   })
   ignoredSkills: IgnoredSkillDto[];
+
+  @ApiProperty({
+    example: 2,
+    description:
+      'Follow-up dates picked in the app and kept: same sent date, company and job title, and no date typed by hand in the file',
+  })
+  keptFollowUpDates: number;
 }

@@ -1217,6 +1217,75 @@
           "import"
         ]
       }
+    },
+    "/export": {
+      "get": {
+        "description": "Same sheets and columns as the import: exporting then importing gives back the same data.",
+        "operationId": "ExportController_exportSpreadsheet",
+        "parameters": [
+          {
+            "name": "format",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "example": "xlsx",
+              "type": "string",
+              "enum": [
+                "xlsx",
+                "ods"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "application/vnd.oasis.opendocument.spreadsheet": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "VALIDATION_FAILED",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UNAUTHORIZED",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Export the applications and skills as a spreadsheet (.xlsx or .ods)",
+        "tags": [
+          "export"
+        ]
+      }
     }
   },
   "info": {
@@ -2140,13 +2209,19 @@
             "items": {
               "$ref": "#/components/schemas/IgnoredSkillDto"
             }
+          },
+          "keptFollowUpDates": {
+            "type": "number",
+            "example": 2,
+            "description": "Follow-up dates picked in the app and kept: same sent date, company and job title, and no date typed by hand in the file"
           }
         },
         "required": [
           "deletedApplications",
           "importedApplications",
           "addedSkills",
-          "ignoredSkills"
+          "ignoredSkills",
+          "keptFollowUpDates"
         ]
       },
       "FieldErrorDto": {

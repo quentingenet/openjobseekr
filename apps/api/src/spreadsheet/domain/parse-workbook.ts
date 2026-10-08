@@ -14,15 +14,16 @@ import { isValidSkillPattern } from '../../skills/domain/skill-pattern.js';
 import {
   APPLICATION_COLUMNS,
   APPLICATIONS_SHEET_NAME,
-  CHANNEL_LABELS,
+  columnLetter,
   normalizeLabel,
+  parseChannelCell,
   SKILL_COLUMN,
   SKILL_HEADERS,
   SKILLS_HEADER_ROW,
   SKILLS_SHEET_NAME,
   STATUS_LABELS,
   WORK_MODE_LABELS,
-} from './import-format.js';
+} from './spreadsheet-format.js';
 import { toCalendarDateCell } from './spreadsheet-date.js';
 
 /** A cell whose formula failed (`#N/A`, `#REF!`...), as displayed by the spreadsheet. */
@@ -55,11 +56,8 @@ export interface CellError {
   constraint: ImportCellConstraint;
 }
 
-/** `channelDetail` is not a spreadsheet column: imported applications have none. */
-export type ImportedApplication = Record<
-  Exclude<ApplicationTextField, 'channelDetail'>,
-  string | null
-> & {
+/** `channelDetail` comes from the CANAL cell ("Autre (Monster)", see `parseChannelCell`). */
+export type ImportedApplication = Record<ApplicationTextField, string | null> & {
   sentAt: string;
   company: string;
   jobTitle: string;
@@ -99,15 +97,6 @@ export interface ParseOptions {
   limits?: { maxApplications: number; maxSkills: number };
 }
 
-/** `0` -> `A`, `25` -> `Z`, `26` -> `AA`. */
-function columnLetter(index: number): string {
-  let letters = '';
-  for (let n = index + 1; n > 0; n = Math.floor((n - 1) / 26)) {
-    letters = String.fromCharCode(65 + ((n - 1) % 26)) + letters;
-  }
-  return letters;
-}
-
 function cellAt(row: CellValue[] | undefined, column: number): CellValue {
   return row?.[column] ?? null;
 }
@@ -139,7 +128,6 @@ function labelLookup<Code extends string>(labels: Record<Code, string>): Map<str
 
 const LABEL_LOOKUPS = {
   status: labelLookup(STATUS_LABELS),
-  channel: labelLookup(CHANNEL_LABELS),
   workMode: labelLookup(WORK_MODE_LABELS),
 };
 
@@ -227,8 +215,15 @@ function parseApplication(
         else if (text !== null && length(text) > TEXT_LIMITS[column.field]) fail('maxLength');
         application[column.field] = text;
         return;
+      case 'channel': {
+        const parsed = text === null ? null : parseChannelCell(text);
+        if (text !== null && parsed === null) fail('isIn');
+        else if (length(parsed?.channelDetail ?? '') > TEXT_LIMITS.channelDetail) fail('maxLength');
+        application.channel = parsed?.channel ?? null;
+        application.channelDetail = parsed?.channelDetail ?? null;
+        return;
+      }
       case 'status':
-      case 'channel':
       case 'workMode': {
         const code = text === null ? null : LABEL_LOOKUPS[column.kind].get(normalizeLabel(text));
         if (text !== null && code === undefined) fail('isIn');

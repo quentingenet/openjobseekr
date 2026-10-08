@@ -1,5 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { api, unwrap } from '../client';
+import type { SpreadsheetFormat } from '@openjobseekr/domain';
+import { saveFile } from '../../lib/save-file';
+import { api, unwrap, unwrapFile } from '../client';
 import { queryKeys } from '../query-keys';
 
 /** Uploads the spreadsheet; applications, statistics and skills all change. */
@@ -24,5 +26,17 @@ export function useImportSpreadsheet() {
           queryClient.invalidateQueries({ queryKey }),
         ),
       ),
+  });
+}
+
+/** Downloads the applications and skills as a spreadsheet, named by the API. */
+export function useExportSpreadsheet() {
+  return useMutation({
+    mutationFn: async (format: SpreadsheetFormat) => {
+      const file = await unwrapFile(
+        api.GET('/export', { params: { query: { format } }, parseAs: 'blob' }),
+      );
+      saveFile(file.blob, file.fileName ?? `suivi_candidatures.${format}`);
+    },
   });
 }

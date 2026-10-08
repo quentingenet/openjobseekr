@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { APPLICATION_HEADERS, SKILL_HEADERS, SKILLS_SHEET_NAME } from './import-format.js';
+import { APPLICATION_HEADERS, SKILL_HEADERS, SKILLS_SHEET_NAME } from './spreadsheet-format.js';
 import { type CellValue, type ImportWorkbook, parseWorkbook } from './parse-workbook.js';
 
 /** One application row in spreadsheet column order (A to R). */
@@ -78,6 +78,7 @@ describe('parseWorkbook', () => {
             response: 'https://example.com/answer',
             resources: 'Glassdoor',
             channel: 'WELCOME_TO_THE_JUNGLE',
+            channelDetail: null,
             status: 'HR_INTERVIEW',
             contact: 'Jane Doe',
             followUpOverride: null,
@@ -191,6 +192,42 @@ describe('parseWorkbook', () => {
       expect(result.applications.slice(0, 4).map((row) => row.workMode)).toEqual(
         workModes.map(([, code]) => code),
       );
+    });
+
+    it('reads the precision of the "Autre" channel written as "Autre (Monster)"', () => {
+      const result = parse(
+        workbook([
+          applicationRow({ CANAL: 'Autre (Monster)' }),
+          applicationRow({ CANAL: ' autre  ( Jobteaser ) ' }),
+          applicationRow({ CANAL: 'Autre' }),
+        ]),
+      );
+
+      expect(
+        result.ok && result.applications.map((row) => [row.channel, row.channelDetail]),
+      ).toEqual([
+        ['OTHER', 'Monster'],
+        ['OTHER', 'Jobteaser'],
+        ['OTHER', null],
+      ]);
+    });
+
+    it('accepts a precision only for the "Autre" channel, within its length limit', () => {
+      expect(
+        parse(
+          workbook([
+            applicationRow({ CANAL: 'Apec (Paris)' }),
+            applicationRow({ CANAL: `Autre (${'x'.repeat(201)})` }),
+          ]),
+        ),
+      ).toEqual({
+        ok: false,
+        reason: 'invalidData',
+        errors: [
+          { sheet: 'Candidatures', cell: 'G2', constraint: 'isIn' },
+          { sheet: 'Candidatures', cell: 'G3', constraint: 'maxLength' },
+        ],
+      });
     });
 
     it('skips empty rows, including rows holding only the computed follow-up date', () => {

@@ -237,6 +237,7 @@
     "title": "Importer un fichier",
     "warningTitle": "Vos candidatures vont être remplacées",
     "warningApplications": "Si vous cliquez sur OK, toutes vos candidatures actuelles sont définitivement supprimées et remplacées par celles du fichier.",
+    "warningFollowUps": "Les dates de relance choisies dans l'app sont conservées pour les candidatures retrouvées dans le fichier (même date d'envoi, entreprise et intitulé), sauf si le fichier contient une date tapée à la main.",
     "warningSkills": "Les compétences s'ajoutent : les vôtres sont conservées, et celles du fichier que vous avez déjà sont ignorées.",
     "format": "Un fichier .xlsx ou .ods de {{size}} Mo maximum, avec exactement les colonnes du modèle : les candidatures dans le premier onglet, les compétences dans l'onglet « Compétences ».",
     "templates": "Télécharger le modèle vide :",
@@ -244,7 +245,7 @@
     "confirm": "OK, importer",
     "wrongExtension": "Choisissez un fichier .xlsx ou .ods.",
     "tooLarge": "Ce fichier dépasse {{size}} Mo.",
-    "success": "Candidatures importées : {{applications}} · Compétences ajoutées : {{skills}} · Compétences déjà présentes : {{ignored}}",
+    "success": "Candidatures importées : {{applications}} · Compétences ajoutées : {{skills}} · Compétences déjà présentes : {{ignored}} · Dates de relance conservées : {{followUps}}",
     "sheet": "Onglet « {{sheet}} »",
     "cell": "Onglet « {{sheet}} », cellule {{cell}}",
     "cellErrorsLabel": "Cellules à corriger",
@@ -259,6 +260,13 @@
       "isRegex": "expression régulière invalide",
       "isSkillLevel": "le niveau doit être un nombre entier de 0 à 5",
       "formulaError": "erreur de formule (#N/A, #REF!…)"
+    }
+  },
+  "export": {
+    "button": "Exporter",
+    "formats": {
+      "xlsx": "Excel (.xlsx)",
+      "ods": "OpenDocument (.ods)"
     }
   }
 }

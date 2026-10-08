@@ -9,6 +9,7 @@ import { applicationRow, spreadsheetFile } from './testing/spreadsheet-file.js';
 function setup() {
   const tx = {
     application: {
+      findMany: vi.fn().mockResolvedValue([]),
       deleteMany: vi.fn().mockResolvedValue({ count: 5 }),
       createMany: vi.fn().mockResolvedValue({ count: 1 }),
     },
@@ -89,7 +90,43 @@ describe('ImportService', () => {
       importedApplications: 1,
       addedSkills: 1,
       ignoredSkills: [{ row: 4, name: 'TYPESCRIPT', keptName: 'TypeScript' }],
+      keptFollowUpDates: 0,
     });
+  });
+
+  it('keeps the follow-up dates picked in the app for the applications found again', async () => {
+    ctx.tx.application.findMany.mockResolvedValue([
+      {
+        sentAt: new Date('2026-10-01T00:00:00.000Z'),
+        company: 'Acme',
+        jobTitle: 'Developer',
+        followUpOverride: new Date('2026-10-22T00:00:00.000Z'),
+      },
+    ]);
+    const buffer = spreadsheetFile({
+      applications: [
+        applicationRow({
+          'DATE ENVOI CANDIDATURE': 46296,
+          ENTREPRISE: 'Acme',
+          'INTITULÉ OFFRE': 'Developer',
+          'DATE DE RELANCE': 46303,
+        }),
+      ],
+    });
+
+    const result = await ctx.service.importSpreadsheet('user-1', {
+      originalname: 'suivi.xlsx',
+      buffer,
+    });
+
+    expect(ctx.tx.application.findMany).toHaveBeenCalledWith({
+      where: { userId: 'user-1' },
+      select: { sentAt: true, company: true, jobTitle: true, followUpOverride: true },
+    });
+    expect(ctx.tx.application.createMany).toHaveBeenCalledWith({
+      data: [expect.objectContaining({ followUpOverride: new Date('2026-10-22T00:00:00.000Z') })],
+    });
+    expect(result.keptFollowUpDates).toBe(1);
   });
 
   it('requires a file', async () => {

@@ -225,6 +225,17 @@ describe('ApplicationsPage', () => {
     expect(await screen.findByText('Autre (Monster)')).toBeInTheDocument();
   });
 
+  it('offers to export the applications next to the import', async () => {
+    await renderWithProviders(<ApplicationsPage />, { path: '/applications', language: 'fr' });
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Exporter' }));
+
+    expect(screen.getAllByRole('menuitem').map((item) => item.textContent)).toEqual([
+      'Excel (.xlsx)',
+      'OpenDocument (.ods)',
+    ]);
+  });
+
   it('imports a spreadsheet after the warning, then reloads the list and reports the result', async () => {
     const user = userEvent.setup();
     const { requests } = mockApi({
@@ -235,6 +246,7 @@ describe('ApplicationsPage', () => {
           importedApplications: 12,
           addedSkills: 2,
           ignoredSkills: [{ row: 6, name: 'TYPESCRIPT', keptName: 'TypeScript' }],
+          keptFollowUpDates: 4,
         },
       },
     });
@@ -251,7 +263,7 @@ describe('ApplicationsPage', () => {
 
     expect(
       await screen.findByText(
-        'Candidatures importées : 12 · Compétences ajoutées : 2 · Compétences déjà présentes : 1',
+        'Candidatures importées : 12 · Compétences ajoutées : 2 · Compétences déjà présentes : 1 · Dates de relance conservées : 4',
       ),
     ).toBeInTheDocument();
     await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());

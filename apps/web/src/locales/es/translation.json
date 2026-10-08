@@ -237,6 +237,7 @@
     "title": "Importar una hoja de cálculo",
     "warningTitle": "Tus candidaturas serán reemplazadas",
     "warningApplications": "Si haces clic en OK, todas tus candidaturas actuales se eliminan definitivamente y se reemplazan por las del archivo.",
+    "warningFollowUps": "Las fechas de seguimiento elegidas en la app se conservan para las candidaturas que vuelven a aparecer en el archivo (misma fecha de envío, empresa y puesto), salvo si el archivo tiene una fecha escrita a mano.",
     "warningSkills": "Las competencias se añaden: las tuyas se conservan y las del archivo que ya tienes se ignoran.",
     "format": "Un archivo .xlsx u .ods de {{size}} MB como máximo, con exactamente las columnas de la plantilla: las candidaturas en la primera hoja y las competencias en la hoja «Compétences».",
     "templates": "Descargar la plantilla vacía:",
@@ -244,7 +245,7 @@
     "confirm": "OK, importar",
     "wrongExtension": "Elige un archivo .xlsx u .ods.",
     "tooLarge": "Este archivo supera los {{size}} MB.",
-    "success": "Candidaturas importadas: {{applications}} · Competencias añadidas: {{skills}} · Competencias ya presentes: {{ignored}}",
+    "success": "Candidaturas importadas: {{applications}} · Competencias añadidas: {{skills}} · Competencias ya presentes: {{ignored}} · Fechas de seguimiento conservadas: {{followUps}}",
     "sheet": "Hoja «{{sheet}}»",
     "cell": "Hoja «{{sheet}}», celda {{cell}}",
     "cellErrorsLabel": "Celdas por corregir",
@@ -259,6 +260,13 @@
       "isRegex": "expresión regular no válida",
       "isSkillLevel": "el nivel debe ser un número entero de 0 a 5",
       "formulaError": "error de fórmula (#N/A, #REF!…)"
+    }
+  },
+  "export": {
+    "button": "Exportar",
+    "formats": {
+      "xlsx": "Excel (.xlsx)",
+      "ods": "OpenDocument (.ods)"
     }
   }
 }

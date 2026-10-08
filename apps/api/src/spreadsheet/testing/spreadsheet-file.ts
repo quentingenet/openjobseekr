@@ -1,5 +1,9 @@
 import * as XLSX from 'xlsx';
-import { APPLICATION_HEADERS, SKILL_HEADERS, SKILLS_SHEET_NAME } from '../domain/import-format.js';
+import {
+  APPLICATION_HEADERS,
+  SKILL_HEADERS,
+  SKILLS_SHEET_NAME,
+} from '../domain/spreadsheet-format.js';
 import type { CellValue } from '../domain/parse-workbook.js';
 
 /** One application row from column titles to values; other columns are empty. */
