@@ -83,6 +83,22 @@ export class ApplicationsController {
     return this.applications.update(user.id, id, dto);
   }
 
+  @Post(':id/follow-ups')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Record that the user followed up today; the next follow-up comes one delay later',
+  })
+  @ApiOkResponse({ type: ApplicationDetailDto })
+  @ApiProblem(HttpStatus.BAD_REQUEST, ErrorCode.VALIDATION_FAILED)
+  @ApiProblem(HttpStatus.NOT_FOUND, ErrorCode.APPLICATION_NOT_FOUND)
+  @ApiProblem(HttpStatus.CONFLICT, ErrorCode.FOLLOW_UP_NOT_EXPECTED)
+  recordFollowUp(
+    @CurrentUser() user: AuthenticatedUser,
+    @Param('id', ParseIdPipe) id: string,
+  ): Promise<ApplicationDetailDto> {
+    return this.applications.recordFollowUp(user.id, id);
+  }
+
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: 'Delete an application' })

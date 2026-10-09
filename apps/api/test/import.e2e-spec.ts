@@ -140,7 +140,7 @@ describe('Import (e2e)', () => {
     );
   });
 
-  it('keeps a follow-up date picked in the app when the same file is imported again', async () => {
+  it('keeps a follow-up date picked in the app, and the follow-ups recorded, on a new import', async () => {
     await upload(file, 'suivi.xlsx').expect(200);
     const list = await api().get('/applications?status=SENT').set(auth()).expect(200);
     const acme = (list.body.items as { id: string; company: string }[]).find(
@@ -149,7 +149,7 @@ describe('Import (e2e)', () => {
     await api()
       .patch(`/applications/${acme?.id ?? ''}`)
       .set(auth())
-      .send({ followUpOverride: '2026-10-22' })
+      .send({ followUpOverride: '2026-10-22', followUpCount: 2 })
       .expect(200);
 
     const again = await upload(file, 'suivi.xlsx').expect(200);
@@ -161,6 +161,7 @@ describe('Import (e2e)', () => {
         company: 'Acme',
         followUpDate: '2026-10-22',
         followUpOverride: '2026-10-22',
+        followUpCount: 2,
       }),
     ]);
   });

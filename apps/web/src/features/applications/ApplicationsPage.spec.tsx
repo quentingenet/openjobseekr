@@ -1,40 +1,43 @@
-import { screen, waitFor, within } from '@testing-library/react';
+import { act, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
-import type { ApplicationList } from '../../api/types';
-import { type FetchStub, mockApi, requestedUrls } from '../../test/api-mock';
+import type { ApplicationList, ApplicationSummary } from '../../api/types';
+import { type FetchStub, mockApi, problem, requestedUrls } from '../../test/api-mock';
 import { jsonResponse, renderWithProviders } from '../../test/render';
 import { mockMobileViewport } from '../../test/viewport';
 import { ApplicationsPage } from './ApplicationsPage';
+import { UNDO_WINDOW_MS } from './FollowUpActionsProvider';
+
+/** A follow-up due. */
+const due: ApplicationSummary = {
+  id: '6c3f4d2e-0000-4000-8000-000000000001',
+  sentAt: '2026-10-01',
+  company: 'Acme',
+  jobTitle: 'Backend developer',
+  location: null,
+  response: null,
+  resources: null,
+  channel: 'LINKEDIN',
+  channelDetail: null,
+  status: 'SENT',
+  contact: null,
+  followUpDate: '2026-10-08',
+  followUpOverride: null,
+  followUpOverdue: true,
+  followUpCount: 0,
+  workMode: 'HYBRID',
+  remoteRhythm: null,
+  salaryRange: null,
+  cvVersion: null,
+  stack: null,
+  recruitmentProcess: null,
+  notes: null,
+  createdAt: '2026-10-01T09:00:00.000Z',
+  updatedAt: '2026-10-01T09:00:00.000Z',
+};
 
 const list: ApplicationList = {
-  items: [
-    {
-      id: '6c3f4d2e-0000-4000-8000-000000000001',
-      sentAt: '2026-10-01',
-      company: 'Acme',
-      jobTitle: 'Backend developer',
-      location: null,
-      response: null,
-      resources: null,
-      channel: 'LINKEDIN',
-      channelDetail: null,
-      status: 'SENT',
-      contact: null,
-      followUpDate: '2026-10-08',
-      followUpOverride: null,
-      followUpOverdue: true,
-      workMode: 'HYBRID',
-      remoteRhythm: null,
-      salaryRange: null,
-      cvVersion: null,
-      stack: null,
-      recruitmentProcess: null,
-      notes: null,
-      createdAt: '2026-10-01T09:00:00.000Z',
-      updatedAt: '2026-10-01T09:00:00.000Z',
-    },
-  ],
+  items: [due],
   total: 1,
   limit: 20,
   offset: 0,
@@ -64,6 +67,8 @@ describe('ApplicationsPage', () => {
     expect(cells.getByText('Hybride')).toBeInTheDocument();
     expect(cells.getByText('8 oct. 2026')).toBeInTheDocument();
     expect(screen.getByText('1–1 sur 1')).toBeInTheDocument();
+    // Short header: the table fits without scrolling sideways.
+    expect(screen.getByRole('columnheader', { name: 'Mode' })).toBeInTheDocument();
   });
 
   it('puts filters in the URL and sends them to the API', async () => {
@@ -274,6 +279,228 @@ describe('ApplicationsPage', () => {
     ]);
   });
 
+  describe('recording a follow-up', () => {
+    const followUpUrl = `/api/applications/${due.id}/follow-ups`;
+    const recorded = { ...due, followUpDate: '2026-10-16', followUpOverride: '2026-10-16' };
+
+    it('records it from the row without opening the application, and can undo it', async () => {
+      const { requests } = mockApi({
+        'GET /api/applications': { body: list },
+        [`POST ${followUpUrl}`]: {
+          body: { ...recorded, followUpOverdue: false, followUpCount: 1 },
+        },
+        [`PATCH /api/applications/${due.id}`]: { body: due },
+      });
+      const { router } = await renderWithProviders(<ApplicationsPage />, {
+        path: '/applications',
+        language: 'fr',
+      });
+      const row = (await screen.findByText('Acme')).closest('tr') as HTMLElement;
+
+      await userEvent.click(within(row).getByRole('button', { name: "J'ai relancé" }));
+
+      expect(
+        await screen.findByText('Relance notée. Prochaine relance le 16 oct. 2026.'),
+      ).toBeInTheDocument();
+      expect(router.state.location.pathname).toBe('/applications');
+      await userEvent.click(screen.getByRole('button', { name: 'Annuler' }));
+
+      await waitFor(() =>
+        expect(requests.filter((r) => r.method !== 'GET')).toEqual([
+          { method: 'POST', url: followUpUrl, body: undefined },
+          {
+            method: 'PATCH',
+            url: `/api/applications/${due.id}`,
+            body: { followUpOverride: null, followUpCount: 0 },
+          },
+        ]),
+      );
+      // The list is reloaded after each change.
+      await waitFor(() => expect(requests.filter((r) => r.method === 'GET')).toHaveLength(3));
+    });
+
+    /** The API as a stateful server: following up and undoing change what the list returns. */
+    function mockFollowUpApi() {
+      let current = due;
+      return mockApi({
+        'GET /api/applications': () => jsonResponse({ ...list, items: [current] }),
+        [`POST ${followUpUrl}`]: () => {
+          current = { ...recorded, followUpOverdue: false, followUpCount: 1 };
+          return jsonResponse(current);
+        },
+        [`PATCH /api/applications/${due.id}`]: () => {
+          current = due;
+          return jsonResponse(due);
+        },
+      });
+    }
+
+    it('turns the same button into an undo, kept in the row after the list reloads', async () => {
+      const { requests } = mockFollowUpApi();
+      await renderWithProviders(<ApplicationsPage />, { path: '/applications', language: 'fr' });
+      const row = (await screen.findByText('Acme')).closest('tr') as HTMLElement;
+
+      await userEvent.click(within(row).getByRole('button', { name: "J'ai relancé" }));
+
+      // Reloaded: no longer due, yet the row still offers to undo.
+      expect(await within(row).findByText('2e relance')).toBeInTheDocument();
+      await userEvent.click(within(row).getByRole('button', { name: 'Annuler la relance' }));
+
+      expect(await within(row).findByRole('button', { name: "J'ai relancé" })).toBeInTheDocument();
+      expect(within(row).queryByText('2e relance')).not.toBeInTheDocument();
+      expect(requests.filter((r) => r.method === 'PATCH')).toEqual([
+        {
+          method: 'PATCH',
+          url: `/api/applications/${due.id}`,
+          body: { followUpOverride: null, followUpCount: 0 },
+        },
+      ]);
+    });
+
+    it('never opens the application on a click around the button, even while it is busy', async () => {
+      mockFollowUpApi();
+      const { router } = await renderWithProviders(<ApplicationsPage />, {
+        path: '/applications',
+        language: 'en',
+      });
+      const row = (await screen.findByText('Acme')).closest('tr') as HTMLElement;
+
+      await userEvent.click(within(row).getByRole('button', { name: 'I followed up' }));
+      const undo = await within(row).findByRole('button', { name: 'Undo follow-up' });
+      // A disabled button lets clicks through to its wrapper (the ring around the icon, or a
+      // second click while the undo is sent): the row must not get them either.
+      await userEvent.click(undo.parentElement as HTMLElement);
+      await userEvent.click(undo);
+      await userEvent.click(undo.parentElement as HTMLElement);
+
+      expect(router.state.location.pathname).toBe('/applications');
+    });
+
+    it('undoes once only, even when the notification is clicked while the undo is sent', async () => {
+      let answerUndo: () => void = () => undefined;
+      const { requests } = mockApi({
+        'GET /api/applications': { body: list },
+        [`POST ${followUpUrl}`]: {
+          body: { ...recorded, followUpOverdue: false, followUpCount: 1 },
+        },
+        [`PATCH /api/applications/${due.id}`]: () =>
+          new Promise<Response>((resolve) => {
+            answerUndo = () => resolve(jsonResponse(due));
+          }),
+      });
+      await renderWithProviders(<ApplicationsPage />, { path: '/applications', language: 'en' });
+      const row = (await screen.findByText('Acme')).closest('tr') as HTMLElement;
+      await userEvent.click(within(row).getByRole('button', { name: 'I followed up' }));
+
+      await userEvent.click(await within(row).findByRole('button', { name: 'Undo follow-up' }));
+      await userEvent.click(screen.getByRole('button', { name: 'Undo' }));
+      answerUndo();
+
+      await waitFor(() =>
+        expect(within(row).queryByRole('button', { name: 'Undo follow-up' })).toBeNull(),
+      );
+      expect(requests.filter((r) => r.method === 'PATCH')).toHaveLength(1);
+    });
+
+    it('reports a failed undo', async () => {
+      mockApi({
+        'GET /api/applications': { body: list },
+        [`POST ${followUpUrl}`]: {
+          body: { ...recorded, followUpOverdue: false, followUpCount: 1 },
+        },
+        [`PATCH /api/applications/${due.id}`]: {
+          status: 503,
+          body: problem(503, 'SERVICE_UNAVAILABLE'),
+        },
+      });
+      await renderWithProviders(<ApplicationsPage />, { path: '/applications', language: 'en' });
+      await screen.findByText('Acme');
+      await userEvent.click(screen.getByRole('button', { name: 'I followed up' }));
+
+      await userEvent.click(await screen.findByRole('button', { name: 'Undo' }));
+
+      expect(await screen.findByRole('alert')).toHaveTextContent(
+        'The service is temporarily unavailable.',
+      );
+      expect(screen.queryByRole('button', { name: 'Undo follow-up' })).toBeNull();
+    });
+
+    it('keeps the follow-up once the undo window is over', async () => {
+      vi.useFakeTimers({ shouldAdvanceTime: true });
+      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime.bind(vi) });
+      try {
+        const { requests } = mockFollowUpApi();
+        await renderWithProviders(<ApplicationsPage />, { path: '/applications', language: 'en' });
+        const row = (await screen.findByText('Acme')).closest('tr') as HTMLElement;
+
+        await user.click(within(row).getByRole('button', { name: 'I followed up' }));
+        await within(row).findByText('Follow-up #2');
+        expect(within(row).getByRole('button', { name: 'Undo follow-up' })).toBeInTheDocument();
+
+        await act(() => vi.advanceTimersByTimeAsync(UNDO_WINDOW_MS));
+
+        await waitFor(() =>
+          expect(within(row).queryByRole('button', { name: 'Undo follow-up' })).toBeNull(),
+        );
+        expect(within(row).queryByRole('button', { name: 'I followed up' })).toBeNull();
+        expect(within(row).getByText('Follow-up #2')).toBeInTheDocument();
+        expect(requests.filter((r) => r.method === 'PATCH')).toEqual([]);
+      } finally {
+        vi.useRealTimers();
+      }
+    });
+
+    it('shows the rank of the next follow-up once the user has followed up', async () => {
+      mockApi({
+        'GET /api/applications': {
+          body: { ...list, items: [{ ...due, followUpDate: '2026-10-16', followUpCount: 1 }] },
+        },
+      });
+      await renderWithProviders(<ApplicationsPage />, { path: '/applications', language: 'fr' });
+
+      const row = (await screen.findByText('Acme')).closest('tr') as HTMLElement;
+      expect(within(row).getByText('2e relance')).toBeInTheDocument();
+    });
+
+    it('shows no rank before the first follow-up', async () => {
+      mockApi({ 'GET /api/applications': { body: list } });
+      await renderWithProviders(<ApplicationsPage />, { path: '/applications', language: 'fr' });
+      await screen.findByText('Acme');
+
+      expect(screen.queryByText(/relance$/)).not.toBeInTheDocument();
+    });
+
+    it('is offered only for a follow-up due', async () => {
+      mockApi({
+        'GET /api/applications': {
+          body: {
+            ...list,
+            items: [{ ...due, followUpDate: '2026-10-20', followUpOverdue: false }],
+          },
+        },
+      });
+      await renderWithProviders(<ApplicationsPage />, { path: '/applications', language: 'en' });
+      await screen.findByText('Acme');
+
+      expect(screen.queryByRole('button', { name: 'I followed up' })).not.toBeInTheDocument();
+    });
+
+    it('shows a translated error when the application no longer waits for an answer', async () => {
+      mockApi({
+        'GET /api/applications': { body: list },
+        [`POST ${followUpUrl}`]: { status: 409, body: problem(409, 'FOLLOW_UP_NOT_EXPECTED') },
+      });
+      await renderWithProviders(<ApplicationsPage />, { path: '/applications', language: 'en' });
+      await screen.findByText('Acme');
+
+      await userEvent.click(screen.getByRole('button', { name: 'I followed up' }));
+
+      expect(await screen.findByRole('alert')).toHaveTextContent(
+        'This application is no longer waiting for an answer: no follow-up is expected.',
+      );
+    });
+  });
+
   describe('on a phone', () => {
     beforeEach(() => {
       mockMobileViewport();
@@ -292,6 +519,40 @@ describe('ApplicationsPage', () => {
       expect(content.getByText('8 oct. 2026')).toBeInTheDocument();
       expect(screen.queryByRole('table')).not.toBeInTheDocument();
       expect(screen.getByRole('list', { name: 'Liste des candidatures' })).toBeInTheDocument();
+    });
+
+    it('offers to record a follow-up due beside the card link', async () => {
+      let current = due;
+      const { requests } = mockApi({
+        'GET /api/applications': () => jsonResponse({ ...list, items: [current] }),
+        [`POST /api/applications/${due.id}/follow-ups`]: () => {
+          current = {
+            ...due,
+            followUpDate: '2026-10-16',
+            followUpOverdue: false,
+            followUpCount: 1,
+          };
+          return jsonResponse(current);
+        },
+      });
+      const { router } = await renderWithProviders(<ApplicationsPage />, {
+        path: '/applications',
+        language: 'en',
+      });
+      const card = (await screen.findByText('Acme')).closest('a') as HTMLElement;
+      const button = screen.getByRole('button', { name: 'I followed up' });
+      expect(card).not.toContainElement(button);
+
+      await userEvent.click(button);
+
+      expect(
+        await screen.findByText('Follow-up recorded. Next one on Oct 16, 2026.'),
+      ).toBeInTheDocument();
+      expect(router.state.location.pathname).toBe('/applications');
+      expect(requests.filter((r) => r.method === 'POST')).toHaveLength(1);
+      // Reloaded: the follow-up is no longer due and the card shows the next one's rank.
+      expect(await within(card).findByText('Follow-up #2')).toBeInTheDocument();
+      expect(screen.queryByRole('button', { name: 'I followed up' })).not.toBeInTheDocument();
     });
 
     it('sorts by sent date with a button above the cards', async () => {

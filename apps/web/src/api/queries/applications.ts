@@ -2,6 +2,7 @@ import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tansta
 import { api, unwrap } from '../client';
 import { queryKeys } from '../query-keys';
 import type {
+  ApplicationSummary,
   CreateApplicationInput,
   ListApplicationsQuery,
   UpdateApplicationInput,
@@ -60,17 +61,46 @@ export function useCreateApplication() {
   });
 }
 
-export function useUpdateApplication(id: string) {
+/** Every application query (lists and details) and the data derived from them. */
+function useInvalidateAfterChange() {
   const queryClient = useQueryClient();
   const invalidateDerived = useInvalidateDerivedData();
+  return () =>
+    Promise.all([
+      queryClient.invalidateQueries({ queryKey: queryKeys.applications }),
+      invalidateDerived(),
+    ]);
+}
+
+export function useUpdateApplication(id: string) {
+  const invalidate = useInvalidateAfterChange();
   return useMutation({
     mutationFn: (input: UpdateApplicationInput) =>
       unwrap(api.PATCH('/applications/{id}', { params: { path: { id } }, body: input })),
-    onSuccess: () =>
-      Promise.all([
-        queryClient.invalidateQueries({ queryKey: queryKeys.applications }),
-        invalidateDerived(),
-      ]),
+    onSuccess: invalidate,
+  });
+}
+
+/** Records that the user followed up today: the API schedules the next follow-up. */
+export function useRecordFollowUp() {
+  const invalidate = useInvalidateAfterChange();
+  return useMutation({
+    mutationFn: (id: string) =>
+      unwrap(api.POST('/applications/{id}/follow-ups', { params: { path: { id } } })),
+    onSuccess: invalidate,
+  });
+}
+
+/** Puts back the follow-up date and count of before a recorded follow-up (undo). */
+export function useRestoreFollowUp() {
+  const invalidate = useInvalidateAfterChange();
+  return useMutation({
+    mutationFn: ({
+      id,
+      ...followUp
+    }: Pick<ApplicationSummary, 'id' | 'followUpOverride' | 'followUpCount'>) =>
+      unwrap(api.PATCH('/applications/{id}', { params: { path: { id } }, body: followUp })),
+    onSuccess: invalidate,
   });
 }
 

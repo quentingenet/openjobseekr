@@ -96,12 +96,17 @@ openjobseekr/
 ## Conventions
 
 - `Application` fields follow the spreadsheet columns: do not rename or reorder them. The only
-  addition is `channelDetail`, the channel name when `channel` is `OTHER` (cleared otherwise,
-  by `channelDetailFor` in `@openjobseekr/domain`). `followUpOverride` holds the "DATE DE
-  RELANCE" column only when the user set it by hand.
+  additions are `channelDetail`, the channel name when `channel` is `OTHER` (cleared otherwise,
+  by `channelDetailFor` in `@openjobseekr/domain`), and `followUpCount`, the follow-ups the
+  user recorded (no column: not exported, kept on re-import). `followUpOverride` holds the
+  "DATE DE RELANCE" column only when the user set it by hand.
 - The follow-up date exists only while the status is `SENT`: the date the user picked
   (`followUpOverride`, the only stored part) or else sent date + delay, computed by
   `computeFollowUpDate` in `@openjobseekr/domain`. The overdue filter applies the same rule.
+- Recording a follow-up (`POST /applications/:id/follow-ups`, `afterFollowUp` in
+  `@openjobseekr/domain`) sets `followUpOverride` to today + delay and increments
+  `followUpCount`; the web app can undo it for a few seconds (PATCH back to the previous
+  values) and shows the next follow-up's rank (`followUpRank`) from the second one.
 - `jobPostingText` is excluded from list responses and only returned in the detail response.
 - ESLint runs typescript-eslint `strictTypeChecked` (type-aware). The few relaxed rules are
   in `eslint.config.js`, each with its reason; fix the code rather than adding exceptions.
@@ -111,11 +116,11 @@ openjobseekr/
 - A Vitest test checks that every translation key exists in `en`, `fr` and `es`, and that every
   API error code has its `errors.<CODE>` translation.
 - Limits are defined once in `@openjobseekr/domain` (`TEXT_LIMITS` per field, `SKILL_LIMITS`,
-  `SKILL_LEVEL`, `SEARCH_MAX_LENGTH`, `CREDENTIAL_LIMITS`, page sizes, `MAX_OFFSET`) and used by
-  the API DTOs and the web forms. The database CHECK constraints (migrations) repeat them,
-  checked against the migrations by `text-limits.spec.ts` and against the real database by
-  `database-constraints.e2e-spec.ts`. `IMPORT_LIMITS` (file size, rows) bound the spreadsheet
-  import.
+  `SKILL_LEVEL`, `FOLLOW_UP_COUNT`, `SEARCH_MAX_LENGTH`, `CREDENTIAL_LIMITS`, page sizes,
+  `MAX_OFFSET`) and used by the API DTOs and the web forms. The database CHECK constraints
+  (migrations) repeat them, checked against the migrations by `text-limits.spec.ts` and
+  against the real database by `database-constraints.e2e-spec.ts`. `IMPORT_LIMITS` (file
+  size, rows) bound the spreadsheet import.
 - The status waiting for an answer (`FOLLOW_UP_STATUS`) drives the follow-up date, the
   overdue filter and the response rate: never compare with `'SENT'` directly.
 - Enum lists (statuses, channels, work modes) come from `@openjobseekr/domain` in the web app
@@ -129,8 +134,8 @@ openjobseekr/
   by the writer (SheetJS does not). The empty templates in `apps/web/public/templates/` must
   match them (`templates.spec.ts`): regenerate both templates when a column or a label changes
   (e.g. a new channel). An import replaces the user's applications, adds skills and keeps the
-  follow-up dates picked in the app for the applications found again (`keepFollowUpDates`); the
-  whole file is validated before anything is written.
+  follow-up dates picked in the app and the follow-up counts for the applications found again
+  (`keepFollowUpDates`); the whole file is validated before anything is written.
 - Skill names are unique per user ignoring case and a ".js" suffix (`skillNameKey`): checked
   on create, update and import.
 - Login and registration are rate-limited per IP (`AUTH_RATE_LIMIT`, 5 per minute by default).

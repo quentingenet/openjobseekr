@@ -40,6 +40,11 @@
     "rowsPerPage": "Rows per page",
     "displayedRows": "{{from}}–{{to}} of {{count}}",
     "overdueSince": "Follow-up due since {{date}}",
+    "recordFollowUp": "I followed up",
+    "undoFollowUp": "Undo follow-up",
+    "undoCountdown": "Undo ({{seconds}} s)",
+    "followUpRecorded": "Follow-up recorded. Next one on {{date}}.",
+    "followUpRank": "Follow-up #{{rank}}",
     "tableLabel": "List of applications",
     "columns": {
       "sentAt": "Sent on",
@@ -48,7 +53,7 @@
       "channel": "Channel",
       "status": "Status",
       "followUp": "Follow-up",
-      "workMode": "Work mode"
+      "workMode": "Mode"
     },
     "sortedNewestFirst": "sorted newest first",
     "sortedOldestFirst": "sorted oldest first",
@@ -183,6 +188,7 @@
     "UNKNOWN": "An unexpected error occurred.",
     "SKILL_NOT_FOUND": "This skill does not exist or was deleted.",
     "SKILL_NAME_ALREADY_USED": "A skill with this name already exists.",
+    "FOLLOW_UP_NOT_EXPECTED": "This application is no longer waiting for an answer: no follow-up is expected.",
     "IMPORT_UNSUPPORTED_FILE": "This file is not a valid .xlsx or .ods spreadsheet.",
     "IMPORT_INVALID_STRUCTURE": "The layout of this file does not match the template. Nothing was changed.",
     "IMPORT_INVALID_DATA": "Some cells are invalid. Nothing was changed: fix them and import the file again.",
@@ -195,7 +201,8 @@
     "goHome": "Go to my applications",
     "back": "Back",
     "cancel": "Cancel",
-    "unexpectedError": "Something went wrong while displaying this page."
+    "unexpectedError": "Something went wrong while displaying this page.",
+    "undo": "Undo"
   },
   "skills": {
     "title": "Skills",

@@ -40,6 +40,11 @@
     "rowsPerPage": "Filas por página",
     "displayedRows": "{{from}}–{{to}} de {{count}}",
     "overdueSince": "Seguimiento pendiente desde el {{date}}",
+    "recordFollowUp": "Ya hice el seguimiento",
+    "undoFollowUp": "Deshacer el seguimiento",
+    "undoCountdown": "Deshacer ({{seconds}} s)",
+    "followUpRecorded": "Seguimiento registrado. El próximo será el {{date}}.",
+    "followUpRank": "{{rank}}.º seguimiento",
     "tableLabel": "Lista de candidaturas",
     "columns": {
       "sentAt": "Enviada el",
@@ -48,7 +53,7 @@
       "channel": "Canal",
       "status": "Estado",
       "followUp": "Seguimiento",
-      "workMode": "Modalidad"
+      "workMode": "Modo"
     },
     "sortedNewestFirst": "ordenadas de la más reciente a la más antigua",
     "sortedOldestFirst": "ordenadas de la más antigua a la más reciente",
@@ -183,6 +188,7 @@
     "UNKNOWN": "Se ha producido un error inesperado.",
     "SKILL_NOT_FOUND": "Esta competencia no existe o ha sido eliminada.",
     "SKILL_NAME_ALREADY_USED": "Ya existe una competencia con este nombre.",
+    "FOLLOW_UP_NOT_EXPECTED": "Esta candidatura ya no espera respuesta: no hay ningún seguimiento previsto.",
     "IMPORT_UNSUPPORTED_FILE": "Este archivo no es una hoja de cálculo .xlsx u .ods válida.",
     "IMPORT_INVALID_STRUCTURE": "La estructura de este archivo no coincide con la plantilla. No se ha modificado nada.",
     "IMPORT_INVALID_DATA": "Algunas celdas no son válidas. No se ha modificado nada: corrígelas y vuelve a importar el archivo.",
@@ -195,7 +201,8 @@
     "goHome": "Ir a mis candidaturas",
     "back": "Volver",
     "cancel": "Cancelar",
-    "unexpectedError": "Se ha producido un problema al mostrar esta página."
+    "unexpectedError": "Se ha producido un problema al mostrar esta página.",
+    "undo": "Deshacer"
   },
   "skills": {
     "title": "Competencias",

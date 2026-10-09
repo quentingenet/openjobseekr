@@ -6,6 +6,11 @@ interface FollowUpRow {
   followUpOverride: string | null;
 }
 
+/** An application already saved: it also has the follow-ups recorded in the app. */
+interface SavedFollowUpRow extends FollowUpRow {
+  followUpCount: number;
+}
+
 /** Same sent date, company and job title, ignoring case and spaces. */
 function applicationKey({ sentAt, company, jobTitle }: FollowUpRow): string {
   const normalize = (text: string) =>
@@ -26,21 +31,24 @@ function uniqueByKey<Row extends FollowUpRow>(rows: readonly Row[]): Map<string,
 /**
  * An import recreates the applications: the follow-up dates picked in the app would be lost.
  * They are kept for the applications found again in the file, unless the file has its own date
- * typed by hand (a formula date is not a choice, so it never erases one).
+ * typed by hand (a formula date is not a choice, so it never erases one). The follow-up count,
+ * which has no column in the file, is always kept. `kept` counts the dates kept.
  */
 export function keepFollowUpDates<Row extends FollowUpRow>(
   imported: readonly Row[],
-  existing: readonly FollowUpRow[],
-): { applications: Row[]; kept: number } {
+  existing: readonly SavedFollowUpRow[],
+): { applications: (Row & { followUpCount?: number })[]; kept: number } {
   const existingByKey = uniqueByKey(existing);
   const importedByKey = uniqueByKey(imported);
   let kept = 0;
   const applications = imported.map((row) => {
     const key = applicationKey(row);
     const previous = importedByKey.get(key) ? existingByKey.get(key) : null;
-    if (row.followUpOverride !== null || !previous?.followUpOverride) return row;
+    if (!previous) return row;
+    const count = previous.followUpCount > 0 ? { followUpCount: previous.followUpCount } : {};
+    if (row.followUpOverride !== null || !previous.followUpOverride) return { ...row, ...count };
     kept++;
-    return { ...row, followUpOverride: previous.followUpOverride };
+    return { ...row, ...count, followUpOverride: previous.followUpOverride };
   });
   return { applications, kept };
 }

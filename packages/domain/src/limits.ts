@@ -27,6 +27,9 @@ export const SKILL_LIMITS = { name: 100, pattern: 200 } as const;
 /** Optional self-assessed skill level (also a database CHECK constraint). */
 export const SKILL_LEVEL = { min: 0, max: 5 } as const;
 
+/** Follow-ups recorded for an application (also a database CHECK constraint). */
+export const FOLLOW_UP_COUNT = { min: 0, max: 99 } as const;
+
 /** Maximum length of the company / job title search. */
 export const SEARCH_MAX_LENGTH = 100;
 

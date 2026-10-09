@@ -94,13 +94,14 @@ describe('ImportService', () => {
     });
   });
 
-  it('keeps the follow-up dates picked in the app for the applications found again', async () => {
+  it('keeps the follow-up dates picked in the app and the follow-up counts of the applications found again', async () => {
     ctx.tx.application.findMany.mockResolvedValue([
       {
         sentAt: new Date('2026-10-01T00:00:00.000Z'),
         company: 'Acme',
         jobTitle: 'Developer',
         followUpOverride: new Date('2026-10-22T00:00:00.000Z'),
+        followUpCount: 2,
       },
     ]);
     const buffer = spreadsheetFile({
@@ -121,10 +122,21 @@ describe('ImportService', () => {
 
     expect(ctx.tx.application.findMany).toHaveBeenCalledWith({
       where: { userId: 'user-1' },
-      select: { sentAt: true, company: true, jobTitle: true, followUpOverride: true },
+      select: {
+        sentAt: true,
+        company: true,
+        jobTitle: true,
+        followUpOverride: true,
+        followUpCount: true,
+      },
     });
     expect(ctx.tx.application.createMany).toHaveBeenCalledWith({
-      data: [expect.objectContaining({ followUpOverride: new Date('2026-10-22T00:00:00.000Z') })],
+      data: [
+        expect.objectContaining({
+          followUpOverride: new Date('2026-10-22T00:00:00.000Z'),
+          followUpCount: 2,
+        }),
+      ],
     });
     expect(result.keptFollowUpDates).toBe(1);
   });

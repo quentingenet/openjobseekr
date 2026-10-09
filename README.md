@@ -58,6 +58,10 @@ decisions, the review and what gets merged. The configuration is part of the rep
 - **Follow-up date**: sent date + a configurable delay (7 days by default) while the
   application is waiting for an answer, or a date you pick with the date picker; overdue
   follow-ups are highlighted.
+- **Follow-ups done**: one click on "I followed up" (in the table, on a phone card or on the
+  application page) schedules the next follow-up one delay later and counts it; a "2nd
+  follow-up", "3rd follow-up"... badge shows where you stand. For 10 seconds the same button
+  (and the notification) undoes it.
 - **Channels**: LinkedIn, Welcome to the Jungle, APEC, HelloWork, Indeed, Free-Work,
   Licorne Society, recruitment agency, career site, referral, unsolicited, or "Other" with your
   own channel name (e.g. Monster).
@@ -84,7 +88,8 @@ anything is sent:
 - **Follow-up dates are kept**: a follow-up date you picked in the app stays when the same
   application is found again in the file (same sent date, company and job title, ignoring case
   and spaces), so importing the sheet again never resets it. A date typed by hand in column J
-  of the file wins; the formula's date never erases yours.
+  of the file wins; the formula's date never erases yours. The number of follow-ups done,
+  which has no column in the file, is kept too.
 - **Skills are added**: your skills (and their levels) are kept; a skill of the file is added
   only if you do not have it yet. Names are compared ignoring case and a ".js" suffix, so
   "TypeScript", "TYPESCRIPT" and "typescript" are one skill, and so are "React" and "React.js".
@@ -163,6 +168,9 @@ importing gives back the same data.
 - **"Compétences"**: name, pattern and level, the number of job postings and the frequency
   computed by the app, and the priority score and rank as formulas.
 - **"Listes"**: the follow-up delay and the allowed values.
+
+The number of follow-ups done is not exported (the spreadsheet has no column for it); importing
+the file again keeps it.
 
 Drop-down lists and colors are not written (SheetJS does not support them): start from the
 template if you want them, and paste the exported rows into it.

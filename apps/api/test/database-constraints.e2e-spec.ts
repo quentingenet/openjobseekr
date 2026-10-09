@@ -1,5 +1,11 @@
 import type { INestApplication } from '@nestjs/common';
-import { CREDENTIAL_LIMITS, SKILL_LEVEL, SKILL_LIMITS, TEXT_LIMITS } from '@openjobseekr/domain';
+import {
+  CREDENTIAL_LIMITS,
+  FOLLOW_UP_COUNT,
+  SKILL_LEVEL,
+  SKILL_LIMITS,
+  TEXT_LIMITS,
+} from '@openjobseekr/domain';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import type { PrismaService } from '../src/prisma/prisma.service.js';
 import { createTestApp, resetDatabase } from './helpers/create-app.js';
@@ -85,6 +91,7 @@ describe('Database constraints (e2e)', () => {
           text(max, field === 'company' || field === 'jobTitle' ? 1 : 0),
         ]),
       ),
+      Application_followUpCount_range: text(FOLLOW_UP_COUNT.max, FOLLOW_UP_COUNT.min),
       Skill_name_length: text(SKILL_LIMITS.name, 1),
       Skill_pattern_length: text(SKILL_LIMITS.pattern, 1),
       Skill_level_range: text(SKILL_LEVEL.max, SKILL_LEVEL.min),

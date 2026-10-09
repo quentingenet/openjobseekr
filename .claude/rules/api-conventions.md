@@ -13,3 +13,6 @@
   and responses.
 - The follow-up date (`followUpDate`) is computed while the status is `SENT`: the date set by
   the user (`followUpOverride`, `null` to go back to the computed date), or sent date + delay.
+- `POST /applications/:id/follow-ups` records a follow-up made today: `followUpOverride` becomes
+  today + delay and `followUpCount` is incremented. It answers 409 `FOLLOW_UP_NOT_EXPECTED` when
+  the status is not waiting for an answer.

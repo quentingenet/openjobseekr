@@ -17,6 +17,7 @@ export const application: Application = {
   followUpDate: '2026-10-08',
   followUpOverride: null,
   followUpOverdue: true,
+  followUpCount: 0,
   workMode: 'HYBRID',
   remoteRhythm: null,
   salaryRange: null,

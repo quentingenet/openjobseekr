@@ -7,8 +7,10 @@ export {
   OTHER_CHANNEL,
 } from './channel.js';
 export {
+  afterFollowUp,
   computeFollowUpDate,
   FOLLOW_UP_STATUS,
+  followUpRank,
   isFollowUpOverdue,
   overdueSentBefore,
 } from './follow-up.js';
@@ -25,6 +27,7 @@ export {
   type ApplicationTextField,
   CREDENTIAL_LIMITS,
   DEFAULT_PAGE_SIZE,
+  FOLLOW_UP_COUNT,
   MAX_OFFSET,
   MAX_PAGE_SIZE,
   PAGE_SIZES,

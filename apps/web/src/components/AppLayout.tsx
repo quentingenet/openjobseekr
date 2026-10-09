@@ -147,10 +147,12 @@ export function AppLayout() {
           )}
         </Toolbar>
       </AppBar>
+      {/* The full width for wide tables, with gutters; capped (1536 px) so that lines do not
+          stretch on very large screens. */}
       <Container
         component="main"
-        maxWidth={false}
-        sx={{ py: { xs: 2, md: 4 }, px: { xs: 2, md: 3 }, width: { xs: '100%', md: '80%' } }}
+        maxWidth="xl"
+        sx={{ py: { xs: 2, md: 4 }, px: { xs: 2, sm: 3, lg: 4 } }}
       >
         <Outlet />
       </Container>

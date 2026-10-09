@@ -2,7 +2,10 @@ import { type Mock, vi } from 'vitest';
 import type { FieldError, ProblemDetails } from '../api/client';
 import { jsonResponse } from './render';
 
-type Handler = { status?: number; body?: unknown } | ((request: RecordedRequest) => Response);
+/** A function handler may answer later, e.g. to test what happens while a request is pending. */
+type Handler =
+  | { status?: number; body?: unknown }
+  | ((request: RecordedRequest) => Response | Promise<Response>);
 
 export interface RecordedRequest {
   method: string;

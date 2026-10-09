@@ -18,6 +18,13 @@ describe('AppLayout', () => {
     expect(screen.queryByRole('button', { name: 'Open the menu' })).not.toBeInTheDocument();
   });
 
+  it('gives the pages the full width, capped on very large screens', async () => {
+    await renderWithProviders(<AppLayout />, { path: '/applications', language: 'en' });
+
+    // Wide tables fit without scrolling sideways; lines stay readable on a 4K screen.
+    expect(screen.getByRole('main')).toHaveClass('MuiContainer-maxWidthXl');
+  });
+
   it('moves the navigation into a menu on a phone, closed after choosing a page', async () => {
     mockMobileViewport();
     const { router } = await renderWithProviders(<AppLayout />, {

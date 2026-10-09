@@ -58,7 +58,13 @@ export class ImportService {
         );
         const previous = await tx.application.findMany({
           where: { userId },
-          select: { sentAt: true, company: true, jobTitle: true, followUpOverride: true },
+          select: {
+            sentAt: true,
+            company: true,
+            jobTitle: true,
+            followUpOverride: true,
+            followUpCount: true,
+          },
         });
         const followUps = keepFollowUpDates(
           parsed.applications,

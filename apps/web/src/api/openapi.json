@@ -772,6 +772,82 @@
         ]
       }
     },
+    "/applications/{id}/follow-ups": {
+      "post": {
+        "operationId": "ApplicationsController_recordFollowUp",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationDetailDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "VALIDATION_FAILED",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UNAUTHORIZED",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "APPLICATION_NOT_FOUND",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "FOLLOW_UP_NOT_EXPECTED",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Record that the user followed up today; the next follow-up comes one delay later",
+        "tags": [
+          "applications"
+        ]
+      }
+    },
     "/stats/overview": {
       "get": {
         "operationId": "StatsController_overview",
@@ -1456,6 +1532,12 @@
             "example": "2026-10-20",
             "description": "Follow-up date set by the user (YYYY-MM-DD), used instead of sentAt + delay while the status is SENT; null goes back to the computed date"
           },
+          "followUpCount": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 99,
+            "description": "Follow-ups the user recorded (not a spreadsheet column), 0 when omitted"
+          },
           "workMode": {
             "type": "string",
             "enum": [
@@ -1592,6 +1674,10 @@
             "type": "boolean",
             "description": "Computed: true when today is after followUpDate"
           },
+          "followUpCount": {
+            "type": "number",
+            "description": "Follow-ups the user recorded (not a spreadsheet column)"
+          },
           "workMode": {
             "type": "string",
             "enum": [
@@ -1655,6 +1741,7 @@
           "followUpDate",
           "followUpOverride",
           "followUpOverdue",
+          "followUpCount",
           "workMode",
           "remoteRhythm",
           "salaryRange",
@@ -1751,6 +1838,10 @@
             "type": "boolean",
             "description": "Computed: true when today is after followUpDate"
           },
+          "followUpCount": {
+            "type": "number",
+            "description": "Follow-ups the user recorded (not a spreadsheet column)"
+          },
           "workMode": {
             "type": "string",
             "enum": [
@@ -1809,6 +1900,7 @@
           "followUpDate",
           "followUpOverride",
           "followUpOverdue",
+          "followUpCount",
           "workMode",
           "remoteRhythm",
           "salaryRange",
@@ -1969,6 +2061,12 @@
               "REJECTED",
               "NO_RESPONSE"
             ]
+          },
+          "followUpCount": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 99,
+            "description": "Follow-ups the user recorded (not a spreadsheet column), 0 when omitted"
           }
         }
       },
@@ -2284,6 +2382,7 @@
               "CONFLICT",
               "EMAIL_ALREADY_USED",
               "SKILL_NAME_ALREADY_USED",
+              "FOLLOW_UP_NOT_EXPECTED",
               "PAYLOAD_TOO_LARGE",
               "IMPORT_UNSUPPORTED_FILE",
               "IMPORT_INVALID_STRUCTURE",

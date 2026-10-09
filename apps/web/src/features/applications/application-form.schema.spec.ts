@@ -23,6 +23,7 @@ const application: Application = {
   followUpDate: '2026-10-08',
   followUpOverride: null,
   followUpOverdue: false,
+  followUpCount: 0,
   workMode: null,
   remoteRhythm: null,
   salaryRange: null,

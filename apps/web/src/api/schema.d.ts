@@ -109,6 +109,23 @@ export interface paths {
         patch: operations["ApplicationsController_update"];
         trace?: never;
     };
+    "/applications/{id}/follow-ups": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Record that the user followed up today; the next follow-up comes one delay later */
+        post: operations["ApplicationsController_recordFollowUp"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/stats/overview": {
         parameters: {
             query?: never;
@@ -290,6 +307,8 @@ export interface components {
              * @example 2026-10-20
              */
             followUpOverride?: string | null;
+            /** @description Follow-ups the user recorded (not a spreadsheet column), 0 when omitted */
+            followUpCount?: number;
             /** @enum {string|null} */
             workMode?: "ONSITE" | "HYBRID" | "FULL_REMOTE" | "UNSPECIFIED" | null;
             remoteRhythm?: string | null;
@@ -329,6 +348,8 @@ export interface components {
             followUpOverride: string | null;
             /** @description Computed: true when today is after followUpDate */
             followUpOverdue: boolean;
+            /** @description Follow-ups the user recorded (not a spreadsheet column) */
+            followUpCount: number;
             /** @enum {string|null} */
             workMode: "ONSITE" | "HYBRID" | "FULL_REMOTE" | "UNSPECIFIED" | null;
             remoteRhythm: string | null;
@@ -373,6 +394,8 @@ export interface components {
             followUpOverride: string | null;
             /** @description Computed: true when today is after followUpDate */
             followUpOverdue: boolean;
+            /** @description Follow-ups the user recorded (not a spreadsheet column) */
+            followUpCount: number;
             /** @enum {string|null} */
             workMode: "ONSITE" | "HYBRID" | "FULL_REMOTE" | "UNSPECIFIED" | null;
             remoteRhythm: string | null;
@@ -425,6 +448,8 @@ export interface components {
             jobTitle?: string;
             /** @enum {string} */
             status?: "SENT" | "RESPONSE_RECEIVED" | "HR_INTERVIEW" | "TECHNICAL_INTERVIEW" | "OFFER" | "REJECTED" | "NO_RESPONSE";
+            /** @description Follow-ups the user recorded (not a spreadsheet column), 0 when omitted */
+            followUpCount?: number;
         };
         StatsOverviewDto: {
             total: number;
@@ -564,7 +589,7 @@ export interface components {
              * @description Stable code, translated by the web app
              * @enum {string}
              */
-            code: "VALIDATION_FAILED" | "BAD_REQUEST" | "UNAUTHORIZED" | "INVALID_CREDENTIALS" | "FORBIDDEN" | "NOT_FOUND" | "APPLICATION_NOT_FOUND" | "SKILL_NOT_FOUND" | "CONFLICT" | "EMAIL_ALREADY_USED" | "SKILL_NAME_ALREADY_USED" | "PAYLOAD_TOO_LARGE" | "IMPORT_UNSUPPORTED_FILE" | "IMPORT_INVALID_STRUCTURE" | "IMPORT_INVALID_DATA" | "IMPORT_TOO_MANY_ROWS" | "TOO_MANY_REQUESTS" | "INTERNAL_ERROR" | "SERVICE_UNAVAILABLE";
+            code: "VALIDATION_FAILED" | "BAD_REQUEST" | "UNAUTHORIZED" | "INVALID_CREDENTIALS" | "FORBIDDEN" | "NOT_FOUND" | "APPLICATION_NOT_FOUND" | "SKILL_NOT_FOUND" | "CONFLICT" | "EMAIL_ALREADY_USED" | "SKILL_NAME_ALREADY_USED" | "FOLLOW_UP_NOT_EXPECTED" | "PAYLOAD_TOO_LARGE" | "IMPORT_UNSUPPORTED_FILE" | "IMPORT_INVALID_STRUCTURE" | "IMPORT_INVALID_DATA" | "IMPORT_TOO_MANY_ROWS" | "TOO_MANY_REQUESTS" | "INTERNAL_ERROR" | "SERVICE_UNAVAILABLE";
             /** @description Invalid fields (VALIDATION_FAILED), or spreadsheet cells (IMPORT_*) */
             errors?: components["schemas"]["FieldErrorDto"][];
         };
@@ -1061,6 +1086,63 @@ export interface operations {
             };
             /** @description APPLICATION_NOT_FOUND */
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetailsDto"];
+                };
+            };
+        };
+    };
+    ApplicationsController_recordFollowUp: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApplicationDetailDto"];
+                };
+            };
+            /** @description VALIDATION_FAILED */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetailsDto"];
+                };
+            };
+            /** @description UNAUTHORIZED */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetailsDto"];
+                };
+            };
+            /** @description APPLICATION_NOT_FOUND */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetailsDto"];
+                };
+            };
+            /** @description FOLLOW_UP_NOT_EXPECTED */
+            409: {
                 headers: {
                     [name: string]: unknown;
                 };

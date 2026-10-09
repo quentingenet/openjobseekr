@@ -55,6 +55,9 @@ export class ApplicationDetailDto {
   @ApiProperty({ description: 'Computed: true when today is after followUpDate' })
   followUpOverdue: boolean;
 
+  @ApiProperty({ description: 'Follow-ups the user recorded (not a spreadsheet column)' })
+  followUpCount: number;
+
   @ApiProperty({ enum: WorkMode, nullable: true })
   workMode: WorkMode | null;
 

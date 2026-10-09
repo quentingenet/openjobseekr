@@ -27,6 +27,7 @@ describe('Swagger (e2e)', () => {
     expect(Object.keys(response.body.paths).sort()).toEqual([
       '/applications',
       '/applications/{id}',
+      '/applications/{id}/follow-ups',
       '/auth/login',
       '/auth/me',
       '/auth/register',

@@ -8,8 +8,10 @@ import 'dayjs/locale/fr';
 import { type ReactNode, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { createQueryClient } from '../api/query-client';
+import { FollowUpActionsProvider } from '../features/applications/FollowUpActionsProvider';
 import { AuthProvider } from '../features/auth/AuthContext';
 import { toLanguage } from '../i18n';
+import { NotificationProvider } from './NotificationProvider';
 import { createAppTheme } from '../theme';
 
 export function AppProviders({
@@ -29,7 +31,11 @@ export function AppProviders({
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={language}>
-          <AuthProvider>{children}</AuthProvider>
+          <AuthProvider>
+            <NotificationProvider>
+              <FollowUpActionsProvider>{children}</FollowUpActionsProvider>
+            </NotificationProvider>
+          </AuthProvider>
         </LocalizationProvider>
       </ThemeProvider>
     </QueryClientProvider>

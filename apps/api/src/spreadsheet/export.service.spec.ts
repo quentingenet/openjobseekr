@@ -21,6 +21,7 @@ const record: Application = {
   status: 'SENT',
   contact: null,
   followUpOverride: new Date('2026-10-20T00:00:00.000Z'),
+  followUpCount: 0,
   workMode: null,
   remoteRhythm: null,
   salaryRange: null,

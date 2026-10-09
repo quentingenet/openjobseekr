@@ -40,6 +40,11 @@
     "rowsPerPage": "Lignes par page",
     "displayedRows": "{{from}}–{{to}} sur {{count}}",
     "overdueSince": "Relance due depuis le {{date}}",
+    "recordFollowUp": "J'ai relancé",
+    "undoFollowUp": "Annuler la relance",
+    "undoCountdown": "Annuler ({{seconds}} s)",
+    "followUpRecorded": "Relance notée. Prochaine relance le {{date}}.",
+    "followUpRank": "{{rank}}e relance",
     "tableLabel": "Liste des candidatures",
     "columns": {
       "sentAt": "Envoyée le",
@@ -48,7 +53,7 @@
       "channel": "Canal",
       "status": "Statut",
       "followUp": "Relance",
-      "workMode": "Mode de travail"
+      "workMode": "Mode"
     },
     "sortedNewestFirst": "triées de la plus récente à la plus ancienne",
     "sortedOldestFirst": "triées de la plus ancienne à la plus récente",
@@ -183,6 +188,7 @@
     "UNKNOWN": "Une erreur inattendue est survenue.",
     "SKILL_NOT_FOUND": "Cette compétence n'existe pas ou a été supprimée.",
     "SKILL_NAME_ALREADY_USED": "Une compétence porte déjà ce nom.",
+    "FOLLOW_UP_NOT_EXPECTED": "Cette candidature n'attend plus de réponse : aucune relance n'est prévue.",
     "IMPORT_UNSUPPORTED_FILE": "Ce fichier n'est pas un tableur .xlsx ou .ods valide.",
     "IMPORT_INVALID_STRUCTURE": "La structure de ce fichier ne correspond pas au modèle. Rien n'a été modifié.",
     "IMPORT_INVALID_DATA": "Certaines cellules sont invalides. Rien n'a été modifié : corrigez-les puis importez à nouveau le fichier.",
@@ -195,7 +201,8 @@
     "goHome": "Aller à mes candidatures",
     "back": "Retour",
     "cancel": "Annuler",
-    "unexpectedError": "Un problème est survenu à l'affichage de cette page."
+    "unexpectedError": "Un problème est survenu à l'affichage de cette page.",
+    "undo": "Annuler"
   },
   "skills": {
     "title": "Compétences",

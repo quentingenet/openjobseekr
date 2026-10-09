@@ -64,6 +64,7 @@ export function toApplicationSummary(
     followUpDate,
     followUpOverride,
     followUpOverdue: isFollowUpOverdue(followUpDate, context.today),
+    followUpCount: application.followUpCount,
     workMode: application.workMode,
     remoteRhythm: application.remoteRhythm,
     salaryRange: application.salaryRange,

@@ -1,6 +1,22 @@
+import { applyDecorators } from '@nestjs/common';
 import { ApiProperty, ApiPropertyOptional, OmitType, PartialType } from '@nestjs/swagger';
-import { acceptsChannelDetail, type ApplicationChannel, TEXT_LIMITS } from '@openjobseekr/domain';
-import { IsEnum, IsNotEmpty, IsOptional, IsString, MaxLength, ValidateBy } from 'class-validator';
+import {
+  acceptsChannelDetail,
+  type ApplicationChannel,
+  FOLLOW_UP_COUNT,
+  TEXT_LIMITS,
+} from '@openjobseekr/domain';
+import {
+  IsEnum,
+  IsInt,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  Max,
+  MaxLength,
+  Min,
+  ValidateBy,
+} from 'class-validator';
 import {
   IsCalendarDate,
   IsOptionalNotNull,
@@ -20,6 +36,21 @@ const RequiresOtherChannel = (): PropertyDecorator =>
       defaultMessage: () => '$property is only allowed when channel is OTHER',
     },
   });
+
+/** Declared once for both DTOs: `PartialType` would make it nullable in the update. */
+const FollowUpCountProperty = (): PropertyDecorator =>
+  applyDecorators(
+    ApiPropertyOptional({
+      minimum: FOLLOW_UP_COUNT.min,
+      maximum: FOLLOW_UP_COUNT.max,
+      // No `default`: the generated web types would make the field required.
+      description: 'Follow-ups the user recorded (not a spreadsheet column), 0 when omitted',
+    }),
+    IsOptionalNotNull(),
+    IsInt(),
+    Min(FOLLOW_UP_COUNT.min),
+    Max(FOLLOW_UP_COUNT.max),
+  );
 
 /** Fields in the spreadsheet column order. `null` clears an optional field. */
 export class CreateApplicationDto {
@@ -103,6 +134,9 @@ export class CreateApplicationDto {
   @IsCalendarDate()
   followUpOverride?: string | null;
 
+  @FollowUpCountProperty()
+  followUpCount?: number;
+
   @ApiPropertyOptional({ enum: WorkMode, nullable: true })
   @IsOptional()
   @IsEnum(WorkMode)
@@ -159,7 +193,7 @@ export class CreateApplicationDto {
 }
 
 // Fields that can be omitted in an update but never set to null.
-const NON_NULLABLE_FIELDS = ['sentAt', 'company', 'jobTitle', 'status'] as const;
+const NON_NULLABLE_FIELDS = ['sentAt', 'company', 'jobTitle', 'status', 'followUpCount'] as const;
 
 /**
  * Partial update: optional fields may be cleared with `null`, the others may not.
@@ -194,4 +228,7 @@ export class UpdateApplicationDto extends PartialType(
   @IsOptionalNotNull()
   @IsEnum(Status)
   status?: Status;
+
+  @FollowUpCountProperty()
+  followUpCount?: number;
 }

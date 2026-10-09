@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { getMetadataStorage } from 'class-validator';
-import { SKILL_LEVEL, SKILL_LIMITS, TEXT_LIMITS } from '@openjobseekr/domain';
+import { FOLLOW_UP_COUNT, SKILL_LEVEL, SKILL_LIMITS, TEXT_LIMITS } from '@openjobseekr/domain';
 import { CreateSkillDto, UpdateSkillDto } from '../../skills/dto/skill-input.dto.js';
 import { CreateApplicationDto, UpdateApplicationDto } from './application-input.dto.js';
 
@@ -30,11 +30,11 @@ function databaseLimits(table: 'Application' | 'Skill'): Record<string, number> 
   );
 }
 
-/** `CHECK ("level" BETWEEN min AND max)` of the Skill table. */
-function databaseLevelRange(): { min: number; max: number } | undefined {
-  const match = /"Skill_level_range" CHECK \("level" BETWEEN (\d+) AND (\d+)\)/.exec(
-    allMigrations(),
-  );
+/** `CHECK ("field" BETWEEN min AND max)` of a table, e.g. the Skill level. */
+function databaseRange(table: string, field: string): { min: number; max: number } | undefined {
+  const match = new RegExp(
+    `"${table}_${field}_range" CHECK \\("${field}" BETWEEN (\\d+) AND (\\d+)\\)`,
+  ).exec(allMigrations());
   return match ? { min: Number(match[1]), max: Number(match[2]) } : undefined;
 }
 
@@ -77,6 +77,16 @@ describe('text length limits', () => {
       min: apiConstraint(CreateSkillDto, 'level', 'min'),
       max: apiConstraint(CreateSkillDto, 'level', 'max'),
     }).toEqual(SKILL_LEVEL);
-    expect(databaseLevelRange()).toEqual(SKILL_LEVEL);
+    expect(databaseRange('Skill', 'level')).toEqual(SKILL_LEVEL);
+  });
+
+  it('use the shared follow-up count range in both DTOs and the database', () => {
+    for (const dto of [CreateApplicationDto, UpdateApplicationDto]) {
+      expect({
+        min: apiConstraint(dto, 'followUpCount', 'min'),
+        max: apiConstraint(dto, 'followUpCount', 'max'),
+      }).toEqual(FOLLOW_UP_COUNT);
+    }
+    expect(databaseRange('Application', 'followUpCount')).toEqual(FOLLOW_UP_COUNT);
   });
 });

@@ -69,6 +69,7 @@ describe('Applications (e2e)', () => {
         followUpDate: '2026-10-08',
         followUpOverride: null,
         followUpOverdue: true,
+        followUpCount: 0,
         workMode: null,
         remoteRhythm: null,
         salaryRange: null,
@@ -226,6 +227,108 @@ describe('Applications (e2e)', () => {
       expect(response.body.errors).toEqual([
         { field: 'followUpOverride', constraints: ['isCalendarDate'] },
       ]);
+    });
+  });
+
+  describe('recording a follow-up', () => {
+    const followUp = (id: string, headers = auth()) =>
+      api().post(`/applications/${id}/follow-ups`).set(headers);
+
+    it('counts the follow-up and schedules the next one a delay after today, no longer overdue', async () => {
+      const { id } = await create({ sentAt: '2026-10-01', company: 'Acme', jobTitle: 'Dev' });
+
+      const first = await followUp(id).expect(200);
+      expect(first.body).toMatchObject({
+        id,
+        status: 'SENT',
+        followUpDate: '2026-10-16',
+        followUpOverride: '2026-10-16',
+        followUpOverdue: false,
+        followUpCount: 1,
+      });
+      const second = await followUp(id).expect(200);
+      expect(second.body.followUpCount).toBe(2);
+
+      const overdue = await api().get('/applications?overdue=true').set(auth()).expect(200);
+      expect(overdue.body).toMatchObject({ items: [], total: 0 });
+      const list = await api().get('/applications').set(auth()).expect(200);
+      expect(list.body.items[0].followUpCount).toBe(2);
+    });
+
+    it('is undone by putting back the previous date and count', async () => {
+      const { id } = await create({ sentAt: '2026-10-01', company: 'Acme', jobTitle: 'Dev' });
+      await followUp(id).expect(200);
+
+      const undone = await api()
+        .patch(`/applications/${id}`)
+        .set(auth())
+        .send({ followUpOverride: null, followUpCount: 0 })
+        .expect(200);
+      expect(undone.body).toMatchObject({
+        followUpDate: '2026-10-08',
+        followUpOverdue: true,
+        followUpCount: 0,
+      });
+    });
+
+    it('accepts a count on creation, e.g. from an application followed up elsewhere', async () => {
+      const { id } = await create({
+        sentAt: '2026-10-01',
+        company: 'Acme',
+        jobTitle: 'Dev',
+        followUpCount: 3,
+      });
+
+      const response = await followUp(id).expect(200);
+      expect(response.body.followUpCount).toBe(4);
+    });
+
+    it('rejects a count out of range or null', async () => {
+      const { id } = await create({ sentAt: '2026-10-01', company: 'Acme', jobTitle: 'Dev' });
+
+      for (const followUpCount of [-1, 100, 1.5, null]) {
+        const response = await api()
+          .patch(`/applications/${id}`)
+          .set(auth())
+          .send({ followUpCount })
+          .expect(400);
+        expect(response.body.errors).toEqual([
+          { field: 'followUpCount', constraints: expect.any(Array) as unknown },
+        ]);
+      }
+    });
+
+    it('refuses an application that is no longer waiting for an answer', async () => {
+      const { id } = await create({
+        sentAt: '2026-10-01',
+        company: 'Acme',
+        jobTitle: 'Dev',
+        status: 'REJECTED',
+      });
+
+      const response = await followUp(id).expect(409);
+      expect(response.body).toEqual({
+        type: 'urn:openjobseekr:error:follow-up-not-expected',
+        title: 'Application not waiting for an answer',
+        status: 409,
+        instance: `/applications/${id}/follow-ups`,
+        code: 'FOLLOW_UP_NOT_EXPECTED',
+      });
+      const detail = await api().get(`/applications/${id}`).set(auth()).expect(200);
+      expect(detail.body.followUpOverride).toBeNull();
+    });
+
+    it('returns 404 for an unknown id, 400 for a malformed id and 401 without a token', async () => {
+      const missing = await followUp(UNKNOWN_ID).expect(404);
+      expect(missing.body.code).toBe('APPLICATION_NOT_FOUND');
+
+      const malformed = await followUp('not-a-uuid').expect(400);
+      expect(malformed.body).toMatchObject({
+        code: 'VALIDATION_FAILED',
+        errors: [{ field: 'id', constraints: ['isUuid'] }],
+      });
+
+      await api().post(`/applications/${UNKNOWN_ID}/follow-ups`).expect(401);
     });
   });
 
@@ -510,12 +613,16 @@ describe('Applications (e2e)', () => {
             .expect(404)
         ).body,
       ).toEqual(notFound);
+      expect(
+        (await api().post(`/applications/${id}/follow-ups`).set(asOther).expect(404)).body,
+      ).toEqual({ ...notFound, instance: `/applications/${id}/follow-ups` });
       expect((await api().delete(`/applications/${id}`).set(asOther).expect(404)).body).toEqual(
         notFound,
       );
 
       const own = await api().get(`/applications/${id}`).set(auth()).expect(200);
       expect(own.body.company).toBe('Acme');
+      expect(own.body).toMatchObject({ followUpOverride: null, followUpCount: 0 });
     });
   });
 });

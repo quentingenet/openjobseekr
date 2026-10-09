@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { type Application, Prisma } from '../generated/prisma/client.js';
 import type { PrismaService } from '../prisma/prisma.service.js';
 import { ApplicationsService } from './applications.service.js';
+import { AppException } from '../common/app.exception.js';
 import type { FollowUpContextProvider } from '../follow-up/follow-up-context.provider.js';
 
 const ID = '6c3f4d2e-0000-4000-8000-000000000001';
@@ -20,6 +21,7 @@ const record: Application = {
   status: 'SENT',
   contact: null,
   followUpOverride: null,
+  followUpCount: 0,
   workMode: null,
   remoteRhythm: null,
   salaryRange: null,
@@ -148,6 +150,66 @@ describe('ApplicationsService', () => {
     });
     expect(ctx.prisma.application.delete).toHaveBeenCalledWith({
       where: { id: ID, userId: 'user-1' },
+    });
+  });
+
+  describe('recordFollowUp', () => {
+    it('counts the follow-up and schedules the next one a delay after today, in the user scope', async () => {
+      ctx.prisma.application.findUniqueOrThrow.mockResolvedValue({ ...record, followUpCount: 1 });
+      ctx.prisma.application.update.mockResolvedValue({
+        ...record,
+        followUpOverride: new Date('2026-10-16T00:00:00.000Z'),
+        followUpCount: 2,
+      });
+
+      const detail = await ctx.service.recordFollowUp('user-1', ID);
+
+      expect(ctx.prisma.application.findUniqueOrThrow).toHaveBeenCalledWith({
+        where: { id: ID, userId: 'user-1' },
+        select: { status: true, followUpCount: true },
+      });
+      expect(ctx.prisma.application.update).toHaveBeenCalledWith({
+        where: { id: ID, userId: 'user-1', status: 'SENT', followUpCount: 1 },
+        data: { followUpOverride: new Date('2026-10-16T00:00:00.000Z'), followUpCount: 2 },
+      });
+      expect(detail).toMatchObject({
+        followUpDate: '2026-10-16',
+        followUpOverride: '2026-10-16',
+        followUpOverdue: false,
+        followUpCount: 2,
+      });
+    });
+
+    it('uses the configured follow-up delay', async () => {
+      ctx = setup(10);
+      ctx.prisma.application.findUniqueOrThrow.mockResolvedValue(record);
+      ctx.prisma.application.update.mockResolvedValue(record);
+
+      await ctx.service.recordFollowUp('user-1', ID);
+
+      expect(ctx.prisma.application.update).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: { followUpOverride: new Date('2026-10-19T00:00:00.000Z'), followUpCount: 1 },
+        }),
+      );
+    });
+
+    it('refuses an application that is no longer waiting for an answer', async () => {
+      ctx.prisma.application.findUniqueOrThrow.mockResolvedValue({ status: 'REJECTED' });
+
+      const error = await ctx.service.recordFollowUp('user-1', ID).catch((e: unknown) => e);
+
+      expect(error).toBeInstanceOf(AppException);
+      expect(error).toMatchObject({ code: 'FOLLOW_UP_NOT_EXPECTED', status: 409 });
+      expect(ctx.prisma.application.update).not.toHaveBeenCalled();
+    });
+
+    it('lets a missing application surface as a Prisma error', async () => {
+      const missing = prismaError('P2025');
+      ctx.prisma.application.findUniqueOrThrow.mockRejectedValue(missing);
+
+      await expect(ctx.service.recordFollowUp('user-1', ID)).rejects.toBe(missing);
+      expect(ctx.prisma.application.update).not.toHaveBeenCalled();
     });
   });
 });

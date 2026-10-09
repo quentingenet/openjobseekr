@@ -13,6 +13,7 @@ export const ErrorCode = {
   CONFLICT: 'CONFLICT',
   EMAIL_ALREADY_USED: 'EMAIL_ALREADY_USED',
   SKILL_NAME_ALREADY_USED: 'SKILL_NAME_ALREADY_USED',
+  FOLLOW_UP_NOT_EXPECTED: 'FOLLOW_UP_NOT_EXPECTED',
   PAYLOAD_TOO_LARGE: 'PAYLOAD_TOO_LARGE',
   IMPORT_UNSUPPORTED_FILE: 'IMPORT_UNSUPPORTED_FILE',
   IMPORT_INVALID_STRUCTURE: 'IMPORT_INVALID_STRUCTURE',
@@ -38,6 +39,10 @@ export const ERROR_CATALOG: Record<ErrorCode, { status: HttpStatus; title: strin
   CONFLICT: { status: HttpStatus.CONFLICT, title: 'Conflict' },
   EMAIL_ALREADY_USED: { status: HttpStatus.CONFLICT, title: 'Email already used' },
   SKILL_NAME_ALREADY_USED: { status: HttpStatus.CONFLICT, title: 'Skill name already used' },
+  FOLLOW_UP_NOT_EXPECTED: {
+    status: HttpStatus.CONFLICT,
+    title: 'Application not waiting for an answer',
+  },
   PAYLOAD_TOO_LARGE: { status: HttpStatus.PAYLOAD_TOO_LARGE, title: 'Request body too large' },
   IMPORT_UNSUPPORTED_FILE: {
     status: HttpStatus.UNSUPPORTED_MEDIA_TYPE,

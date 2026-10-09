@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { computeFollowUpDate, isFollowUpOverdue, overdueSentBefore } from './follow-up.js';
+import {
+  afterFollowUp,
+  computeFollowUpDate,
+  followUpRank,
+  isFollowUpOverdue,
+  overdueSentBefore,
+} from './follow-up.js';
+import { FOLLOW_UP_COUNT } from './limits.js';
 
 describe('computeFollowUpDate', () => {
   // Values from the original spreadsheet ("DATE DE RELANCE" = sent date + 7 days).
@@ -94,5 +101,40 @@ describe('overdueSentBefore', () => {
 
   it('crosses a month boundary', () => {
     expect(overdueSentBefore('2026-11-03', 7)).toBe('2026-10-27');
+  });
+});
+
+describe('afterFollowUp', () => {
+  it('schedules the next follow-up one delay after today and counts the follow-up', () => {
+    expect(afterFollowUp(0, '2026-10-09', 7)).toEqual({
+      followUpOverride: '2026-10-16',
+      followUpCount: 1,
+    });
+    expect(afterFollowUp(2, '2026-10-28', 7)).toEqual({
+      followUpOverride: '2026-11-04',
+      followUpCount: 3,
+    });
+  });
+
+  it('is no longer overdue once the follow-up is recorded', () => {
+    const today = '2026-10-09';
+    expect(isFollowUpOverdue(afterFollowUp(0, today, 7).followUpOverride, today)).toBe(false);
+  });
+
+  it('stops counting at the maximum', () => {
+    expect(afterFollowUp(FOLLOW_UP_COUNT.max, '2026-10-09', 7).followUpCount).toBe(
+      FOLLOW_UP_COUNT.max,
+    );
+  });
+});
+
+describe('followUpRank', () => {
+  it('is the rank of the next follow-up, once the user has followed up', () => {
+    expect(followUpRank(1)).toBe(2);
+    expect(followUpRank(4)).toBe(5);
+  });
+
+  it('is null before any follow-up: the first one needs no rank', () => {
+    expect(followUpRank(0)).toBeNull();
   });
 });

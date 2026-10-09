@@ -1,10 +1,11 @@
-import { Link, TableCell, TableRow } from '@mui/material';
+import { Link, Stack, TableCell, TableRow } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink, useNavigate } from 'react-router';
 import type { ApplicationSummary } from '../../../api/types';
 import { TruncatedText } from '../../../components/TruncatedText';
 import { formatDate } from '../../../lib/format';
 import { channelLabel } from '../channel-label';
+import { RecordFollowUpButton } from '../RecordFollowUpButton';
 import { StatusChip } from '../StatusChip';
 import { FollowUpCell } from './FollowUpCell';
 
@@ -47,7 +48,10 @@ export function ApplicationRow({ application }: { application: ApplicationSummar
         <StatusChip status={application.status} />
       </TableCell>
       <TableCell sx={{ whiteSpace: 'nowrap' }}>
-        <FollowUpCell date={application.followUpDate} overdue={application.followUpOverdue} />
+        <Stack direction="row" spacing={0.5} sx={{ alignItems: 'center' }}>
+          <FollowUpCell application={application} />
+          <RecordFollowUpButton application={application} variant="icon" onlyWhenDue />
+        </Stack>
       </TableCell>
       <TableCell>{application.workMode ? t(`workMode.${application.workMode}`) : '—'}</TableCell>
     </TableRow>

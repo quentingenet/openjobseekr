@@ -76,6 +76,7 @@ model Application {
   // "DATE DE RELANCE" is computed as sentAt + follow-up delay (7 days by default) while the
   // status is SENT, like in the spreadsheet, unless the user set it: only that date is stored.
   followUpOverride   DateTime? @db.Date // "DATE DE RELANCE" set by the user
+  followUpCount      Int       @default(0) // Not in the spreadsheet: follow-ups the user recorded
   workMode           WorkMode?          // "REMOTE / HYBRIDE"
   remoteRhythm       String?            // "RYTHME TÉLÉTRAVAIL"
   salaryRange        String?            // "FOURCHETTE SALAIRE"

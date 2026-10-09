@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { mockApi, problem } from '../../test/api-mock';
 import { APPLICATION_ID, application } from '../../test/fixtures';
-import { renderWithProviders } from '../../test/render';
+import { jsonResponse, renderWithProviders } from '../../test/render';
 import { ApplicationDetailPage } from './ApplicationDetailPage';
 
 const detailUrl = `/api/applications/${APPLICATION_ID}`;
@@ -32,6 +32,53 @@ describe('ApplicationDetailPage', () => {
     // HTML in user data is displayed, never interpreted.
     expect(screen.getByText('<b>We are hiring</b>')).toBeInTheDocument();
     expect(document.querySelector('b')).toBeNull();
+  });
+
+  it('records a follow-up, even before it is due, and shows the next one', async () => {
+    const notDue = { ...application, followUpDate: '2026-10-20', followUpOverdue: false };
+    const afterFollowUp = { ...notDue, followUpDate: '2026-10-16', followUpCount: 1 };
+    let recorded = false;
+    const { requests } = mockApi({
+      [`GET ${detailUrl}`]: () => jsonResponse(recorded ? afterFollowUp : notDue),
+      [`POST ${detailUrl}/follow-ups`]: () => {
+        recorded = true;
+        return jsonResponse(afterFollowUp);
+      },
+    });
+    await renderWithProviders(<ApplicationDetailPage />, {
+      path: '/applications/:id',
+      url: `/applications/${APPLICATION_ID}`,
+      language: 'en',
+    });
+    expect(await screen.findByText('Follow-up: Oct 20, 2026')).toBeInTheDocument();
+    expect(screen.queryByText('Follow-up #2')).not.toBeInTheDocument();
+
+    await userEvent.click(screen.getByRole('button', { name: 'I followed up' }));
+
+    expect(await screen.findByText('Follow-up: Oct 16, 2026')).toBeInTheDocument();
+    expect(screen.getByText('Follow-up #2')).toBeInTheDocument();
+    expect(screen.getByText('Follow-up recorded. Next one on Oct 16, 2026.')).toBeInTheDocument();
+    expect(requests.filter((r) => r.method === 'POST')).toHaveLength(1);
+    // The same button now undoes it, with the seconds left.
+    expect(screen.getByRole('button', { name: 'Undo follow-up' })).toHaveTextContent(
+      /^Undo \(\d+ s\)$/,
+    );
+  });
+
+  it('offers no follow-up once an answer is received', async () => {
+    mockApi({
+      [`GET ${detailUrl}`]: {
+        body: { ...application, status: 'REJECTED', followUpDate: null, followUpOverdue: false },
+      },
+    });
+    await renderWithProviders(<ApplicationDetailPage />, {
+      path: '/applications/:id',
+      url: `/applications/${APPLICATION_ID}`,
+      language: 'en',
+    });
+    await screen.findByRole('heading', { name: 'Acme' });
+
+    expect(screen.queryByRole('button', { name: 'I followed up' })).not.toBeInTheDocument();
   });
 
   it('deletes after confirmation and goes back to the list without showing an error', async () => {

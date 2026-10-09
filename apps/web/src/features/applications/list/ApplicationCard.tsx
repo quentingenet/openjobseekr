@@ -4,16 +4,26 @@ import { Link as RouterLink } from 'react-router';
 import type { ApplicationSummary } from '../../../api/types';
 import { formatDate } from '../../../lib/format';
 import { channelLabel } from '../channel-label';
+import { RecordFollowUpButton } from '../RecordFollowUpButton';
 import { StatusChip } from '../StatusChip';
 import { FollowUpCell } from './FollowUpCell';
 
-/** One application on a phone: the whole card is a link to its detail page. */
+/**
+ * One application on a phone: the whole card is a link to its detail page. A follow-up due
+ * adds a button beside the link (a button cannot sit inside a link).
+ */
 export function ApplicationCard({ application }: { application: ApplicationSummary }) {
   const { t, i18n } = useTranslation();
   const channel = channelLabel(t, application.channel, application.channelDetail);
 
   return (
-    <ListItem disablePadding divider>
+    <ListItem
+      disablePadding
+      divider
+      secondaryAction={
+        <RecordFollowUpButton application={application} variant="icon" onlyWhenDue />
+      }
+    >
       <ListItemButton
         component={RouterLink}
         to={`/applications/${application.id}`}
@@ -43,7 +53,7 @@ export function ApplicationCard({ application }: { application: ApplicationSumma
           {application.followUpDate && (
             <Stack direction="row" spacing={0.5} component="span">
               <span>{t('applications.columns.followUp')}</span>
-              <FollowUpCell date={application.followUpDate} overdue={application.followUpOverdue} />
+              <FollowUpCell application={application} />
             </Stack>
           )}
         </Stack>

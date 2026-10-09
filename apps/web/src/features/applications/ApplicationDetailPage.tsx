@@ -11,6 +11,8 @@ import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { ErrorState, LoadingState } from '../../components/PageStates';
 import { formatDate, formatDateTime } from '../../lib/format';
 import { channelLabel } from './channel-label';
+import { FollowUpRankChip } from './FollowUpRankChip';
+import { RecordFollowUpButton } from './RecordFollowUpButton';
 import { StatusChip } from './StatusChip';
 import { PageTitle } from '../../components/PageTitle';
 
@@ -24,6 +26,7 @@ type DetailField = Exclude<
   | 'followUpDate'
   | 'followUpOverride'
   | 'followUpOverdue'
+  | 'followUpCount'
   | 'jobPostingText'
   | 'createdAt'
   | 'updatedAt'
@@ -103,6 +106,9 @@ export function ApplicationDetailPage() {
                 })}
               />
             )}
+            {data.followUpDate && <FollowUpRankChip followUpCount={data.followUpCount} />}
+            {/* Following up early is allowed too: the next follow-up still comes one delay later. */}
+            {data.followUpDate && <RecordFollowUpButton application={data} variant="button" />}
           </Stack>
         </Box>
         <Stack
